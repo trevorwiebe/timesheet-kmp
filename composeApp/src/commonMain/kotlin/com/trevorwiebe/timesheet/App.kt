@@ -5,7 +5,7 @@ import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.trevorwiebe.timesheet.presentation.auth.SignInScreen
+import com.trevorwiebe.timesheet.authentication.presentation.auth.SignInScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
