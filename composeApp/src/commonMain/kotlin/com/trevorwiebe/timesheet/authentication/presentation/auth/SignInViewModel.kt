@@ -86,4 +86,18 @@ class SignInViewModel(
             }
         }
     }
+
+    private fun getCurrentlySignedInUser(){
+        viewModelScope.launch {
+            val result = authenticator.getSignedInUser()
+            if(result.error.isNullOrEmpty()){
+                try {
+                    val firebaseUser = result.data as FirebaseUser
+                    _onSignInSuccessful.send(Unit)
+                }catch (e: Exception){
+                    _state.value = _state.value.copy(signInError = result.error)
+                }
+            }
+        }
+    }
 }
