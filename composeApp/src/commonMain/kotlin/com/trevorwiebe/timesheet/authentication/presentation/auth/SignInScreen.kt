@@ -7,14 +7,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,11 +44,11 @@ fun SignInScreen(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Timesheet",
                 textAlign = TextAlign.Center,
-                fontSize = 36.sp,
+                fontSize = 48.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(36.dp))
 
             TimesheetTextField(
                 text = state.email,
@@ -63,6 +65,11 @@ fun SignInScreen(
             TimesheetTextField(
                 text = state.password,
                 placeholder = "Password",
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Password
+                ),
+                hidePasswordText = state.hidePasswordText,
                 onTextChange = {
                     viewModel.onEvent(
                         SignInEvents.OnPasswordChange(it)
@@ -70,11 +77,20 @@ fun SignInScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                modifier = Modifier
+                    .padding(top=16.dp, bottom = 16.dp)
+                    .fillMaxWidth(),
+                text = state.signInError ?: "",
+                color = Color.Red
+            )
 
             TimesheetButton(
                 text = "Sign In",
-                onClick = {  }
+                loading = state.loadingSignIn,
+                onClick = {
+                    viewModel.onEvent(SignInEvents.OnSignInClick)
+                }
             )
         }
     }

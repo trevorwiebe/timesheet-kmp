@@ -8,11 +8,15 @@ class AuthImpl(
     private val firebaseAuth: FirebaseAuth
 ): Authenticator {
     override suspend fun signIn(email: String, password: String): TSResult {
-        val firebaseUser = firebaseAuth.signInWithEmailAndPassword(email, password).user
-        return if(firebaseUser == null) {
-            TSResult(error = "User was null")
-        }else{
-            TSResult(data = firebaseUser)
+        try{
+            val firebaseUser = firebaseAuth.signInWithEmailAndPassword(email, password).user
+            return if(firebaseUser == null) {
+                TSResult(error = "User was null")
+            }else{
+                TSResult(data = firebaseUser)
+            }
+        }catch (e: Exception){
+            return TSResult(error = e.message)
         }
     }
 }
