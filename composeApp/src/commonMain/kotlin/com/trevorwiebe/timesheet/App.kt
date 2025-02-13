@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.trevorwiebe.timesheet.authentication.presentation.auth.SignInScreen
+import com.trevorwiebe.timesheet.punch.presentation.PunchScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -18,8 +19,15 @@ fun App() {
             navController = navController,
             startDestination = Route.SignIn
         ){
+            composable<Route.Punch> {
+                PunchScreen()
+            }
             composable<Route.SignIn> {
-                SignInScreen()
+                SignInScreen(
+                    onSignInSuccessful = {
+                        navController.navigate(Route.Punch)
+                    }
+                )
             }
         }
     }

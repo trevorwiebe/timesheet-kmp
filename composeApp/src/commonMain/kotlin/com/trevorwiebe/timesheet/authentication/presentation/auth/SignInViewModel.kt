@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.authentication.domain.Authenticator
 import dev.gitlive.firebase.auth.FirebaseUser
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -15,6 +17,13 @@ class SignInViewModel(
 
     private val _state = MutableStateFlow(SignInState())
     val state = _state.asStateFlow()
+
+    private val _onSignInSuccessful = Channel<Unit>()
+    val onSignInSuccessful = _onSignInSuccessful.receiveAsFlow()
+
+    init {
+        getCurrentlySignedInUser()
+    }
 
     fun onEvent(event: SignInEvents){
         when(event) {
@@ -62,7 +71,7 @@ class SignInViewModel(
                 if(result.error.isNullOrEmpty()) {
                     try {
                         val firebaseUser = result.data as FirebaseUser
-
+                        _onSignInSuccessful.send(Unit)
                     } catch (e: Exception) {
                         _state.value = _state.value.copy(signInError = result.error)
                     }
