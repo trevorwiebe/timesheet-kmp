@@ -104,9 +104,10 @@ class SignInViewModel(
                     val firebaseUser = result.data as FirebaseUser
                     _onSignInSuccessful.send(Unit)
                 }catch (e: Exception){
-                    _state.value = _state.value.copy(signInError = result.error)
+                    _state.value = _state.value.copy(loadingSignIn = false)
                 }
             }
+            _state.value = _state.value.copy(loadingSignIn = false)
         }
     }
 }
