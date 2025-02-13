@@ -6,4 +6,6 @@ interface Authenticator {
 
     suspend fun signIn(email: String, password: String): TSResult
 
+    suspend fun resetPassword(email: String): TSResult
+
 }

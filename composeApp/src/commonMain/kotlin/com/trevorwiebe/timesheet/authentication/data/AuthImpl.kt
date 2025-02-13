@@ -19,4 +19,13 @@ class AuthImpl(
             return TSResult(error = e.message)
         }
     }
+
+    override suspend fun resetPassword(email: String): TSResult {
+        try{
+            firebaseAuth.sendPasswordResetEmail(email)
+            return TSResult(data = "Reset password email sent")
+        }catch (e: Exception) {
+            return TSResult(error = e.message)
+        }
+    }
 }

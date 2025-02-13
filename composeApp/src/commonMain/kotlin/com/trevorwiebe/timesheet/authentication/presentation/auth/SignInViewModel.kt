@@ -6,6 +6,7 @@ import com.trevorwiebe.timesheet.authentication.domain.Authenticator
 import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
@@ -38,6 +39,14 @@ class SignInViewModel(
                 }
                 signIn()
             }
+            is SignInEvents.OnSetSendPasswordResetDialog -> {
+                _state.update { it.copy(
+                    showSendPasswordResetDialog = event.show
+                ) }
+            }
+            is SignInEvents.OnSendPasswordResetEmail -> {
+                sentPasswordResetEmail()
+            }
         }
     }
 
@@ -65,4 +74,16 @@ class SignInViewModel(
         }
     }
 
+    private fun sentPasswordResetEmail(){
+        _state.value = _state.value.copy(loadingPasswordReset = true)
+        viewModelScope.launch {
+            state.value.let {
+                authenticator.resetPassword(email = it.email)
+                _state.value = _state.value.copy(
+                    showSendPasswordResetDialog = false,
+                    loadingPasswordReset = false
+                )
+            }
+        }
+    }
 }

@@ -5,5 +5,7 @@ data class SignInState (
     val password: String = "",
     val loadingSignIn: Boolean = false,
     val signInError: String? = null,
-    val hidePasswordText: Boolean = false
+    val hidePasswordText: Boolean = false,
+    val showSendPasswordResetDialog: Boolean = false,
+    val loadingPasswordReset: Boolean = false
 )
