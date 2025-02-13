@@ -1,7 +1,9 @@
 package com.trevorwiebe.timesheet.di
 
-import org.koin.core.module.Module
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.initialize
 import org.koin.dsl.module
 
-actual val platformModule: Module
-    get() = module {}
+actual val platformModule = module {
+    single { Firebase.initialize() }
+}
