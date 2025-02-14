@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -17,9 +19,14 @@ import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.presentation.common.TimesheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
 import com.trevorwiebe.timesheet.theme.tertiary
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun PunchScreen() {
+fun PunchScreen(
+    viewModel: PunchViewModel = koinViewModel()
+) {
+
+    val staticState by viewModel.staticPunchState.collectAsState()
 
     Scaffold(
         topBar = {
