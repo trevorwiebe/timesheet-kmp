@@ -52,28 +52,34 @@ fun PunchScreen(
                 PunchItem()
             }
             item {
-                AddPunch()
+                AddPunch(
+                    onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
+                    onAddToPTO = {}
+                )
             }
         }
     }
 }
 
 @Composable
-private fun AddPunch() {
+private fun AddPunch(
+    onPunch: () -> Unit,
+    onAddToPTO: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(16.dp)
     ) {
         TimesheetButton(
             modifier = Modifier.width(150.dp),
             text = "In/Out",
-            onClick = {},
+            onClick = onPunch,
             loading = false
         )
         Spacer(modifier = Modifier.weight(1f))
         TimesheetButton(
             modifier = Modifier.width(150.dp),
             text = "Add PTO",
-            onClick = {},
+            onClick = onAddToPTO,
             loading = false
         )
     }

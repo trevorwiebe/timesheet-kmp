@@ -2,6 +2,8 @@ package com.trevorwiebe.timesheet.punch.data
 
 import com.trevorwiebe.timesheet.core.domain.TSResult
 import com.trevorwiebe.timesheet.core.domain.dto.RateDto
+import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.core.model.toPunchDto
 import com.trevorwiebe.timesheet.core.model.toRate
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import dev.gitlive.firebase.Firebase
@@ -57,8 +59,24 @@ class PunchRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun addPunch(punch: Instant, rateId: String): TSResult {
-        TODO("Not yet implemented")
+    override suspend fun addPunch(punch: Punch): TSResult {
+        val organizationIdResult = getOrganizationId()
+        if (organizationIdResult.error != null) return organizationIdResult
+        val organizationId = organizationIdResult.data as String
+
+        val userIdResult = getUserId()
+        if (userIdResult.error != null) return userIdResult
+        val userId = userIdResult.data as String
+
+        val result = firebaseDatabase.firestore
+            .collection("organizations")
+            .document(organizationId)
+            .collection("users")
+            .document(userId)
+            .collection("punches")
+            .add(punch.toPunchDto())
+
+        return TSResult(data = result.id)
     }
 
     override suspend fun addHours(
@@ -73,6 +91,7 @@ class PunchRepositoryImpl(
         TODO("Not yet implemented")
     }
 
+    @OptIn(ExperimentalEncodingApi::class)
     private suspend fun getOrganizationId(): TSResult {
         val tsResult = getSignedInUser()
         if (tsResult.error != null) return tsResult
@@ -80,7 +99,17 @@ class PunchRepositoryImpl(
         val idTokenResult = firebaseUser.getIdTokenResult(false)
         val idToken = idTokenResult.token ?: return TSResult(error = "Token was null")
 
-        val payload = decodeJwtPayload(idToken)
+        val parts = idToken.split(".")
+        if (parts.size < 2) throw IllegalArgumentException("Invalid JWT token")
+
+        var payloadBase64 = parts[1]
+        payloadBase64 = payloadBase64
+            .replace('-', '+')  // Convert URL-safe base64 to standard base64
+            .replace('_', '/')  // Convert URL-safe base64 to standard base64
+            .padEnd((payloadBase64.length + 3) / 4 * 4, '=') // Fix padding
+
+        val payload = Base64.decode(payloadBase64).decodeToString()
+
         val claims = Json.parseToJsonElement(payload)
         val organizationId = claims.jsonObject["organizationId"]?.toString()
 
@@ -93,18 +122,11 @@ class PunchRepositoryImpl(
         else TSResult(error = "Organization ID was null")
     }
 
-    // Cross-platform Base64 decoder function with Firebase-safe padding fix
-    @OptIn(ExperimentalEncodingApi::class)
-    private fun decodeJwtPayload(jwt: String): String {
-        val parts = jwt.split(".")
-        if (parts.size < 2) throw IllegalArgumentException("Invalid JWT token")
+    private suspend fun getUserId(): TSResult {
+        val tsResult = getSignedInUser()
+        if (tsResult.error != null) return tsResult
+        val firebaseUser = tsResult.data as FirebaseUser
 
-        var payloadBase64 = parts[1]
-        payloadBase64 = payloadBase64
-            .replace('-', '+')  // Convert URL-safe base64 to standard base64
-            .replace('_', '/')  // Convert URL-safe base64 to standard base64
-            .padEnd((payloadBase64.length + 3) / 4 * 4, '=') // Fix padding
-
-        return Base64.decode(payloadBase64).decodeToString()
+        return TSResult(data = firebaseUser.uid)
     }
 }
