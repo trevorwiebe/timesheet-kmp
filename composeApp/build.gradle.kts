@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             api(libs.koin.core)
             implementation(libs.firebase.auth)
+            implementation(libs.firebase.firestore)
             implementation(libs.kotlinx.datetime)
         }
     }
@@ -83,6 +84,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
