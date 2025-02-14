@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,9 +34,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.trevorwiebe.timesheet.core.presentation.common.TimesheetButton
 import com.trevorwiebe.timesheet.theme.primary
 
 @Composable
@@ -150,17 +155,40 @@ fun ConfirmChangesRow(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            TimesheetButton(
+                modifier = Modifier.width(150.dp),
+                text = "Add Hours",
+                onClick = onConfirm,
+                loading = false
+            )
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = onCancel) {
+            IconButton(
+                onClick = onCancel,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .shadow(4.dp, CircleShape)
+                    .clip(CircleShape)
+                    .background(Color.White),
+            ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Cancel"
+                    contentDescription = "Cancel",
+                    tint = Color(230, 74, 25)
                 )
             }
-            IconButton(onClick = onConfirm) {
+            Spacer(modifier = Modifier.width(8.dp))
+            IconButton(
+                onClick = onConfirm,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .shadow(4.dp, CircleShape)
+                    .clip(CircleShape)
+                    .background(Color.White),
+            ) {
                 Icon(
                     imageVector = Icons.Default.Done,
-                    contentDescription = "Confirm"
+                    contentDescription = "Confirm",
+                    tint = Color(76, 175, 80)
                 )
             }
         }

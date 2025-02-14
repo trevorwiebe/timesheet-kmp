@@ -2,7 +2,6 @@ package com.trevorwiebe.timesheet.core.presentation.common
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -30,7 +29,7 @@ fun TimesheetButton(
         contentAlignment = Alignment.Center
     ){
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier
         ) {
             if (leadingIcon != null) {
                 leadingIcon()
