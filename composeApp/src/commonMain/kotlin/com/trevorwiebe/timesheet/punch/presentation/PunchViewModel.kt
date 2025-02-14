@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
 class PunchViewModel(
     private val punchRepository: PunchRepository,
@@ -18,9 +19,19 @@ class PunchViewModel(
     private val _staticPunchState = MutableStateFlow(StaticPunchState())
     val staticPunchState = _staticPunchState.asStateFlow()
 
+    private val _dynamicPunchState = MutableStateFlow(DynamicPunchState())
+    val dynamicPunchState = _dynamicPunchState.asStateFlow()
+
+    private val _elementVisibilityState = MutableStateFlow(ElementVisibilityState())
+    val elementVisibilityState = _elementVisibilityState.asStateFlow()
 
     init {
-        getRates()
+        getRates {
+            getPunches(
+                start = Clock.System.now(),
+                end = Clock.System.now()
+            )
+        }
     }
 
     fun onEvent(event: PunchEvents) {
@@ -32,19 +43,39 @@ class PunchViewModel(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun getRates() {
+    private fun getRates(received: () -> Unit = {}) {
         viewModelScope.launch {
             val result = punchRepository.getRates()
             if (result.error.isNullOrEmpty()) {
                 val rates = result.data as List<Rate>
                 _staticPunchState.update { it.copy(rateList = rates) }
+                received()
             } else {
                 println(result.error)
             }
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    private fun getPunches(
+        start: Instant,
+        end: Instant
+    ) {
+        viewModelScope.launch {
+            punchRepository.getPunches(start, end).collect { result ->
+                if (result.error.isNullOrEmpty()) {
+                    _dynamicPunchState.update {
+                        it.copy(punchList = result.data as List<Punch>)
+                    }
+                } else {
+                    println(result.error)
+                }
+            }
+        }
+    }
+
     private fun sendPunch(rateId: String) {
+        _elementVisibilityState.update { it.copy(punchLoading = true) }
         viewModelScope.launch {
             val punch = Punch(
                 punchId = "",
@@ -57,6 +88,7 @@ class PunchViewModel(
             } else {
                 println(result.error)
             }
+            _elementVisibilityState.update { it.copy(punchLoading = false) }
         }
     }
 }

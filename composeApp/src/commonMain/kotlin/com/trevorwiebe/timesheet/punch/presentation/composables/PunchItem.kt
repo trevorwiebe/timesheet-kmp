@@ -40,8 +40,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.presentation.common.TimesheetButton
 import com.trevorwiebe.timesheet.theme.primary
+import com.trevorwiebe.timesheet.theme.secondary
 
 @Composable
 fun PunchItem() {
@@ -77,9 +79,19 @@ private fun PunchHeader() {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = "Monday")
+        Text(
+            text = "Monday",
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = secondary
+        )
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = "2/3/2025")
+        Text(
+            text = "2/3/2025",
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = secondary
+        )
     }
 }
 

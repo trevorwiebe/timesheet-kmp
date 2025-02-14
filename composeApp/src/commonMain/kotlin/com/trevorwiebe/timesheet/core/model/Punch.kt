@@ -1,6 +1,7 @@
 package com.trevorwiebe.timesheet.core.model
 
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 data class Punch(
@@ -12,7 +13,7 @@ data class Punch(
 fun PunchDto.toPunch(punchId: String): Punch {
     return Punch(
         punchId = punchId,
-        dateTime = Instant.parse(this.dateTime),
+        dateTime = Clock.System.now(),
         rateId = this.rateId
     )
 }

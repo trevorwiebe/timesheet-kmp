@@ -27,6 +27,8 @@ fun PunchScreen(
 ) {
 
     val staticState by viewModel.staticPunchState.collectAsState()
+    val dynamicState by viewModel.dynamicPunchState.collectAsState()
+    val elementVisibilityState by viewModel.elementVisibilityState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -53,6 +55,7 @@ fun PunchScreen(
             }
             item {
                 AddPunch(
+                    loadingPunch = elementVisibilityState.punchLoading,
                     onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
                     onAddToPTO = {}
                 )
@@ -63,6 +66,7 @@ fun PunchScreen(
 
 @Composable
 private fun AddPunch(
+    loadingPunch: Boolean,
     onPunch: () -> Unit,
     onAddToPTO: () -> Unit
 ) {
@@ -73,7 +77,7 @@ private fun AddPunch(
             modifier = Modifier.width(150.dp),
             text = "In/Out",
             onClick = onPunch,
-            loading = false
+            loading = loadingPunch
         )
         Spacer(modifier = Modifier.weight(1f))
         TimesheetButton(

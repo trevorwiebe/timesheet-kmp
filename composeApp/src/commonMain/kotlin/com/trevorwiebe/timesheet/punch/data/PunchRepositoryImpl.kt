@@ -1,8 +1,10 @@
 package com.trevorwiebe.timesheet.punch.data
 
 import com.trevorwiebe.timesheet.core.domain.TSResult
+import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
 import com.trevorwiebe.timesheet.core.domain.dto.RateDto
 import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.core.model.toPunch
 import com.trevorwiebe.timesheet.core.model.toPunchDto
 import com.trevorwiebe.timesheet.core.model.toRate
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
@@ -10,6 +12,9 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -44,9 +49,7 @@ class PunchRepositoryImpl(
             .collection("rates")
             .get()
             .documents
-            .map { document ->
-                document.data<RateDto>().copy(id = document.id).toRate()
-            }
+            .map { document -> document.data<RateDto>().copy(id = document.id).toRate() }
 
         return TSResult(data = ratesList)
     }
@@ -55,8 +58,28 @@ class PunchRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPunches(startDate: Instant, endDate: Instant): TSResult {
-        TODO("Not yet implemented")
+    override suspend fun getPunches(startDate: Instant, endDate: Instant): Flow<TSResult> {
+        val organizationIdResult = getOrganizationId()
+        if (organizationIdResult.error != null) return flow { emit(organizationIdResult) }
+        val organizationId = organizationIdResult.data as String
+
+        val userIdResult = getUserId()
+        if (userIdResult.error != null) return flow { emit(userIdResult) }
+        val userId = userIdResult.data as String
+
+        return firebaseDatabase.firestore
+            .collection("organizations")
+            .document(organizationId)
+            .collection("users")
+            .document(userId)
+            .collection("punches")
+            .snapshots
+            .map { snapshot ->
+                snapshot.documents.map { documentSnapshot ->
+                    documentSnapshot.data<PunchDto>().toPunch(punchId = documentSnapshot.id)
+                }
+            }.map { TSResult(data = it) }
+
     }
 
     override suspend fun addPunch(punch: Punch): TSResult {
