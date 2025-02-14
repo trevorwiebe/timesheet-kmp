@@ -104,6 +104,7 @@ fun SignInScreen(
             )
 
             TimesheetButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = "Sign In",
                 loading = state.loadingSignIn,
                 onClick = {

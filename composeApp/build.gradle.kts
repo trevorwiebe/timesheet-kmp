@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             api(libs.koin.core)
             implementation(libs.firebase.auth)
+            implementation(libs.kotlinx.datetime)
         }
     }
 }
