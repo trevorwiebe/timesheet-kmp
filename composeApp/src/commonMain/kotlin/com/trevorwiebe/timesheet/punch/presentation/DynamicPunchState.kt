@@ -1,7 +1,7 @@
 package com.trevorwiebe.timesheet.punch.presentation
 
-import com.trevorwiebe.timesheet.core.model.Punch
+import kotlinx.datetime.Instant
 
 data class DynamicPunchState(
-    val punchList: List<Punch> = emptyList()
+    val punches: Map<Instant, List<Triple<String, String, String>>> = emptyMap()
 )

@@ -5,6 +5,8 @@ import com.trevorwiebe.timesheet.authentication.domain.Authenticator
 import com.trevorwiebe.timesheet.authentication.presentation.auth.SignInViewModel
 import com.trevorwiebe.timesheet.punch.data.PunchRepositoryImpl
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
+import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
+import com.trevorwiebe.timesheet.punch.domain.usecases.ProcessPunchesForUi
 import com.trevorwiebe.timesheet.punch.presentation.PunchViewModel
 import dev.gitlive.firebase.Firebase
 import org.koin.core.module.Module
@@ -19,7 +21,7 @@ expect fun createEmulatorConfig(): FirebaseEmulatorConfig
 
 object Debug {
     // This will be set during initialization
-    var isDebug: Boolean = false
+    var isDebug: Boolean = true
 }
 
 expect val platformModule: Module
@@ -35,6 +37,8 @@ val sharedModule = module {
     }
     single<Authenticator> { AuthImpl(get()) }
     single<PunchRepository> { PunchRepositoryImpl(get()) }
+    single<CalculateTimeSheets> { CalculateTimeSheets() }
+    single<ProcessPunchesForUi> { ProcessPunchesForUi() }
     viewModelOf(::SignInViewModel)
     viewModelOf(::PunchViewModel)
 }

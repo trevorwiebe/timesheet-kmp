@@ -44,9 +44,12 @@ import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.presentation.common.TimesheetButton
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
-fun PunchItem() {
+fun PunchItem(date: Instant, punches: List<Triple<String, String, String>>) {
     var editing by remember { mutableStateOf(false) }
     val elevation by animateDpAsState(
         targetValue = if (editing) 4.dp else 0.dp
@@ -61,10 +64,11 @@ fun PunchItem() {
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
-            PunchHeader()
-            PunchBody(editing = editing)
-            PunchBody(editing = editing)
-            PunchBody(editing = editing)
+            PunchHeader(date = date)
+            PunchBody(
+                editing = editing,
+                punches = punches
+            )
             ConfirmChangesRow(onConfirm = {
                 editing = false
             }, onCancel = {
@@ -75,19 +79,19 @@ fun PunchItem() {
 }
 
 @Composable
-private fun PunchHeader() {
+private fun PunchHeader(date: Instant) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Monday",
+            text = date.toLocalDateTime(TimeZone.currentSystemDefault()).date.dayOfWeek.toString(),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = secondary
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = "2/3/2025",
+            text = date.toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = secondary
@@ -96,23 +100,25 @@ private fun PunchHeader() {
 }
 
 @Composable
-private fun PunchBody(editing: Boolean) {
+private fun PunchBody(editing: Boolean, punches: List<Triple<String, String, String>>) {
 
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("In: ", fontWeight = FontWeight.Bold)
-            EditableTextField("08:15 AM", editing, {})
-            Spacer(modifier = Modifier.weight(1f))
-            Text("Out: ", fontWeight = FontWeight.Bold)
-            EditableTextField("06:00 PM", editing, {})
-            Spacer(modifier = Modifier.weight(1f))
-            Text("Rate: ", fontWeight = FontWeight.Bold)
-            Text("Regular")
+        punches.forEach {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("In: ", fontWeight = FontWeight.Bold)
+                EditableTextField(it.first, editing, {})
+                Spacer(modifier = Modifier.weight(1f))
+                Text("Out: ", fontWeight = FontWeight.Bold)
+                EditableTextField(it.second, editing, {})
+                Spacer(modifier = Modifier.weight(1f))
+                Text("Rate: ", fontWeight = FontWeight.Bold)
+                Text(it.third)
+            }
         }
     }
 }

@@ -11,6 +11,8 @@ interface PunchRepository {
 
     suspend fun getRates(): TSResult
 
+    suspend fun getOrganization(): TSResult
+
     suspend fun updatePunch(
         punch: Instant,
         punchId: String

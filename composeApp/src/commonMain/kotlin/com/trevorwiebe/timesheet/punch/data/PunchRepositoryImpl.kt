@@ -1,9 +1,11 @@
 package com.trevorwiebe.timesheet.punch.data
 
 import com.trevorwiebe.timesheet.core.domain.TSResult
+import com.trevorwiebe.timesheet.core.domain.dto.OrganizationDto
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
 import com.trevorwiebe.timesheet.core.domain.dto.RateDto
 import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.core.model.toOrganization
 import com.trevorwiebe.timesheet.core.model.toPunch
 import com.trevorwiebe.timesheet.core.model.toPunchDto
 import com.trevorwiebe.timesheet.core.model.toRate
@@ -52,6 +54,22 @@ class PunchRepositoryImpl(
             .map { document -> document.data<RateDto>().copy(id = document.id).toRate() }
 
         return TSResult(data = ratesList)
+    }
+
+    override suspend fun getOrganization(): TSResult {
+        val organizationIdResult = getOrganizationId()
+        if (organizationIdResult.error != null) return organizationIdResult
+        val organizationId = organizationIdResult.data as String
+
+        val organization = firebaseDatabase.firestore
+            .collection("organizations")
+            .document(organizationId)
+            .get()
+
+        return TSResult(
+            data = organization.data<OrganizationDto>().toOrganization(id = organizationId)
+        )
+
     }
 
     override suspend fun updatePunch(punch: Instant, punchId: String): TSResult {
