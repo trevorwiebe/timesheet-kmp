@@ -1,1 +1,10 @@
 # Folders and files added here will not be sent to the AI model in the codebase
+
+
+
+# Recommended for android development
+build/
+google-services.json
+src/androidMain/res/
+src/.DS_Store
+.DS_Store

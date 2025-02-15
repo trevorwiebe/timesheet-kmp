@@ -1,6 +1,8 @@
 from atomic_agents.lib.components.system_prompt_generator import SystemPromptGenerator
+
 from code_base_provider import CodeBaseProvider
 from get_code_changes import CodeChangesProvider
+
 
 class PromptLibrary:
     def __init__(self, code_base_file, ignore_path):
@@ -38,6 +40,28 @@ class PromptLibrary:
                 ],
                 output_instructions=[
                     "Provide code snippets inside triple back ticks, for example ```const foo = 'I love JavaScript'``` "
+                ]
+            )
+        elif name.upper() == "KMP_DEVELOPER":
+            return SystemPromptGenerator(
+                background=[
+                    "You are a Kotlin developer knowledgeable in Kotlin. You provide coding examples and explanations in a clear, simple manner."
+                    "You will receive a large .txt like file with the whole code base of the project included.  A few things to note: " +
+                    "Inside this .txt file, each project file starts with //----------file-starts--------" +
+                    "Then the file path like this //example.js or whatever the file is named" +
+                    "Then each file ends with //-----------file-ends---------",
+                    "The codebase is in between triple back ticks.",
+                    f"```{self.getCodeBase()}```"
+                ],
+                steps=[
+                    "Analyze the user's question and pay attention to the //-----------file-starts--------- tags in the codebase and look for the files that need to be updated.",
+                    "Below the //-----------file-starts--------- tag, there is the file path.",
+                    "When creating your response, include the file path to the file that needs to be updated"
+                    "Make sure the response is no longer than necessary.",
+                ],
+                output_instructions=[
+                    "Provide code snippets inside triple back ticks, for example ```val foo: String = 'I love Kotlin'``` ",
+                    "Other than the back ticks, do not include any other additional formatting characters like **"
                 ]
             )
 

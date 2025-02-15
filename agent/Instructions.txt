@@ -1,4 +1,6 @@
 create a virtual python environment
+python3 -m venv <myenvpath>
+source <myenvpath>/bin/activate
 
 in the folder where setup.py is located, run pip install .
 

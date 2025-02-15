@@ -1,5 +1,9 @@
-import os
+#!/usr/bin/env python3
+import argparse
 import fnmatch
+import os
+import sys
+
 
 def read_gitignore(ignore_path):
     """Reads the .gitignore file and returns a list of patterns to ignore."""
@@ -48,3 +52,48 @@ class CodeBaseProvider:
 
     def run(self):
         self.output = process_folder(self.folder_path, self.ignore_path)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Process files in a folder while respecting .agentignore patterns')
+    parser.add_argument('folder', nargs='?', default=os.getcwd(),
+                        help='The folder to process (defaults to current directory)')
+    parser.add_argument('-i', '--ignore-path', default=None,
+                        help='Path to the directory containing .agentignore file (defaults to folder path)')
+    parser.add_argument('-o', '--output', type=str,
+                        help='Output file path (if not specified, prints to stdout)')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='Suppress error messages and warnings')
+
+    args = parser.parse_args()
+
+    # If ignore_path isn't specified, use the folder path
+    ignore_path = args.ignore_path if args.ignore_path else args.folder
+
+    try:
+        provider = CodeBaseProvider(args.folder, ignore_path)
+        provider.run()
+
+        if not provider.output and not args.quiet:
+            print("No files processed", file=sys.stderr)
+            sys.exit(1)
+
+        if args.output:
+            with open(args.output, 'w', encoding='utf-8') as f:
+                f.write(provider.output)
+            if not args.quiet:
+                print(f"Output written to {args.output}", file=sys.stderr)
+        else:
+            print(provider.output)
+
+        sys.exit(0)
+
+    except Exception as e:
+        if not args.quiet:
+            print(f"Error: {str(e)}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()

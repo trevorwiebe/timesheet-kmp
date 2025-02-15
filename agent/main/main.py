@@ -1,24 +1,23 @@
-import os
 import instructor
 import openai
-
+import os
+from atomic_agents.agents.base_agent import BaseAgent, BaseAgentConfig, BaseAgentInputSchema, \
+    BaseAgentOutputSchema
 from rich.console import Console
 from rich.text import Text
 
-from atomic_agents.agents.base_agent import BaseAgent, BaseAgentConfig, BaseAgentInputSchema, BaseAgentOutputSchema
 from prompt_library import PromptLibrary
-from get_code_changes import CodeChangesProvider
 
 API_KEY = os.getenv("API_KEY")
-SELECTED_LIBRARY_PROMPT = "WEBSITE_DEVELOPER" # change this to what ever prompt best fits the task at hand
+SELECTED_LIBRARY_PROMPT = "KMP_DEVELOPER"  # change this to what ever prompt best fits the task at hand
 
 console = Console()
 
 client = instructor.from_openai(openai.OpenAI(api_key=API_KEY))
 
 promptLibrary = PromptLibrary(
-    code_base_file="/Users/trevorwiebe/Documents/WebApps/sunny-slope-llc/website",
-    ignore_path="/Users/trevorwiebe/Documents/WebApps/sunny-slope-llc/agent"
+    code_base_file="/Users/trevorwiebe/Documents/AndroidApps/Timesheet/composeApp",
+    ignore_path="/Users/trevorwiebe/Documents/AndroidApps/Timesheet/agent"
 )
 
 agent = BaseAgent(
