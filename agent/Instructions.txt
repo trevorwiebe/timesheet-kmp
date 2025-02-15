@@ -1,0 +1,5 @@
+create a virtual python environment
+
+in the folder where setup.py is located, run pip install .
+
+in main/main.py make sure 
