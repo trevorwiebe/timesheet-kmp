@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.presentation.common.TimesheetButton
+import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
 import kotlinx.datetime.Instant
@@ -50,7 +51,11 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
-fun PunchItem(date: Instant, punches: List<Triple<String, String, String>>) {
+fun PunchItem(
+    date: Instant,
+    punches: List<UiPunch>,
+    onDeleted: (List<String?>) -> Unit
+) {
     var editing by remember { mutableStateOf(false) }
     val elevation by animateDpAsState(
         targetValue = if (editing) 4.dp else 0.dp
@@ -100,7 +105,11 @@ private fun PunchHeader(date: Instant) {
 }
 
 @Composable
-private fun PunchBody(editing: Boolean, punches: List<Triple<String, String, String>>) {
+private fun PunchBody(
+    editing: Boolean,
+    punches: List<UiPunch>,
+    onDeleted: (List<String?>) -> Unit
+) {
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -120,7 +129,7 @@ private fun PunchBody(editing: Boolean, punches: List<Triple<String, String, Str
                     ) {
                         Text("In: ", fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.weight(1f))
-                        EditableTextField(it.first, editing, {})
+                        EditableTextField(it.punchIn, editing, {})
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -128,7 +137,7 @@ private fun PunchBody(editing: Boolean, punches: List<Triple<String, String, Str
                     ) {
                         Text("Out: ", fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.weight(1f))
-                        EditableTextField(it.second, editing, {})
+                        EditableTextField(it.punchOut, editing, {})
                     }
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -149,7 +158,7 @@ private fun PunchBody(editing: Boolean, punches: List<Triple<String, String, Str
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(if (editing) primary else Color.White)
                                 .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp),
-                            text = it.third
+                            text = it.rate
                         )
                     }
                     if (editing) {

@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.punch.domain.usecases
 
 import com.trevorwiebe.timesheet.core.model.Punch
 import com.trevorwiebe.timesheet.core.model.Rate
+import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalTime
@@ -14,9 +15,9 @@ class ProcessPunchesForUi {
         dateList: List<Instant>,
         ratesList: List<Rate>,
         punchList: List<Punch>
-    ): Map<Instant, List<Triple<String, String, String>>> {
+    ): Map<Instant, List<UiPunch>> {
 
-        val punchMap: MutableMap<Instant, List<Triple<String, String, String>>> = mutableMapOf()
+        val punchMap: MutableMap<Instant, List<UiPunch>> = mutableMapOf()
 
         val punchIn = punchList
             .sortedBy { it.dateTime }
@@ -28,7 +29,7 @@ class ProcessPunchesForUi {
 
         dateList.forEachIndexed { index, today ->
 
-            val mutablePunchList: MutableList<Triple<String, String, String>> = mutableListOf()
+            val mutablePunchList: MutableList<UiPunch> = mutableListOf()
 
             val tomorrow = dateList.getOrNull(index + 1) ?: Clock.System.now()
             val todayPunchesIn = punchIn.filter { it.dateTime in today..tomorrow }
@@ -36,11 +37,11 @@ class ProcessPunchesForUi {
 
             todayPunchesIn.forEachIndexed { todayIndex, todayPunchIn ->
                 val todayPunchOut = todayPunchesOut.getOrNull(todayIndex)
-                val punchTriple = buildPunchTriple(todayPunchIn, todayPunchOut, ratesList)
-                mutablePunchList.add(punchTriple)
+                val uiPunch = buildPunchTriple(todayPunchIn, todayPunchOut, ratesList)
+                mutablePunchList.add(uiPunch)
             }
 
-            punchMap.put(today, mutablePunchList)
+            punchMap[today] = mutablePunchList
         }
 
         return punchMap
@@ -50,7 +51,7 @@ class ProcessPunchesForUi {
         punchIn: Punch,
         punchOut: Punch?,
         rates: List<Rate>
-    ): Triple<String, String, String> {
+    ): UiPunch {
 
 //        if(punchIn.rateId != punchOut?.rateId){
 //            throw Exception("Punch in and out rates do not match")
@@ -61,10 +62,12 @@ class ProcessPunchesForUi {
         val punchOutTime =
             punchOut?.dateTime?.toLocalDateTime(TimeZone.currentSystemDefault())?.time
 
-        return Triple(
+        return UiPunch(
             formatLocalTime(punchInTime),
             formatLocalTime(punchOutTime),
-            rate?.description ?: "unavailable"
+            rate?.description ?: "unavailable",
+            punchIn.punchId,
+            punchOut?.punchId
         )
     }
 
