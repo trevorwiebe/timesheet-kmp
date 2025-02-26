@@ -68,7 +68,8 @@ fun PunchScreen(
                 AddPunch(
                     loadingPunch = elementVisibilityState.punchLoading,
                     onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
-                    onAddToPTO = {}
+                    onAddToPTO = {},
+                    buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In"
                 )
             }
         }
@@ -78,6 +79,7 @@ fun PunchScreen(
 @Composable
 private fun AddPunch(
     loadingPunch: Boolean,
+    buttonText: String,
     onPunch: () -> Unit,
     onAddToPTO: () -> Unit
 ) {
@@ -86,7 +88,7 @@ private fun AddPunch(
     ) {
         TimesheetButton(
             modifier = Modifier.width(150.dp),
-            text = "In/Out",
+            text = buttonText,
             onClick = onPunch,
             loading = loadingPunch
         )
