@@ -45,14 +45,15 @@ class PunchViewModel(
     fun onEvent(event: PunchEvents) {
         when (event) {
             is PunchEvents.OnPunch -> {
-                sendPunch("ESNJ5lnEgTcOCn1e8Sye")
+                _staticPunchState.value.rateList.firstOrNull()?.id?.let {
+                    sendPunch(it)
+                }
             }
             is PunchEvents.OnSetShowConfirmDeletePunchesSheet -> {
                 _elementVisibilityState.update {
                     it.copy(showConfirmDeletePunchesSheet = event.show)
                 }
             }
-
             is PunchEvents.OnDeletePunches -> {
                 initiateDeletePunches(event.punchIds)
             }
