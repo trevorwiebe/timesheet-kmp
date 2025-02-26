@@ -47,6 +47,15 @@ class PunchViewModel(
             is PunchEvents.OnPunch -> {
                 sendPunch("ESNJ5lnEgTcOCn1e8Sye")
             }
+            is PunchEvents.OnSetShowConfirmDeletePunchesSheet -> {
+                _elementVisibilityState.update {
+                    it.copy(showConfirmDeletePunchesSheet = event.show)
+                }
+            }
+
+            is PunchEvents.OnDeletePunches -> {
+                initiateDeletePunches(event.punchIds)
+            }
         }
     }
 
@@ -131,5 +140,18 @@ class PunchViewModel(
     ) {
         val punchMap = processPunchesForUi(datesList, rateList, punchList)
         _dynamicPunchState.update { it.copy(punches = punchMap) }
+    }
+
+    private fun initiateDeletePunches(
+        punchIds: List<String?>
+    ) {
+        viewModelScope.launch {
+            val result = punchRepository.deletePunches(punchIds)
+            if (result.error.isNullOrEmpty()) {
+                println(result.data)
+            } else {
+                println(result.error)
+            }
+        }
     }
 }

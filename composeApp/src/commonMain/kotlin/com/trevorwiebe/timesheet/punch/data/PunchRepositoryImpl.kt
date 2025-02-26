@@ -128,8 +128,40 @@ class PunchRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun deletePunches(punchIds: List<String>): TSResult {
-        TODO("Not yet implemented")
+    override suspend fun deletePunches(punchIds: List<String?>): TSResult {
+        val organizationIdResult = getOrganizationId()
+        if (organizationIdResult.error != null) return organizationIdResult
+        val organizationId = organizationIdResult.data as String
+
+        val userIdResult = getUserId()
+        if (userIdResult.error != null) return userIdResult
+        val userId = userIdResult.data as String
+
+        val resultList = mutableListOf<TSResult>()
+
+        for (punchId in punchIds) {
+            if (punchId != null) {
+                try {
+                    firebaseDatabase.firestore
+                        .collection("organizations")
+                        .document(organizationId)
+                        .collection("users")
+                        .document(userId)
+                        .collection("punches")
+                        .document(punchId)
+                        .delete()
+
+                    resultList.add(TSResult(data = "Punch $punchId deleted successfully"))
+                } catch (e: Exception) {
+                    resultList.add(TSResult(error = "Error deleting punch $punchId: ${e.message}"))
+                }
+            }
+        }
+
+        // Return the first error if there is one, otherwise return the first success result
+        return resultList.firstOrNull { it.error != null } ?: resultList.firstOrNull() ?: TSResult(
+            error = "No punches processed"
+        )
     }
 
     @OptIn(ExperimentalEncodingApi::class)

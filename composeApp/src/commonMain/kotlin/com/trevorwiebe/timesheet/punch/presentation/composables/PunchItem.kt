@@ -73,7 +73,8 @@ fun PunchItem(
             PunchHeader(date = date)
             PunchBody(
                 editing = editing,
-                punches = punches
+                punches = punches,
+                onDeleted = onDeleted
             )
             ConfirmChangesRow(
                 onConfirm = { editing = false },
@@ -161,18 +162,27 @@ private fun PunchBody(
                             text = it.rate
                         )
                     }
-                    if (editing) {
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
+                    AnimatedVisibility(
+                        visible = editing,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically(),
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
                         ) {
+                            Spacer(modifier = Modifier.height(6.dp))
                             Text(
                                 modifier = Modifier
                                     .padding(bottom = 2.dp, top = 2.dp)
                                     .border(2.dp, Color(230, 74, 25), RoundedCornerShape(8.dp))
                                     .clip(RoundedCornerShape(8.dp))
-                                    .clickable { }
+                                    .clickable {
+                                        onDeleted(
+                                            listOf(
+                                                it.punchInId, it.punchOutId
+                                            )
+                                        )
+                                    }
                                     .background(Color.White)
                                     .fillMaxWidth()
                                     .padding(4.dp),

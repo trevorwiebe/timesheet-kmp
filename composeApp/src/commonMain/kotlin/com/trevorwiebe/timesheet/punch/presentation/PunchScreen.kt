@@ -56,7 +56,13 @@ fun PunchScreen(
                         currentPunch.key == todayDate
                     }.values.firstOrNull() ?: emptyList()
                 }
-                PunchItem(todayDate, punchList)
+                PunchItem(
+                    todayDate,
+                    punchList,
+                    onDeleted = { punchIds ->
+                        viewModel.onEvent(PunchEvents.OnDeletePunches(punchIds))
+                    }
+                )
             }
             item {
                 AddPunch(

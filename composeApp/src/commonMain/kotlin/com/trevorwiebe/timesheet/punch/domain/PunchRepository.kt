@@ -32,6 +32,6 @@ interface PunchRepository {
     ): TSResult
 
     suspend fun deletePunches(
-        punchIds: List<String>
+        punchIds: List<String?>
     ): TSResult
 }
