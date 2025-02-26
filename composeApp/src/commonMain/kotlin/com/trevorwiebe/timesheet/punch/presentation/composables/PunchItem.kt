@@ -64,6 +64,7 @@ fun PunchItem(
         targetValue = if (editing) 4.dp else 0.dp
     )
     Card(
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .clickable { editing = !editing }
