@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,6 +23,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -42,10 +45,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trevorwiebe.timesheet.core.presentation.common.TimesheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
+import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -247,11 +250,21 @@ fun ConfirmChangesRow(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TimesheetButton(
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.White,
+                ),
                 modifier = Modifier.width(150.dp),
-                text = "Add Hours",
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, tertiary),
                 onClick = onConfirm,
-                loading = false
+                content = {
+                    Text(
+                        modifier = Modifier.padding(8.dp),
+                        text = "Add Hours",
+                        color = tertiary
+                    )
+                }
             )
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
