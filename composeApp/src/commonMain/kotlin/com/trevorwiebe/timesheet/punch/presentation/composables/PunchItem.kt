@@ -8,12 +8,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +27,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,10 +36,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.presentation.common.TimesheetButton
@@ -69,11 +70,10 @@ fun PunchItem(date: Instant, punches: List<Triple<String, String, String>>) {
                 editing = editing,
                 punches = punches
             )
-            ConfirmChangesRow(onConfirm = {
-                editing = false
-            }, onCancel = {
-                editing = false
-            }, isEditing = editing)
+            ConfirmChangesRow(
+                onConfirm = { editing = false },
+                isEditing = editing
+            )
         }
     }
 }
@@ -106,18 +106,64 @@ private fun PunchBody(editing: Boolean, punches: List<Triple<String, String, Str
         modifier = Modifier.fillMaxWidth()
     ) {
         punches.forEach {
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("In: ", fontWeight = FontWeight.Bold)
-                EditableTextField(it.first, editing, {})
-                Spacer(modifier = Modifier.weight(1f))
-                Text("Out: ", fontWeight = FontWeight.Bold)
-                EditableTextField(it.second, editing, {})
-                Spacer(modifier = Modifier.weight(1f))
-                Text("Rate: ", fontWeight = FontWeight.Bold)
-                Text(it.third)
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("In: ", fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.weight(1f))
+                        EditableTextField(it.first, editing, {})
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Out: ", fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.weight(1f))
+                        EditableTextField(it.second, editing, {})
+                    }
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Rate: ", fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(it.third)
+                    }
+                    if (editing) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(6.dp)
+                                    .border(2.dp, Color(230, 74, 25), RoundedCornerShape(8.dp))
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable { }
+                                    .background(Color.White)
+                                    .fillMaxWidth()
+                                    .padding(6.dp),
+                                textAlign = TextAlign.Center,
+                                text = "Delete time",
+                                color = Color(230, 74, 25),
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -161,7 +207,6 @@ fun EditableTextField(
 @Composable
 fun ConfirmChangesRow(
     onConfirm: () -> Unit,
-    onCancel: () -> Unit,
     isEditing: Boolean
 ) {
     AnimatedVisibility(
@@ -181,25 +226,10 @@ fun ConfirmChangesRow(
             )
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
-                onClick = onCancel,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .shadow(4.dp, CircleShape)
-                    .clip(CircleShape)
-                    .background(Color.White),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Cancel",
-                    tint = Color(230, 74, 25)
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(
                 onClick = onConfirm,
                 modifier = Modifier
                     .padding(8.dp)
-                    .shadow(4.dp, CircleShape)
+                    .border(2.dp, Color(76, 175, 80), CircleShape)
                     .clip(CircleShape)
                     .background(Color.White),
             ) {

@@ -74,6 +74,7 @@ class PunchViewModel(
     private fun getRates(received: () -> Unit = {}) {
         viewModelScope.launch {
             val result = punchRepository.getRates()
+            println(result)
             if (result.error.isNullOrEmpty()) {
                 val rates = result.data as List<Rate>
                 _staticPunchState.update { it.copy(rateList = rates) }
