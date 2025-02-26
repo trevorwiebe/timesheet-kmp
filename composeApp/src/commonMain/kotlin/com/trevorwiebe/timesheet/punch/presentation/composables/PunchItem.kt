@@ -139,24 +139,34 @@ private fun PunchBody(editing: Boolean, punches: List<Triple<String, String, Str
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text("Rate: ", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "Rate:",
+                            fontWeight = FontWeight.Bold
+                        )
                         Spacer(modifier = Modifier.weight(1f))
-                        Text(it.third)
+                        Text(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(if (editing) primary else Color.White)
+                                .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp),
+                            text = it.third
+                        )
                     }
                     if (editing) {
+                        Spacer(modifier = Modifier.height(6.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
                                 modifier = Modifier
-                                    .padding(6.dp)
+                                    .padding(bottom = 2.dp, top = 2.dp)
                                     .border(2.dp, Color(230, 74, 25), RoundedCornerShape(8.dp))
                                     .clip(RoundedCornerShape(8.dp))
                                     .clickable { }
                                     .background(Color.White)
                                     .fillMaxWidth()
-                                    .padding(6.dp),
+                                    .padding(4.dp),
                                 textAlign = TextAlign.Center,
                                 text = "Delete time",
                                 color = Color(230, 74, 25),
