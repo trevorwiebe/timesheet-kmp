@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trevorwiebe.timesheet.core.presentation.common.TimesheetButton
+import com.trevorwiebe.timesheet.core.presentation.common.NativeTimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
 import com.trevorwiebe.timesheet.theme.tertiary
 import org.koin.compose.viewmodel.koinViewModel
@@ -86,18 +87,16 @@ private fun AddPunch(
     Row(
         modifier = Modifier.fillMaxWidth().padding(16.dp)
     ) {
-        TimesheetButton(
-            modifier = Modifier.width(150.dp),
+        NativeTimeSheetButton(
+            modifier = Modifier.width(150.dp).height(50.dp),
             text = buttonText,
             onClick = onPunch,
-            loading = loadingPunch
         )
         Spacer(modifier = Modifier.weight(1f))
-        TimesheetButton(
-            modifier = Modifier.width(150.dp),
+        NativeTimeSheetButton(
+            modifier = Modifier.width(150.dp).height(50.dp),
             text = "Add PTO",
             onClick = onAddToPTO,
-            loading = false
         )
     }
 }

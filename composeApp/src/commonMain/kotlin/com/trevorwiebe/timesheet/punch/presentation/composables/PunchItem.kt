@@ -7,7 +7,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,8 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -42,13 +39,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.core.presentation.common.NativeDestructiveButton
+import com.trevorwiebe.timesheet.core.presentation.common.NativeTimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
-import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -175,24 +172,10 @@ private fun PunchBody(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                modifier = Modifier
-                                    .padding(bottom = 2.dp, top = 2.dp)
-                                    .border(2.dp, Color(230, 74, 25), RoundedCornerShape(8.dp))
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable {
-                                        onDeleted(
-                                            listOf(
-                                                it.punchInId, it.punchOutId
-                                            )
-                                        )
-                                    }
-                                    .background(Color.White)
-                                    .fillMaxWidth()
-                                    .padding(4.dp),
-                                textAlign = TextAlign.Center,
-                                text = "Delete time",
-                                color = Color(230, 74, 25),
+                            NativeDestructiveButton(
+                                modifier = Modifier.width(150.dp).height(50.dp),
+                                onClick = { onDeleted(listOf(it.punchInId, it.punchOutId)) },
+                                text = "Delete Time"
                             )
                         }
                     }
@@ -251,21 +234,10 @@ fun ConfirmChangesRow(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White,
-                ),
-                modifier = Modifier.width(150.dp),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, tertiary),
+            NativeTimeSheetButton(
+                modifier = Modifier.width(150.dp).height(50.dp),
                 onClick = onConfirm,
-                content = {
-                    Text(
-                        modifier = Modifier.padding(8.dp),
-                        text = "Add Hours",
-                        color = tertiary
-                    )
-                }
+                text = "Add Hours"
             )
             Spacer(modifier = Modifier.weight(1f))
             IconButton(

@@ -7,4 +7,9 @@ interface NativeViewFactory {
         text: String,
         onClick: () -> Unit
     ): UIViewController
+
+    fun createDestructionButton(
+        text: String,
+        onClick: () -> Unit
+    ): UIViewController
 }

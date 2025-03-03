@@ -101,11 +101,15 @@ class SignInViewModel(
             val result = authenticator.getSignedInUser()
             if(result.error.isNullOrEmpty()){
                 try {
-                    val firebaseUser = result.data as FirebaseUser
-                    _onSignInSuccessful.send(Unit)
+                    val firebaseUser = result.data as? FirebaseUser
+                    if (firebaseUser != null) {
+                        _onSignInSuccessful.send(Unit)
+                    }
                 }catch (e: Exception){
                     _state.value = _state.value.copy(loadingSignIn = false)
                 }
+            } else {
+                println(result.error)
             }
             _state.value = _state.value.copy(loadingSignIn = false)
         }

@@ -1,5 +1,5 @@
 //
-//  Button.swift
+//  DestructiveButton.swift
 //  iosApp
 //
 //  Created by Trevor Wiebe on 3/3/25.
@@ -9,16 +9,18 @@
 import SwiftUI
 import ComposeApp
 
-struct SimpleButton: View {
+struct DestructiveButton: View {
     var text: String
     var action: () -> Void
     
     var body: some View{
         Button(
+            role: .destructive,
             action: action,
             label: {
                 Text(text).font(.headline)
             }
-        )
+        ).buttonStyle(.bordered)
+            .controlSize(.regular)
     }
 }
