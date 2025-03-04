@@ -1,9 +1,17 @@
 package com.trevorwiebe.timesheet.core.presentation.common
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.UIKitViewController
-import com.trevorwiebe.timesheet.LocalNativeViewFactory
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
 actual fun NativeTimeSheetButton(
@@ -11,14 +19,20 @@ actual fun NativeTimeSheetButton(
     text: String,
     modifier: Modifier
 ) {
-    val factory = LocalNativeViewFactory.current
-    UIKitViewController(
-        modifier = modifier,
-        factory = {
-            factory.createButtonView(
-                text = text,
-                onClick = onClick
-            )
-        }
-    )
+    TextButton(
+        onClick = onClick,
+        modifier = modifier.padding(0.dp),
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = tertiary,
+            backgroundColor = Color(229, 229, 234)
+        ),
+        shape = CircleShape,
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.SemiBold,
+            letterSpacing = (-0.5).sp,
+            fontSize = 18.sp
+        )
+    }
 }
