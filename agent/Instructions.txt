@@ -4,4 +4,8 @@ source <myenvpath>/bin/activate
 
 in the folder where setup.py is located, run pip install .
 
-in main/main.py make sure 
+in main/main.py make sure
+
+
+When you make changes to agent/ run this to update the agent subtree
+git subtree push --prefix=agent git@github.com:trevorwiebe/atomic-agents.git main

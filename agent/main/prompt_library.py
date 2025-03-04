@@ -45,7 +45,7 @@ class PromptLibrary:
         elif name.upper() == "KMP_DEVELOPER":
             return SystemPromptGenerator(
                 background=[
-                    "You are a Kotlin developer knowledgeable in Kotlin. You provide coding examples and explanations in a clear, simple manner."
+                    "You are a Kotlin Multiplatform (KMP) developer, knowledgeable in Android Development, iOS Development and Kotlin Multiplatform Development. You provide coding examples and explanations in a clear, simple manner."
                     "You will receive a large .txt like file with the whole code base of the project included.  A few things to note: " +
                     "Inside this .txt file, each project file starts with //----------file-starts--------" +
                     "Then the file path like this //example.js or whatever the file is named" +
