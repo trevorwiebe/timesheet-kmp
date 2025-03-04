@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 class PunchViewModel(
     private val punchRepository: PunchRepository,
@@ -60,11 +58,10 @@ class PunchViewModel(
         }
     }
 
-    private fun getTimeSheet(organization: Organization) {
+    private fun getTimeSheet() {
         val result = calculateTimeSheets(
-            startDate = Clock.System.now().minus(4.toDuration(DurationUnit.DAYS)),
+            goLiveDate = Instant.parse("2024-12-30T00:00:00.000Z"),
             currentDate = Clock.System.now(),
-            organization = organization
         )
         _staticPunchState.update { it.copy(timeSheetDateList = result) }
     }
@@ -75,7 +72,7 @@ class PunchViewModel(
             if (result.error.isNullOrEmpty()) {
                 val organization = result.data as Organization
                 _staticPunchState.update { it.copy(organization = organization) }
-                getTimeSheet(organization)
+                getTimeSheet()
             }
         }
     }
