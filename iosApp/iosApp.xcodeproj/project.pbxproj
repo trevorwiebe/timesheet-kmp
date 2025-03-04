@@ -18,6 +18,7 @@
 		98D802EC2D762F58008ABEE9 /* SimpleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D802EB2D762F56008ABEE9 /* SimpleButton.swift */; };
 		98D802EE2D7647D7008ABEE9 /* IOSNativeViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D802ED2D7647D0008ABEE9 /* IOSNativeViewFactory.swift */; };
 		98D802F02D764C78008ABEE9 /* DestructiveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D802EF2D764C70008ABEE9 /* DestructiveButton.swift */; };
+		98D802F22D764FC1008ABEE9 /* DeletePunchDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D802F12D764FBA008ABEE9 /* DeletePunchDialog.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		98D802EB2D762F56008ABEE9 /* SimpleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleButton.swift; sourceTree = "<group>"; };
 		98D802ED2D7647D0008ABEE9 /* IOSNativeViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSNativeViewFactory.swift; sourceTree = "<group>"; };
 		98D802EF2D764C70008ABEE9 /* DestructiveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestructiveButton.swift; sourceTree = "<group>"; };
+		98D802F12D764FBA008ABEE9 /* DeletePunchDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletePunchDialog.swift; sourceTree = "<group>"; };
 		AB3632DC29227652001CCB65 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,6 +86,7 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				98D802F12D764FBA008ABEE9 /* DeletePunchDialog.swift */,
 				98D802EF2D764C70008ABEE9 /* DestructiveButton.swift */,
 				98D802ED2D7647D0008ABEE9 /* IOSNativeViewFactory.swift */,
 				98D802EB2D762F56008ABEE9 /* SimpleButton.swift */,
@@ -210,6 +213,7 @@
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				98D802EC2D762F58008ABEE9 /* SimpleButton.swift in Sources */,
 				98D802EE2D7647D7008ABEE9 /* IOSNativeViewFactory.swift in Sources */,
+				98D802F22D764FC1008ABEE9 /* DeletePunchDialog.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				98D802F02D764C78008ABEE9 /* DestructiveButton.swift in Sources */,
 			);

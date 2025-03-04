@@ -10,7 +10,9 @@ import SwiftUI
 import ComposeApp
 
 class IOSNativeViewFactory: NativeViewFactory {
+    
     static var shared = IOSNativeViewFactory()
+
     func createButtonView(text: String, onClick: @escaping () -> Void) -> UIViewController {
         let view = SimpleButton(text: text, action: onClick)
         return UIHostingController(rootView: view)
@@ -18,6 +20,13 @@ class IOSNativeViewFactory: NativeViewFactory {
     
     func createDestructionButton(text: String, onClick: @escaping () -> Void) -> UIViewController {
         let view = DestructiveButton(text: text, action: onClick)
+        return UIHostingController(rootView: view)
+    }
+    
+    func createDeletePunchSystem(
+        onDelete: @escaping () -> Void
+    ) -> UIViewController {
+        let view = DeletePunchDialog(onDelete: onDelete)
         return UIHostingController(rootView: view)
     }
 }

@@ -41,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trevorwiebe.timesheet.core.presentation.common.NativeDestructiveButton
+import com.trevorwiebe.timesheet.core.presentation.common.NativeDeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.NativeTimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.primary
@@ -172,10 +172,9 @@ private fun PunchBody(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Spacer(modifier = Modifier.height(6.dp))
-                            NativeDestructiveButton(
+                            NativeDeletePunchDialog(
                                 modifier = Modifier.width(150.dp).height(50.dp),
-                                onClick = { onDeleted(listOf(it.punchInId, it.punchOutId)) },
-                                text = "Delete Time"
+                                onDelete = { onDeleted(listOf(it.punchInId, it.punchOutId)) }
                             )
                         }
                     }

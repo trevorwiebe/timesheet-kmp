@@ -12,4 +12,8 @@ interface NativeViewFactory {
         text: String,
         onClick: () -> Unit
     ): UIViewController
+
+    fun createDeletePunchSystem(
+        onDelete: () -> Unit
+    ): UIViewController
 }
