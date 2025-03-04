@@ -64,7 +64,7 @@ fun PunchItem(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { editing = !editing }
+            .clickable { editing = true }
             .padding(8.dp),
         elevation = elevation
     ) {
