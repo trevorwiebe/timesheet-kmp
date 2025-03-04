@@ -22,5 +22,6 @@ struct DestructiveButton: View {
             }
         ).buttonStyle(.bordered)
             .controlSize(.regular)
+            .clipShape(Capsule())
     }
 }
