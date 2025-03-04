@@ -8,3 +8,28 @@ google-services.json
 src/androidMain/res/
 src/.DS_Store
 .DS_Store
+
+
+# Recommended for KMP development when at looking at the root directory
+.fleet/
+.gradle/
+.idea/
+.kotlin/
+.git/
+agent/
+build/
+composeApp/build
+composeApp/google-services.json
+gradle/
+#whatever environment you are using
+timesheetapp/
+timesheetenv/
+.gitignore
+gradle.properties
+gradlew
+gradlew.bat
+local.properties
+README.md
+settings.gradle.kts
+iosApp/.DS_Store
+iosApp/iosApp/GoogleService-Info.plist
