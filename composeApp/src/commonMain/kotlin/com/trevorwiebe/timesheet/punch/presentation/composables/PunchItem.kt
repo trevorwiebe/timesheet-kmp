@@ -115,66 +115,75 @@ private fun PunchBody(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        punches.forEach {
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
+        if (punches.isEmpty()) {
+            Text(
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = "No punches for this day",
+                fontSize = 14.sp,
+                color = secondary
+            )
+        } else {
+            punches.forEach {
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
+                    Column(
+                        modifier = Modifier.weight(1f)
                     ) {
-                        Text("In: ", fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.weight(1f))
-                        EditableTextField(it.punchIn, editing)
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text("Out: ", fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.weight(1f))
-                        EditableTextField(it.punchOut, editing)
-                    }
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = "Rate:",
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(if (editing) primary else Color.White)
-                                .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp),
-                            text = it.rate
-                        )
-                    }
-                    AnimatedVisibility(
-                        visible = editing,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically(),
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Spacer(modifier = Modifier.height(6.dp))
-                            NativeDeletePunchDialog(
-                                modifier = Modifier.width(150.dp).height(50.dp),
-                                onDelete = { onDeleted(listOf(it.punchInId, it.punchOutId)) }
+                            Text("In: ", fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.weight(1f))
+                            EditableTextField(it.punchIn, editing)
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text("Out: ", fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.weight(1f))
+                            EditableTextField(it.punchOut, editing)
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = "Rate:",
+                                fontWeight = FontWeight.Bold
                             )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(if (editing) primary else Color.White)
+                                    .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp),
+                                text = it.rate
+                            )
+                        }
+                        AnimatedVisibility(
+                            visible = editing,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically(),
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Spacer(modifier = Modifier.height(6.dp))
+                                NativeDeletePunchDialog(
+                                    modifier = Modifier.width(150.dp).height(50.dp),
+                                    onDelete = { onDeleted(listOf(it.punchInId, it.punchOutId)) }
+                                )
+                            }
                         }
                     }
                 }
