@@ -5,19 +5,20 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.trevorwiebe.timesheet.Route
 import com.trevorwiebe.timesheet.theme.primary
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import timesheet.composeapp.generated.resources.Res
+import timesheet.composeapp.generated.resources.baseline_article_24
+import timesheet.composeapp.generated.resources.baseline_calendar_month_24
+import timesheet.composeapp.generated.resources.baseline_punch_clock_24
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -38,7 +39,7 @@ fun BottomNavigationBar(navController: NavController) {
         items.forEach { item ->
             BottomNavigationItem(
                 modifier = Modifier.padding(16.dp),
-                icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
+                icon = { Icon(painterResource(item.icon), contentDescription = item.label) },
                 label = { Text(item.label) },
                 selected = currentRoute == item.route,
                 onClick = {
@@ -51,8 +52,9 @@ fun BottomNavigationBar(navController: NavController) {
     }
 }
 
-sealed class BottomNavItem(val route: Route, val icon: ImageVector, val label: String) {
-    data object Punch : BottomNavItem(Route.Punch, Icons.Default.AddCircle, "Punch")
-    data object Report : BottomNavItem(Route.Report, Icons.Default.Build, "Report")
-    data object Calendar : BottomNavItem(Route.Calendar, Icons.Default.DateRange, "Calendar")
+sealed class BottomNavItem(val route: Route, val icon: DrawableResource, val label: String) {
+    data object Punch : BottomNavItem(Route.Punch, Res.drawable.baseline_punch_clock_24, "Punch")
+    data object Report : BottomNavItem(Route.Report, Res.drawable.baseline_article_24, "Report")
+    data object Calendar :
+        BottomNavItem(Route.Calendar, Res.drawable.baseline_calendar_month_24, "Calendar")
 }
