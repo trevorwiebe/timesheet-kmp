@@ -32,34 +32,36 @@ fun BottomNavigationBar(navController: NavController) {
 
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    BottomNavigation(
-        backgroundColor = primary,
-        contentColor = Color.Black
-    ) {
-        items.forEach { item ->
+    if (currentRoute != "com.trevorwiebe.timesheet.Route.SignIn") {
+        BottomNavigation(
+            backgroundColor = primary,
+            contentColor = Color.Black
+        ) {
+            items.forEach { item ->
 
-            val selected = currentRoute?.substringAfterLast('.') == item.route.toString()
-            BottomNavigationItem(
-                modifier = Modifier.padding(16.dp),
-                icon = {
-                    Icon(
-                        painter = painterResource(item.icon),
-                        contentDescription = item.label
-                    )
-                },
-                label = {
-                    Text(
-                        text = item.label,
-                        color = if (selected) tertiary else Color.Black.copy(0.4f)
-                    )
-                },
-                selected = selected,
-                onClick = {
-                    navController.navigate(item.route)
-                },
-                selectedContentColor = tertiary,
-                unselectedContentColor = Color.Black.copy(0.4f),
-            )
+                val selected = currentRoute?.substringAfterLast('.') == item.route.toString()
+                BottomNavigationItem(
+                    modifier = Modifier.padding(16.dp),
+                    icon = {
+                        Icon(
+                            painter = painterResource(item.icon),
+                            contentDescription = item.label
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = item.label,
+                            color = if (selected) tertiary else Color.Black.copy(0.4f)
+                        )
+                    },
+                    selected = selected,
+                    onClick = {
+                        navController.navigate(item.route)
+                    },
+                    selectedContentColor = tertiary,
+                    unselectedContentColor = Color.Black.copy(0.4f),
+                )
+            }
         }
     }
 }
