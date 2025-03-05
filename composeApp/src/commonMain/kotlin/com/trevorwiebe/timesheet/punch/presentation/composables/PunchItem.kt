@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDate
 import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDayOfWeek
-import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
+import com.trevorwiebe.timesheet.core.presentation.common.DestructiveButton
 import com.trevorwiebe.timesheet.core.presentation.common.PunchPuckTime
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
@@ -53,7 +53,7 @@ import kotlinx.datetime.Instant
 fun PunchItem(
     date: Instant,
     punches: List<UiPunch>,
-    onDeleted: (List<String?>) -> Unit
+    onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit
 ) {
     var editing by remember { mutableStateOf(false) }
     val elevation by animateDpAsState(
@@ -74,7 +74,7 @@ fun PunchItem(
             PunchBody(
                 editing = editing,
                 punches = punches,
-                onDeleted = onDeleted
+                onShowConfirmDelete = onShowConfirmDelete
             )
             ConfirmChangesRow(
                 onConfirm = { editing = false },
@@ -109,7 +109,7 @@ private fun PunchHeader(date: Instant) {
 private fun PunchBody(
     editing: Boolean,
     punches: List<UiPunch>,
-    onDeleted: (List<String?>) -> Unit
+    onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
 ) {
 
     Column(
@@ -179,9 +179,10 @@ private fun PunchBody(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Spacer(modifier = Modifier.height(6.dp))
-                                DeletePunchDialog(
+                                DestructiveButton(
                                     modifier = Modifier.width(150.dp).height(50.dp),
-                                    onDelete = { onDeleted(listOf(it.punchInId, it.punchOutId)) }
+                                    text = "Delete Time",
+                                    onClick = { onShowConfirmDelete(it) }
                                 )
                             }
                         }

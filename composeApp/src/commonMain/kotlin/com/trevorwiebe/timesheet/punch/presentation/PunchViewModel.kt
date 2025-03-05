@@ -47,13 +47,18 @@ class PunchViewModel(
                     sendPunch(it)
                 }
             }
-            is PunchEvents.OnSetShowConfirmDeletePunchesSheet -> {
+            is PunchEvents.OnShowConfirmDeletePunchesSheet -> {
                 _elementVisibilityState.update {
-                    it.copy(showConfirmDeletePunchesSheet = event.show)
+                    it.copy(showConfirmDeletePunchesSheetUiPunch = event.uiPunch)
                 }
             }
             is PunchEvents.OnDeletePunches -> {
-                initiateDeletePunches(event.punchIds)
+                val uiPunch = _elementVisibilityState.value.showConfirmDeletePunchesSheetUiPunch
+                val punchIds = listOf(uiPunch?.punchInId, uiPunch?.punchOutId)
+                initiateDeletePunches(punchIds)
+                _elementVisibilityState.update {
+                    it.copy(showConfirmDeletePunchesSheetUiPunch = null)
+                }
             }
         }
     }

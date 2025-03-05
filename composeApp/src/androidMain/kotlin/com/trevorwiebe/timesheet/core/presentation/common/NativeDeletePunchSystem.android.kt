@@ -14,10 +14,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -29,20 +25,14 @@ import com.trevorwiebe.timesheet.theme.tertiary
 @Composable
 actual fun DeletePunchDialog(
     modifier: Modifier,
+    visible: Boolean,
     onDelete: () -> Unit
 ) {
 
-    var showDialog by remember { mutableStateOf(false) }
 
-    DestructiveButton(
-        modifier = modifier,
-        onClick = { showDialog = true },
-        text = "Delete Time"
-    )
-
-    if (showDialog) {
+    if (visible) {
         Dialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { },
         ) {
             Card(
                 shape = RoundedCornerShape(16.dp),
@@ -66,7 +56,7 @@ actual fun DeletePunchDialog(
                     ) {
                         TextButton(
                             colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
-                            onClick = { showDialog = false }
+                            onClick = { }
                         ) {
                             Text("Cancel")
                         }
@@ -74,7 +64,6 @@ actual fun DeletePunchDialog(
                         TextButton(
                             colors = ButtonDefaults.textButtonColors(contentColor = Color.Red),
                             onClick = {
-                                showDialog = false
                                 onDelete()
                             },
                         ) {

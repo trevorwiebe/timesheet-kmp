@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
 import com.trevorwiebe.timesheet.theme.tertiary
@@ -55,8 +56,8 @@ fun PunchScreen(
                 PunchItem(
                     todayDate,
                     punchList,
-                    onDeleted = { punchIds ->
-                        viewModel.onEvent(PunchEvents.OnDeletePunches(punchIds))
+                    onShowConfirmDelete = { uiPunch ->
+                        viewModel.onEvent(PunchEvents.OnShowConfirmDeletePunchesSheet(uiPunch))
                     }
                 )
             }
@@ -70,6 +71,14 @@ fun PunchScreen(
             }
         }
     }
+
+    DeletePunchDialog(
+        modifier = Modifier,
+        visible = elementVisibilityState.showConfirmDeletePunchesSheetUiPunch != null,
+        onDelete = {
+            viewModel.onEvent(PunchEvents.OnDeletePunches)
+        }
+    )
 }
 
 @Composable

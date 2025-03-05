@@ -32,7 +32,7 @@ actual fun TimeSheetButton(
             text = text,
             fontWeight = FontWeight.SemiBold,
             letterSpacing = (-0.5).sp,
-            fontSize = 18.sp
+            fontSize = 16.sp
         )
     }
 }
