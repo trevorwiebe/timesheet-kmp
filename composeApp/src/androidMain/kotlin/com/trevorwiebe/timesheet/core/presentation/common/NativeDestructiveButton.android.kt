@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-actual fun NativeDestructiveButton(
+actual fun DestructiveButton(
     modifier: Modifier,
     text: String,
     onClick: () -> Unit

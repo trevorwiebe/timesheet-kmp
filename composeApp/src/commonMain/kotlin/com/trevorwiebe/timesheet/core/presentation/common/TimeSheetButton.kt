@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-expect fun NativeTimeSheetButton(
+expect fun TimeSheetButton(
     onClick: () -> Unit,
     text: String,
     modifier: Modifier = Modifier

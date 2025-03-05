@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-expect fun NativeDeletePunchDialog(
+expect fun DeletePunchDialog(
     modifier: Modifier,
     onDelete: () -> Unit,
 )

@@ -41,9 +41,9 @@ import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDate
 import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDayOfWeek
-import com.trevorwiebe.timesheet.core.presentation.common.NativeDeletePunchDialog
-import com.trevorwiebe.timesheet.core.presentation.common.NativeTimeSheetButton
+import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.PunchPuckTime
+import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
@@ -179,7 +179,7 @@ private fun PunchBody(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Spacer(modifier = Modifier.height(6.dp))
-                                NativeDeletePunchDialog(
+                                DeletePunchDialog(
                                     modifier = Modifier.width(150.dp).height(50.dp),
                                     onDelete = { onDeleted(listOf(it.punchInId, it.punchOutId)) }
                                 )
@@ -236,7 +236,7 @@ fun ConfirmChangesRow(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            NativeTimeSheetButton(
+            TimeSheetButton(
                 modifier = Modifier.width(150.dp).height(50.dp),
                 onClick = onConfirm,
                 text = "Add Hours"

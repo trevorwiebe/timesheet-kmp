@@ -14,7 +14,7 @@ import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
-actual fun NativeTimeSheetButton(
+actual fun TimeSheetButton(
     onClick: () -> Unit,
     text: String,
     modifier: Modifier

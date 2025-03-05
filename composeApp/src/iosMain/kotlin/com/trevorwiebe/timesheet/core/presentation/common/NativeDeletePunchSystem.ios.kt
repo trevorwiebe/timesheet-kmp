@@ -27,14 +27,14 @@ import androidx.compose.ui.window.Dialog
 import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
-actual fun NativeDeletePunchDialog(
+actual fun DeletePunchDialog(
     modifier: Modifier,
     onDelete: () -> Unit
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
 
-    NativeDestructiveButton(
+    DestructiveButton(
         modifier = modifier,
         onClick = { showDialog = true },
         text = "Delete Time"

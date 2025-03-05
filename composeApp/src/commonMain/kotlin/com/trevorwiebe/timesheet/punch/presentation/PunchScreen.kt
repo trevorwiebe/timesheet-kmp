@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trevorwiebe.timesheet.core.presentation.common.NativeTimeSheetButton
+import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
 import com.trevorwiebe.timesheet.theme.tertiary
 import org.koin.compose.viewmodel.koinViewModel
@@ -82,13 +82,13 @@ private fun AddPunch(
     Row(
         modifier = Modifier.fillMaxWidth().padding(16.dp)
     ) {
-        NativeTimeSheetButton(
+        TimeSheetButton(
             modifier = Modifier.width(150.dp).height(50.dp),
             text = buttonText,
             onClick = onPunch,
         )
         Spacer(modifier = Modifier.weight(1f))
-        NativeTimeSheetButton(
+        TimeSheetButton(
             modifier = Modifier.width(150.dp).height(50.dp),
             text = "Add PTO",
             onClick = onAddToPTO,

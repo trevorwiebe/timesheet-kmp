@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.trevorwiebe.timesheet.core.presentation.common.NativeTimeSheetButton
+import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.core.presentation.common.TimesheetTextField
 import com.trevorwiebe.timesheet.theme.tertiary
 import org.koin.compose.viewmodel.koinViewModel
@@ -103,7 +103,7 @@ fun SignInScreen(
                 color = Color.Red
             )
 
-            NativeTimeSheetButton(
+            TimeSheetButton(
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 text = "Sign In",
                 onClick = {
