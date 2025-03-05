@@ -2,7 +2,6 @@ package com.trevorwiebe.timesheet.core.model
 
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toInstant
 
 data class Punch(
     val punchId: String,
