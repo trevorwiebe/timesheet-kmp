@@ -39,6 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
+import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDate
+import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDayOfWeek
 import com.trevorwiebe.timesheet.core.presentation.common.NativeDeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.NativeTimeSheetButton
 import com.trevorwiebe.timesheet.core.presentation.common.PunchPuckTime
@@ -46,8 +48,6 @@ import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
 import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun PunchItem(
@@ -90,14 +90,14 @@ private fun PunchHeader(date: Instant) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = date.toLocalDateTime(TimeZone.currentSystemDefault()).date.dayOfWeek.toString(),
+            text = instantToFriendlyDayOfWeek(date),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = secondary
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = date.toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
+            text = instantToFriendlyDate(date),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = secondary

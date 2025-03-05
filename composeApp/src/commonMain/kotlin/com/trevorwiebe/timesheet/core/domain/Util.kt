@@ -22,4 +22,18 @@ object Util {
 
         return "${formattedHour}:${minute.toString().padStart(2, '0')} $meridiem"
     }
+
+    fun instantToFriendlyDate(instant: Instant?): String {
+        val dateTime = instant?.toLocalDateTime(TimeZone.currentSystemDefault())
+        val year = dateTime?.year
+        val month = dateTime?.monthNumber
+        val day = dateTime?.dayOfMonth
+        return "$year-$day-$month"
+    }
+
+    fun instantToFriendlyDayOfWeek(instant: Instant?): String {
+        val dateTime = instant?.toLocalDateTime(TimeZone.currentSystemDefault())
+        val dayOfWeek = dateTime?.dayOfWeek
+        return "$dayOfWeek"
+    }
 }
