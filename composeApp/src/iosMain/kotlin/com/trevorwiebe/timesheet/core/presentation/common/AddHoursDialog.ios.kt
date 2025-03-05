@@ -1,5 +1,6 @@
 package com.trevorwiebe.timesheet.core.presentation.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,20 +16,24 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.trevorwiebe.timesheet.theme.primary
+import com.trevorwiebe.timesheet.theme.secondary
 import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
-actual fun DeletePunchDialog(
+actual fun AddHoursDialog(
     modifier: Modifier,
     visible: Boolean,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
+
     if (visible) {
         Dialog(
             onDismissRequest = onDismiss,
@@ -41,13 +46,50 @@ actual fun DeletePunchDialog(
                 ) {
                     Text(
                         fontSize = 20.sp,
-                        text = "Are you sure?",
+                        text = "Add Hours",
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
-                        text = "Are you sure you want to delete this time? This will remove the punch-in and punch-out time."
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(top = 8.dp),
+                        text = "Start Time",
+                        fontSize = 14.sp,
+                        color = secondary
                     )
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(primary)
+                            .padding(8.dp),
+                        text = "",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        text = "End Time",
+                        fontSize = 14.sp,
+                        color = secondary
+                    )
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(primary)
+                            .padding(8.dp),
+                        text = "",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End,

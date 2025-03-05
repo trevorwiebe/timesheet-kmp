@@ -53,7 +53,8 @@ import kotlinx.datetime.Instant
 fun PunchItem(
     date: Instant,
     punches: List<UiPunch>,
-    onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit
+    onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
+    onShowAddHours: () -> Unit
 ) {
     var editing by remember { mutableStateOf(false) }
     val elevation by animateDpAsState(
@@ -78,6 +79,7 @@ fun PunchItem(
             )
             ConfirmChangesRow(
                 onConfirm = { editing = false },
+                onShowAddHours = onShowAddHours,
                 isEditing = editing
             )
         }
@@ -225,6 +227,7 @@ fun EditableTextField(
 
 @Composable
 fun ConfirmChangesRow(
+    onShowAddHours: () -> Unit,
     onConfirm: () -> Unit,
     isEditing: Boolean
 ) {
@@ -239,7 +242,7 @@ fun ConfirmChangesRow(
         ) {
             TimeSheetButton(
                 modifier = Modifier.width(150.dp).height(50.dp),
-                onClick = onConfirm,
+                onClick = onShowAddHours,
                 text = "Add Hours"
             )
             Spacer(modifier = Modifier.weight(1f))

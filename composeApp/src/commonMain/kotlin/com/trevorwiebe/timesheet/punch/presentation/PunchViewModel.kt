@@ -60,6 +60,9 @@ class PunchViewModel(
                     it.copy(showConfirmDeletePunchesSheetUiPunch = null)
                 }
             }
+            is PunchEvents.OnShowAddHoursDialog -> {
+                _elementVisibilityState.update { it.copy(showAddHoursDialog = event.visible) }
+            }
         }
     }
 

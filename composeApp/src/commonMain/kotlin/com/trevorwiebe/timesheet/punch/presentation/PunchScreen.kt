@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
 import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
@@ -54,10 +55,13 @@ fun PunchScreen(
             items(staticState.timeSheetDateList) { todayDate ->
                 val punchList = dynamicState.punches[todayDate] ?: emptyList()
                 PunchItem(
-                    todayDate,
-                    punchList,
+                    date = todayDate,
+                    punches = punchList,
                     onShowConfirmDelete = { uiPunch ->
                         viewModel.onEvent(PunchEvents.OnShowConfirmDeletePunchesSheet(uiPunch))
+                    },
+                    onShowAddHours = {
+                        viewModel.onEvent(PunchEvents.OnShowAddHoursDialog(true))
                     }
                 )
             }
@@ -80,6 +84,14 @@ fun PunchScreen(
         },
         onDismiss = {
             viewModel.onEvent(PunchEvents.OnShowConfirmDeletePunchesSheet(null))
+        }
+    )
+
+    AddHoursDialog(
+        visible = elementVisibilityState.showAddHoursDialog,
+        onConfirm = {},
+        onDismiss = {
+            viewModel.onEvent(PunchEvents.OnShowAddHoursDialog(false))
         }
     )
 }
