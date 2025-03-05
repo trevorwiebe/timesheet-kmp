@@ -7,5 +7,6 @@ import androidx.compose.ui.Modifier
 expect fun DeletePunchDialog(
     modifier: Modifier,
     visible: Boolean,
-    onDelete: () -> Unit,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
 )

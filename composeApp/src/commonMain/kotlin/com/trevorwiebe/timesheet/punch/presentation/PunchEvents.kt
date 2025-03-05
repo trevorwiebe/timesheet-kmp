@@ -4,6 +4,6 @@ import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 
 sealed class PunchEvents {
     data object OnPunch : PunchEvents()
-    data class OnShowConfirmDeletePunchesSheet(val uiPunch: UiPunch) : PunchEvents()
+    data class OnShowConfirmDeletePunchesSheet(val uiPunch: UiPunch?) : PunchEvents()
     data object OnDeletePunches : PunchEvents()
 }

@@ -26,12 +26,13 @@ import com.trevorwiebe.timesheet.theme.tertiary
 actual fun DeletePunchDialog(
     modifier: Modifier,
     visible: Boolean,
-    onDelete: () -> Unit
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
 ) {
 
     if (visible) {
         Dialog(
-            onDismissRequest = { },
+            onDismissRequest = onDismiss,
         ) {
             Card(
                 shape = RoundedCornerShape(16.dp),
@@ -55,16 +56,14 @@ actual fun DeletePunchDialog(
                     ) {
                         TextButton(
                             colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
-                            onClick = { }
+                            onClick = onDismiss
                         ) {
                             Text("Cancel")
                         }
                         Spacer(modifier = Modifier.width(16.dp))
                         TextButton(
                             colors = ButtonDefaults.textButtonColors(contentColor = Color.Red),
-                            onClick = {
-                                onDelete()
-                            },
+                            onClick = onConfirm,
                         ) {
                             Text(
                                 text = "Delete"

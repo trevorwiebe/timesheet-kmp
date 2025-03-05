@@ -75,8 +75,11 @@ fun PunchScreen(
     DeletePunchDialog(
         modifier = Modifier,
         visible = elementVisibilityState.showConfirmDeletePunchesSheetUiPunch != null,
-        onDelete = {
+        onConfirm = {
             viewModel.onEvent(PunchEvents.OnDeletePunches)
+        },
+        onDismiss = {
+            viewModel.onEvent(PunchEvents.OnShowConfirmDeletePunchesSheet(null))
         }
     )
 }
