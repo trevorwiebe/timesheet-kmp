@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -38,11 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.presentation.common.NativeDeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.NativeTimeSheetButton
+import com.trevorwiebe.timesheet.core.presentation.common.PunchPuckTime
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
@@ -131,7 +130,7 @@ private fun PunchBody(
                     ) {
                         Text("In: ", fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.weight(1f))
-                        EditableTextField(it.punchIn, editing, {})
+                        EditableTextField(it.punchIn, editing)
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -139,7 +138,7 @@ private fun PunchBody(
                     ) {
                         Text("Out: ", fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.weight(1f))
-                        EditableTextField(it.punchOut, editing, {})
+                        EditableTextField(it.punchOut, editing)
                     }
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -186,33 +185,28 @@ private fun PunchBody(
 
 @Composable
 fun EditableTextField(
-    text: String,
-    isEditing: Boolean,
-    onTextChange: (String) -> Unit,
+    instantTime: Instant?,
+    isEditing: Boolean
 ) {
+
+    val time = remember { Util.instantToFriendlyTime(instantTime) }
     Box(
         modifier = Modifier.padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
         AnimatedContent(targetState = isEditing, label = "EditableTextField") { editing ->
             if (editing) {
-                BasicTextField(
-                    modifier = Modifier
-                        .background(
-                            color = primary,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .padding(8.dp)
-                        .width(65.dp),
-                    value = text,
-                    onValueChange = onTextChange,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                PunchPuckTime(
+                    modifier = Modifier.width(80.dp).height(50.dp).padding(0.dp),
+                    initialTimeString = time,
+                    onTimeSelected = {
+
+                    }
                 )
             } else {
                 Text(
                     modifier = Modifier.width(80.dp).padding(0.dp),
-                    text = text,
+                    text = time,
                 )
             }
         }

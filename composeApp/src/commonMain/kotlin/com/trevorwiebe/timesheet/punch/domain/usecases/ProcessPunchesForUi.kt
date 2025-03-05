@@ -5,9 +5,6 @@ import com.trevorwiebe.timesheet.core.model.Rate
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class ProcessPunchesForUi {
 
@@ -58,31 +55,13 @@ class ProcessPunchesForUi {
 //        }
 
         val rate = rates.find { it.id == punchIn.rateId }
-        val punchInTime = punchIn.dateTime.toLocalDateTime(TimeZone.currentSystemDefault()).time
-        val punchOutTime =
-            punchOut?.dateTime?.toLocalDateTime(TimeZone.currentSystemDefault())?.time
 
         return UiPunch(
-            formatLocalTime(punchInTime),
-            formatLocalTime(punchOutTime),
+            punchIn.dateTime,
+            punchOut?.dateTime,
             rate?.description ?: "unavailable",
             punchIn.punchId,
             punchOut?.punchId
         )
-    }
-
-    private fun formatLocalTime(localTime: LocalTime?): String {
-        if (localTime == null) return ""
-        val hour = localTime.hour
-        val minute = localTime.minute
-
-        val period = if (hour < 12) "AM" else "PM"
-        val hour12 = when {
-            hour == 0 -> 12  // Midnight case
-            hour > 12 -> hour - 12  // Convert to 12-hour format
-            else -> hour
-        }
-
-        return "${hour12}:${if (minute < 10) "0$minute" else minute} $period"
     }
 }

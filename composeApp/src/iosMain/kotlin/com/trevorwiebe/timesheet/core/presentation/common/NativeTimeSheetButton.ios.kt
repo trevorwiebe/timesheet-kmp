@@ -7,10 +7,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
@@ -24,7 +24,7 @@ actual fun NativeTimeSheetButton(
         modifier = modifier.padding(0.dp),
         colors = ButtonDefaults.textButtonColors(
             contentColor = tertiary,
-            backgroundColor = Color(229, 229, 234)
+            backgroundColor = primary
         ),
         shape = CircleShape,
     ) {
