@@ -108,8 +108,6 @@ class SignInViewModel(
                 }catch (e: Exception){
                     _state.value = _state.value.copy(loadingSignIn = false)
                 }
-            } else {
-                println(result.error)
             }
             _state.value = _state.value.copy(loadingSignIn = false)
         }

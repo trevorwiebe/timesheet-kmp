@@ -198,7 +198,7 @@ fun EditableTextField(
     isEditing: Boolean
 ) {
 
-    val time = remember { Util.instantToFriendlyTime(instantTime) }
+    val time = remember(instantTime) { Util.instantToFriendlyTime(instantTime) }
     Box(
         modifier = Modifier.padding(4.dp),
         contentAlignment = Alignment.Center

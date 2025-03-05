@@ -81,13 +81,10 @@ class PunchViewModel(
     private fun getRates(received: () -> Unit = {}) {
         viewModelScope.launch {
             val result = punchRepository.getRates()
-            println(result)
             if (result.error.isNullOrEmpty()) {
                 val rates = result.data as List<Rate>
                 _staticPunchState.update { it.copy(rateList = rates) }
                 received()
-            } else {
-                println(result.error)
             }
         }
     }
@@ -121,12 +118,7 @@ class PunchViewModel(
                 dateTime = Clock.System.now(),
                 rateId = rateId
             )
-            val result = punchRepository.addPunch(punch)
-            if (result.error.isNullOrEmpty()) {
-                println(result.data)
-            } else {
-                println(result.error)
-            }
+            punchRepository.addPunch(punch)
             _elementVisibilityState.update { it.copy(punchLoading = false) }
         }
     }
@@ -137,6 +129,7 @@ class PunchViewModel(
         punchList: List<Punch>
     ) {
         val punchMap = processPunchesForUi(datesList, rateList, punchList)
+        println("Punch Map: $punchMap")
         _dynamicPunchState.update { it.copy(punches = punchMap) }
     }
 
@@ -144,12 +137,7 @@ class PunchViewModel(
         punchIds: List<String?>
     ) {
         viewModelScope.launch {
-            val result = punchRepository.deletePunches(punchIds)
-            if (result.error.isNullOrEmpty()) {
-                println(result.data)
-            } else {
-                println(result.error)
-            }
+            punchRepository.deletePunches(punchIds)
         }
     }
 }
