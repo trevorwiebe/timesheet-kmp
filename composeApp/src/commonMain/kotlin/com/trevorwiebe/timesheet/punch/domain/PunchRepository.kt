@@ -13,24 +13,15 @@ interface PunchRepository {
 
     suspend fun getOrganization(): TSResult
 
-    suspend fun updatePunch(
-        punch: Punch
-    ): TSResult
+    suspend fun updatePunch(punch: Punch): TSResult
 
-    suspend fun getPunches(
-        startDate: Instant,
-        endDate: Instant
-    ): Flow<TSResult>
+    suspend fun updatePunchesWithNewRate(punchIn: Punch, punchOut: Punch?): TSResult
+
+    suspend fun getPunches(startDate: Instant, endDate: Instant): Flow<TSResult>
 
     suspend fun addPunch(punch: Punch): TSResult
 
-    suspend fun addHours(
-        startPunch: Instant,
-        endPunch: Instant,
-        rateId: String,
-    ): TSResult
+    suspend fun addHours(startPunch: Punch, endPunch: Punch): TSResult
 
-    suspend fun deletePunches(
-        punchIds: List<String?>
-    ): TSResult
+    suspend fun deletePunches(punchIds: List<String?>): TSResult
 }

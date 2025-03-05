@@ -98,6 +98,14 @@ class PunchRepositoryImpl(
         return TSResult(data = "Punch updated successfully")
     }
 
+    override suspend fun updatePunchesWithNewRate(punchIn: Punch, punchOut: Punch?): TSResult {
+        val updatePunchResult = updatePunch(punchIn)
+        if (punchOut != null) {
+            updatePunch(punchOut)
+        }
+        return updatePunchResult
+    }
+
     override suspend fun getPunches(startDate: Instant, endDate: Instant): Flow<TSResult> {
         val organizationIdResult = getOrganizationId()
         if (organizationIdResult.error != null) return flow { emit(organizationIdResult) }
@@ -143,11 +151,14 @@ class PunchRepositoryImpl(
     }
 
     override suspend fun addHours(
-        startPunch: Instant,
-        endPunch: Instant,
-        rateId: String
+        startPunch: Punch,
+        endPunch: Punch
     ): TSResult {
-        TODO("Not yet implemented")
+        println(startPunch.rateId)
+        println(endPunch.rateId)
+        val addPunchResult = addPunch(startPunch)
+        val addPunch2Result = addPunch(endPunch)
+        return addPunchResult
     }
 
     override suspend fun deletePunches(punchIds: List<String?>): TSResult {

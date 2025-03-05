@@ -66,6 +66,13 @@ class PunchViewModel(
             is PunchEvents.OnUpdatePunch -> {
                 updatePunch(event.punch)
             }
+            is PunchEvents.OnAddHours -> {
+                initiateAddingHours(event.punchIn, event.punchOut)
+            }
+
+            is PunchEvents.OnUpdateRate -> {
+                initiateUpdatePunchesWithNewRate(event.punchIn, event.punchOut)
+            }
         }
     }
 
@@ -152,6 +159,27 @@ class PunchViewModel(
     private fun updatePunch(punch: Punch) {
         viewModelScope.launch {
             punchRepository.updatePunch(punch)
+        }
+    }
+
+    private fun initiateAddingHours(
+        punchIn: Punch,
+        punchOut: Punch
+    ) {
+        viewModelScope.launch {
+            val response = punchRepository.addHours(punchIn, punchOut)
+            if (response.error.isNullOrEmpty()) {
+                _elementVisibilityState.update { it.copy(showAddHoursDialog = false) }
+            }
+        }
+    }
+
+    private fun initiateUpdatePunchesWithNewRate(
+        punchIn: Punch,
+        punchOut: Punch?
+    ) {
+        viewModelScope.launch {
+            val response = punchRepository.updatePunchesWithNewRate(punchIn, punchOut)
         }
     }
 }

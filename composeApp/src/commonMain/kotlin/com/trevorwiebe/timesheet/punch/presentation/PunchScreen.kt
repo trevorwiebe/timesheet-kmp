@@ -62,6 +62,14 @@ fun PunchScreen(
                     },
                     onShowAddHours = { viewModel.onEvent(PunchEvents.OnShowAddHoursDialog(true)) },
                     onTimeSelected = { viewModel.onEvent(PunchEvents.OnUpdatePunch(it)) },
+                    onUpdateRate = {
+                        viewModel.onEvent(
+                            PunchEvents.OnUpdateRate(
+                                it.punchIn,
+                                it.punchOut
+                            )
+                        )
+                    },
                     rateList = staticState.rateList
                 )
             }
@@ -89,10 +97,13 @@ fun PunchScreen(
 
     AddHoursDialog(
         visible = elementVisibilityState.showAddHoursDialog,
-        onConfirm = {},
+        onConfirm = { punchIn, punchOut ->
+            viewModel.onEvent(PunchEvents.OnAddHours(punchIn, punchOut))
+        },
         onDismiss = {
             viewModel.onEvent(PunchEvents.OnShowAddHoursDialog(false))
-        }
+        },
+        rateList = staticState.rateList
     )
 }
 

@@ -8,4 +8,5 @@ val tertiary = Color(0xFF0C0A3E)
 
 val onTertiary = Color(0xFFFFFFFF)
 
-val errorRed = Color(0xFFEF9A9A)
+val errorRedBackground = Color(0xFFEF9A9A)
+val errorRedText = Color(0xFFD32F2F)

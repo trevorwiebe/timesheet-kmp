@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,9 +38,9 @@ import com.trevorwiebe.timesheet.core.model.Punch
 import com.trevorwiebe.timesheet.core.model.Rate
 import com.trevorwiebe.timesheet.core.presentation.common.DestructiveButton
 import com.trevorwiebe.timesheet.core.presentation.common.PunchPuckTime
+import com.trevorwiebe.timesheet.core.presentation.common.RateSelector
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
-import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
 import kotlinx.datetime.Instant
 
@@ -51,6 +50,7 @@ fun PunchItem(
     punches: List<UiPunch>,
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
     onShowAddHours: () -> Unit,
+    onUpdateRate: (UiPunch) -> Unit,
     onTimeSelected: (Punch) -> Unit,
     rateList: List<Rate>
 ) {
@@ -75,7 +75,8 @@ fun PunchItem(
                 punches = punches,
                 onShowConfirmDelete = onShowConfirmDelete,
                 onTimeSelected = onTimeSelected,
-                rateList = rateList
+                rateList = rateList,
+                onUpdateRate = onUpdateRate
             )
             ConfirmChangesRow(
                 onShowAddHours = onShowAddHours,
@@ -112,6 +113,7 @@ private fun PunchBody(
     punches: List<UiPunch>,
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
     onTimeSelected: (Punch) -> Unit,
+    onUpdateRate: (UiPunch) -> Unit,
     rateList: List<Rate>
 ) {
 
@@ -126,7 +128,7 @@ private fun PunchBody(
                 color = secondary
             )
         } else {
-            punches.forEach {
+            punches.forEach { uiPunch ->
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -141,7 +143,7 @@ private fun PunchBody(
                         ) {
                             Text("In: ", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.weight(1f))
-                            EditableTextField(it.punchIn, editing, onTimeSelected)
+                            EditableTextField(uiPunch.punchIn, editing, onTimeSelected)
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -149,7 +151,7 @@ private fun PunchBody(
                         ) {
                             Text("Out: ", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.weight(1f))
-                            EditableTextField(it.punchOut, editing, onTimeSelected)
+                            EditableTextField(uiPunch.punchOut, editing, onTimeSelected)
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -165,13 +167,32 @@ private fun PunchBody(
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            Text(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(if (editing) primary else Color.White)
-                                    .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp),
-                                text = it.getRateName(rateList)
-                            )
+                            if (editing) {
+                                RateSelector(
+                                    modifier = Modifier.width(100.dp),
+                                    rateList = rateList,
+                                    selectedRate = uiPunch.getRate(rateList),
+                                    onRateSelected = {
+                                        val newUiPunch = uiPunch.copy(
+                                            punchIn = uiPunch.punchIn.copy(rateId = it.id),
+                                            punchOut = uiPunch.punchOut?.copy(rateId = it.id)
+                                        )
+                                        onUpdateRate(newUiPunch)
+                                    }
+                                )
+                            } else {
+                                Text(
+                                    modifier = Modifier
+                                        .background(Color.White)
+                                        .padding(
+                                            start = 8.dp,
+                                            end = 8.dp,
+                                            top = 5.dp,
+                                            bottom = 5.dp
+                                        ),
+                                    text = uiPunch.getRateName(rateList)
+                                )
+                            }
                         }
                         AnimatedVisibility(
                             visible = editing,
@@ -185,7 +206,7 @@ private fun PunchBody(
                                 DestructiveButton(
                                     modifier = Modifier.width(150.dp).height(50.dp),
                                     text = "Delete Time",
-                                    onClick = { onShowConfirmDelete(it) }
+                                    onClick = { onShowConfirmDelete(uiPunch) }
                                 )
                             }
                         }
@@ -210,6 +231,7 @@ fun EditableTextField(
         AnimatedContent(targetState = isEditing, label = "EditableTextField") { editing ->
             if (editing && punch != null) {
                 PunchPuckTime(
+                    modifier = Modifier.width(100.dp),
                     initialTime = punch,
                     onTimeSelected = onTimeSelected,
                 )

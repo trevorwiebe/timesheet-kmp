@@ -10,4 +10,7 @@ data class UiPunch(
     fun getRateName(rateList: List<Rate>): String {
         return rateList.find { it.id == punchIn.rateId }?.description ?: ""
     }
+    fun getRate(rateList: List<Rate>): Rate? {
+        return rateList.find { it.id == punchIn.rateId }
+    }
 }
