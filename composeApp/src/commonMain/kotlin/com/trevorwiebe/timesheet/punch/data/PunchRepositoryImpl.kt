@@ -72,8 +72,30 @@ class PunchRepositoryImpl(
 
     }
 
-    override suspend fun updatePunch(punch: Instant, punchId: String): TSResult {
-        TODO("Not yet implemented")
+    override suspend fun updatePunch(punch: Punch): TSResult {
+        val organizationIdResult = getOrganizationId()
+        if (organizationIdResult.error != null) return organizationIdResult
+        val organizationId = organizationIdResult.data as String
+
+        val userIdResult = getUserId()
+        if (userIdResult.error != null) return userIdResult
+        val userId = userIdResult.data as String
+
+        val isoFormattedDateTime = punch.toString()
+
+        println(isoFormattedDateTime)
+        println(punch.punchId)
+
+        firebaseDatabase.firestore
+            .collection("organizations")
+            .document(organizationId)
+            .collection("users")
+            .document(userId)
+            .collection("punches")
+            .document(punch.punchId)
+            .set(punch.toPunchDto(), merge = true)
+
+        return TSResult(data = "Punch updated successfully")
     }
 
     override suspend fun getPunches(startDate: Instant, endDate: Instant): Flow<TSResult> {

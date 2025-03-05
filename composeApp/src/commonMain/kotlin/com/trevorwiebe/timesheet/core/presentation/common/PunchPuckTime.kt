@@ -5,32 +5,57 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.core.domain.Util
+import com.trevorwiebe.timesheet.core.domain.Util.isValidTimeFormat
+import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.theme.errorRed
 import com.trevorwiebe.timesheet.theme.primary
 
 @Composable
 fun PunchPuckTime(
-    modifier: Modifier,
-    initialTimeString: String,
-    onTimeSelected: (String) -> Unit,
+    initialTime: Punch,
+    onTimeSelected: (Punch) -> Unit,
 ) {
-    Text(
+
+    val initialTimeString = Util.instantToFriendlyTime(initialTime.dateTime)
+    var timeString by remember { mutableStateOf(initialTimeString) }
+    var error by remember { mutableStateOf(false) }
+
+    BasicTextField(
         modifier = Modifier
             .background(
-                color = primary,
+                color = if (error) errorRed else primary,
                 shape = RoundedCornerShape(8.dp)
             )
-            .padding(4.dp)
+            .padding(8.dp)
             .width(75.dp)
             .clickable { },
-        text = initialTimeString,
-        fontSize = 14.sp,
-        maxLines = 1,
-        textAlign = TextAlign.Center
+        value = timeString,
+        onValueChange = {
+            timeString = it
+            if (isValidTimeFormat(timeString)) {
+                error = false
+                val newPunch = initialTime.copy(
+                    dateTime = Util.parseTimeToInstant(timeString)
+                )
+                onTimeSelected(newPunch)
+            } else {
+                error = true
+            }
+        },
+        textStyle = androidx.compose.ui.text.TextStyle(
+            textAlign = TextAlign.Center,
+            fontSize = 16.sp
+        )
     )
 }

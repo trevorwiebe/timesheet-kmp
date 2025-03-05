@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDate
 import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDayOfWeek
+import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.core.model.Rate
 import com.trevorwiebe.timesheet.core.presentation.common.DestructiveButton
 import com.trevorwiebe.timesheet.core.presentation.common.PunchPuckTime
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
@@ -54,7 +56,9 @@ fun PunchItem(
     date: Instant,
     punches: List<UiPunch>,
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
-    onShowAddHours: () -> Unit
+    onShowAddHours: () -> Unit,
+    onTimeSelected: (Punch) -> Unit,
+    rateList: List<Rate>
 ) {
     var editing by remember { mutableStateOf(false) }
     val elevation by animateDpAsState(
@@ -75,7 +79,9 @@ fun PunchItem(
             PunchBody(
                 editing = editing,
                 punches = punches,
-                onShowConfirmDelete = onShowConfirmDelete
+                onShowConfirmDelete = onShowConfirmDelete,
+                onTimeSelected = onTimeSelected,
+                rateList = rateList
             )
             ConfirmChangesRow(
                 onConfirm = { editing = false },
@@ -112,6 +118,8 @@ private fun PunchBody(
     editing: Boolean,
     punches: List<UiPunch>,
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
+    onTimeSelected: (Punch) -> Unit,
+    rateList: List<Rate>
 ) {
 
     Column(
@@ -140,7 +148,7 @@ private fun PunchBody(
                         ) {
                             Text("In: ", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.weight(1f))
-                            EditableTextField(it.punchIn, editing)
+                            EditableTextField(it.punchIn, editing, onTimeSelected)
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -148,7 +156,7 @@ private fun PunchBody(
                         ) {
                             Text("Out: ", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.weight(1f))
-                            EditableTextField(it.punchOut, editing)
+                            EditableTextField(it.punchOut, editing, onTimeSelected)
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -169,7 +177,7 @@ private fun PunchBody(
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(if (editing) primary else Color.White)
                                     .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp),
-                                text = it.rate
+                                text = it.getRateName(rateList)
                             )
                         }
                         AnimatedVisibility(
@@ -197,25 +205,24 @@ private fun PunchBody(
 
 @Composable
 fun EditableTextField(
-    instantTime: Instant?,
-    isEditing: Boolean
+    punch: Punch?,
+    isEditing: Boolean,
+    onTimeSelected: (Punch) -> Unit
 ) {
 
-    val time = remember(instantTime) { Util.instantToFriendlyTime(instantTime) }
     Box(
         modifier = Modifier.padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
         AnimatedContent(targetState = isEditing, label = "EditableTextField") { editing ->
-            if (editing) {
+            if (editing && punch != null) {
                 PunchPuckTime(
-                    modifier = Modifier.width(80.dp).height(50.dp).padding(0.dp),
-                    initialTimeString = time,
-                    onTimeSelected = {
-
-                    }
+//                    modifier = Modifier.width(80.dp).height(50.dp).padding(0.dp),
+                    initialTime = punch,
+                    onTimeSelected = onTimeSelected,
                 )
             } else {
+                val time = remember(punch) { Util.instantToFriendlyTime(punch?.dateTime) }
                 Text(
                     modifier = Modifier.width(80.dp).padding(0.dp),
                     text = time,

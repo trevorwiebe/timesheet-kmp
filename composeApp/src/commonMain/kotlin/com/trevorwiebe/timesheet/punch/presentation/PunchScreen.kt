@@ -60,9 +60,9 @@ fun PunchScreen(
                     onShowConfirmDelete = { uiPunch ->
                         viewModel.onEvent(PunchEvents.OnShowConfirmDeletePunchesSheet(uiPunch))
                     },
-                    onShowAddHours = {
-                        viewModel.onEvent(PunchEvents.OnShowAddHoursDialog(true))
-                    }
+                    onShowAddHours = { viewModel.onEvent(PunchEvents.OnShowAddHoursDialog(true)) },
+                    onTimeSelected = { viewModel.onEvent(PunchEvents.OnUpdatePunch(it)) },
+                    rateList = staticState.rateList
                 )
             }
             item {

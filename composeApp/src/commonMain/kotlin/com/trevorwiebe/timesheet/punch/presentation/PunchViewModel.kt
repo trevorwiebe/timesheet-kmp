@@ -54,7 +54,7 @@ class PunchViewModel(
             }
             is PunchEvents.OnDeletePunches -> {
                 val uiPunch = _elementVisibilityState.value.showConfirmDeletePunchesSheetUiPunch
-                val punchIds = listOf(uiPunch?.punchInId, uiPunch?.punchOutId)
+                val punchIds = listOf(uiPunch?.punchIn?.punchId, uiPunch?.punchOut?.punchId)
                 initiateDeletePunches(punchIds)
                 _elementVisibilityState.update {
                     it.copy(showConfirmDeletePunchesSheetUiPunch = null)
@@ -62,6 +62,9 @@ class PunchViewModel(
             }
             is PunchEvents.OnShowAddHoursDialog -> {
                 _elementVisibilityState.update { it.copy(showAddHoursDialog = event.visible) }
+            }
+            is PunchEvents.OnUpdatePunch -> {
+                updatePunch(event.punch)
             }
         }
     }
@@ -107,9 +110,8 @@ class PunchViewModel(
                 if (result.error.isNullOrEmpty()) {
 
                     val punchList = result.data as List<Punch>
-                    val rateList = _staticPunchState.value.rateList
                     val datesList = _staticPunchState.value.timeSheetDateList
-                    initiatePunchProcessing(datesList, rateList, punchList)
+                    initiatePunchProcessing(datesList, punchList)
 
                 } else {
                     println(result.error)
@@ -133,11 +135,9 @@ class PunchViewModel(
 
     private fun initiatePunchProcessing(
         datesList: List<Instant>,
-        rateList: List<Rate>,
         punchList: List<Punch>
     ) {
-        val punchMap = processPunchesForUi(datesList, rateList, punchList)
-        println("Punch Map: $punchMap")
+        val punchMap = processPunchesForUi(datesList, punchList)
         _dynamicPunchState.update { it.copy(punches = punchMap) }
     }
 
@@ -146,6 +146,12 @@ class PunchViewModel(
     ) {
         viewModelScope.launch {
             punchRepository.deletePunches(punchIds)
+        }
+    }
+
+    private fun updatePunch(punch: Punch) {
+        viewModelScope.launch {
+            punchRepository.updatePunch(punch)
         }
     }
 }

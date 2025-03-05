@@ -1,11 +1,13 @@
 package com.trevorwiebe.timesheet.punch.presentation.uiUtils
 
-import kotlinx.datetime.Instant
+import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.core.model.Rate
 
 data class UiPunch(
-    val punchIn: Instant,
-    val punchOut: Instant?,
-    val rate: String,
-    val punchInId: String,
-    val punchOutId: String?
-)
+    val punchIn: Punch,
+    val punchOut: Punch?
+) {
+    fun getRateName(rateList: List<Rate>): String {
+        return rateList.find { it.id == punchIn.rateId }?.description ?: ""
+    }
+}

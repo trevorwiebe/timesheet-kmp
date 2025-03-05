@@ -11,6 +11,6 @@ data class DynamicPunchState(
         punches.values.forEach { punchList ->
             mutablePunchList.addAll(punchList)
         }
-        return mutablePunchList.any { it.punchOutId == null }
+        return mutablePunchList.any { it.punchOut == null }
     }
 }
