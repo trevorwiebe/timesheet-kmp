@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.trevorwiebe.timesheet.Route
 import com.trevorwiebe.timesheet.theme.primary
+import com.trevorwiebe.timesheet.theme.tertiary
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import timesheet.composeapp.generated.resources.Res
@@ -29,24 +30,35 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem.Calendar
     )
 
-    // TODO: Fix bug where we can't easily figure out current route because we are using new compose routes
-    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route as? Route?
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     BottomNavigation(
         backgroundColor = primary,
         contentColor = Color.Black
     ) {
         items.forEach { item ->
+
+            val selected = currentRoute?.substringAfterLast('.') == item.route.toString()
             BottomNavigationItem(
                 modifier = Modifier.padding(16.dp),
-                icon = { Icon(painterResource(item.icon), contentDescription = item.label) },
-                label = { Text(item.label) },
-                selected = currentRoute == item.route,
+                icon = {
+                    Icon(
+                        painter = painterResource(item.icon),
+                        contentDescription = item.label
+                    )
+                },
+                label = {
+                    Text(
+                        text = item.label,
+                        color = if (selected) tertiary else Color.Black.copy(0.4f)
+                    )
+                },
+                selected = selected,
                 onClick = {
-                    if (currentRoute != item.route) {
-                        navController.navigate(item.route)
-                    }
-                }
+                    navController.navigate(item.route)
+                },
+                selectedContentColor = tertiary,
+                unselectedContentColor = Color.Black.copy(0.4f),
             )
         }
     }
