@@ -161,9 +161,7 @@ fun AddHoursDialog(
                         TextButton(
                             colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
                             onClick = {
-                                if (punchIn.dateTime > now || punchOut.dateTime > now) {
-                                    error.value = "Punch times must be in the past"
-                                } else if (punchOut.dateTime < punchIn.dateTime) {
+                                if (punchOut.dateTime < punchIn.dateTime) {
                                     error.value = "End time must be after start time"
                                 } else {
                                     onConfirm(punchIn, punchOut)
