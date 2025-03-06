@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.trevorwiebe.timesheet.theme.errorRedText
 
 @Composable
 actual fun DestructiveButton(
@@ -23,7 +24,7 @@ actual fun DestructiveButton(
     Text(
         modifier = Modifier
             .padding(bottom = 2.dp, top = 2.dp)
-            .border(2.dp, Color(230, 74, 25), RoundedCornerShape(8.dp))
+            .border(2.dp, errorRedText, RoundedCornerShape(8.dp))
             .clip(RoundedCornerShape(8.dp))
             .clickable {
                 onClick()
@@ -33,6 +34,6 @@ actual fun DestructiveButton(
             .padding(4.dp),
         textAlign = TextAlign.Center,
         text = text,
-        color = Color(230, 74, 25),
+        color = errorRedText,
     )
 }

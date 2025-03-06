@@ -203,7 +203,8 @@ private fun PunchBody(
                             exit = fadeOut() + shrinkVertically(),
                         ) {
                             Column(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.End
                             ) {
                                 Spacer(modifier = Modifier.height(6.dp))
                                 DestructiveButton(

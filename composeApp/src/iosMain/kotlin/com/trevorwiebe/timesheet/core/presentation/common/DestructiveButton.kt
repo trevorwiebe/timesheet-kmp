@@ -8,11 +8,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.primary
 
 @Composable
@@ -27,12 +27,12 @@ actual fun DestructiveButton(
             .clip(CircleShape)
             .clickable { onClick() }
             .background(primary)
-            .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
+            .padding(start = 8.dp, end = 8.dp, top = 6.dp, bottom = 6.dp),
         textAlign = TextAlign.Center,
         text = text,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = (-0.5).sp,
         fontSize = 16.sp,
-        color = Color(230, 74, 25),
+        color = errorRedText,
     )
 }
