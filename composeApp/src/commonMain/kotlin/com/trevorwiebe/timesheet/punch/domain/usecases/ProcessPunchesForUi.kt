@@ -2,8 +2,9 @@ package com.trevorwiebe.timesheet.punch.domain.usecases
 
 import com.trevorwiebe.timesheet.core.model.Punch
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
-import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
+import kotlinx.datetime.plus
 
 class ProcessPunchesForUi {
 
@@ -26,7 +27,7 @@ class ProcessPunchesForUi {
 
             val mutablePunchList: MutableList<UiPunch> = mutableListOf()
 
-            val tomorrow = dateList.getOrNull(index + 1) ?: Clock.System.now()
+            val tomorrow = today.plus(24, DateTimeUnit.HOUR)
             val todayPunchesIn = punchIn.filter { it.dateTime in today..tomorrow }
             val todayPunchesOut = punchOut.filter { it.dateTime in today..tomorrow }
 

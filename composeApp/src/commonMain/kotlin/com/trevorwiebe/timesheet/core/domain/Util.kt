@@ -44,7 +44,6 @@ object Util {
         timeString: String,
         timeZone: TimeZone = TimeZone.currentSystemDefault()
     ): Instant {
-        println("Parsing time: $timeString")
         // Validate input first
         require(isValidTimeFormat(timeString)) { "Invalid time format" }
 
