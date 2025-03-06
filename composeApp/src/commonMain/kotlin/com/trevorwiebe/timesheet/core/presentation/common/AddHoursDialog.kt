@@ -28,37 +28,40 @@ import com.trevorwiebe.timesheet.core.model.Rate
 import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.secondary
 import com.trevorwiebe.timesheet.theme.tertiary
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.minus
+import kotlinx.datetime.Instant
+import kotlinx.datetime.plus
 
 @Composable
 fun AddHoursDialog(
-    visible: Boolean,
+    currentDate: Instant?,
     onDismiss: () -> Unit,
     onConfirm: (Punch, Punch) -> Unit,
     rateList: List<Rate>,
 ) {
 
-    val now = Clock.System.now()
+    if (currentDate != null) {
 
-    var punchIn = remember {
-        Punch(
-            punchId = "",
-            dateTime = now.minus(1, DateTimeUnit.HOUR),
-            rateId = rateList.firstOrNull()?.id ?: ""
-        )
-    }
+        var punchIn = remember {
+            Punch(
+                punchId = "",
+                dateTime = currentDate,
+                rateId = rateList.firstOrNull()?.id ?: ""
+            )
+        }
 
-    var punchOut = remember {
-        Punch(punchId = "", dateTime = now, rateId = rateList.firstOrNull()?.id ?: "")
-    }
+        var punchOut = remember {
+            Punch(
+                punchId = "",
+                dateTime = currentDate.plus(1, DateTimeUnit.HOUR),
+                rateId = rateList.firstOrNull()?.id ?: ""
+            )
+        }
 
-    val error = remember { mutableStateOf("") }
+        val error = remember { mutableStateOf("") }
 
-    val selectedRate = remember(rateList) { mutableStateOf(rateList.firstOrNull()) }
+        val selectedRate = remember(rateList) { mutableStateOf(rateList.firstOrNull()) }
 
-    if (visible) {
         Dialog(
             onDismissRequest = onDismiss,
         ) {

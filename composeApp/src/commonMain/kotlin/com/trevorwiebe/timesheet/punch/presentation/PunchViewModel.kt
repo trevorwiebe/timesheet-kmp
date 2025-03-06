@@ -64,7 +64,7 @@ class PunchViewModel(
                 }
             }
             is PunchEvents.OnShowAddHoursDialog -> {
-                _elementVisibilityState.update { it.copy(showAddHoursDialog = event.visible) }
+                _elementVisibilityState.update { it.copy(showAddHourDialogTime = event.addHoursDialogTime) }
             }
             is PunchEvents.OnUpdatePunch -> {
                 updatePunch(event.punch)
@@ -172,7 +172,7 @@ class PunchViewModel(
         viewModelScope.launch {
             val response = punchRepository.addHours(punchIn, punchOut)
             if (response.error.isNullOrEmpty()) {
-                _elementVisibilityState.update { it.copy(showAddHoursDialog = false) }
+                _elementVisibilityState.update { it.copy(showAddHourDialogTime = null) }
             }
         }
     }
