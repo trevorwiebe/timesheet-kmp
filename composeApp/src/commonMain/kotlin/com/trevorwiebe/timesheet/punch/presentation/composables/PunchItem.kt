@@ -47,6 +47,7 @@ import kotlinx.datetime.Instant
 @Composable
 fun PunchItem(
     date: Instant,
+    hoursWorked: List<Pair<String, Double>>,
     punches: List<UiPunch>,
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
     onShowAddHours: () -> Unit,
@@ -76,7 +77,8 @@ fun PunchItem(
                 onShowConfirmDelete = onShowConfirmDelete,
                 onTimeSelected = onTimeSelected,
                 rateList = rateList,
-                onUpdateRate = onUpdateRate
+                onUpdateRate = onUpdateRate,
+                hoursWorked = hoursWorked
             )
             ConfirmChangesRow(
                 onShowAddHours = onShowAddHours,
@@ -114,7 +116,8 @@ private fun PunchBody(
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
     onTimeSelected: (Punch) -> Unit,
     onUpdateRate: (UiPunch) -> Unit,
-    rateList: List<Rate>
+    rateList: List<Rate>,
+    hoursWorked: List<Pair<String, Double>>
 ) {
 
     Column(
@@ -190,7 +193,7 @@ private fun PunchBody(
                                             top = 5.dp,
                                             bottom = 5.dp
                                         ),
-                                    text = uiPunch.getRateName(rateList)
+                                    text = uiPunch.getRate(rateList)?.description ?: "unavailable"
                                 )
                             }
                         }
@@ -211,6 +214,18 @@ private fun PunchBody(
                             }
                         }
                     }
+                }
+            }
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                hoursWorked.forEach {
+                    Text(
+                        modifier = Modifier.padding(bottom = 2.dp),
+                        text = "${it.first}: ${it.second}",
+                        fontSize = 14.sp,
+                        color = Color.Black
+                    )
                 }
             }
         }

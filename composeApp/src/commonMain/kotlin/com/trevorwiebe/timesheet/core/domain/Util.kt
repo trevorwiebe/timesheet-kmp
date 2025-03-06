@@ -80,4 +80,8 @@ object Util {
         // Check if the string matches the expected pattern
         return timeFormatRegex.matches(timeString)
     }
+
+    fun roundToTwoDecimals(value: Double): Double {
+        return kotlin.math.round(value * 100) / 100
+    }
 }

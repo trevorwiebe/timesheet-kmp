@@ -70,7 +70,8 @@ fun PunchScreen(
                             )
                         )
                     },
-                    rateList = staticState.rateList
+                    rateList = staticState.rateList,
+                    hoursWorked = viewModel.getHoursWorkedForDay(punchList, staticState.rateList)
                 )
             }
             item {
