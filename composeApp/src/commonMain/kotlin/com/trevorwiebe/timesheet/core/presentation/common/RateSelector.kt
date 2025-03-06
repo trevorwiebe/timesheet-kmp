@@ -43,7 +43,6 @@ fun RateSelector(
     onRateSelected: (Rate) -> Unit
 ) {
 
-    val notNullSelectedRate = selectedRate ?: rateList.first()
     var showRateSelector by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
