@@ -1,21 +1,18 @@
 package com.trevorwiebe.timesheet.core.model
 
 import com.trevorwiebe.timesheet.core.domain.dto.OrganizationDto
+import kotlinx.datetime.Instant
 
 data class Organization(
     val id: String,
     val name: String,
-    val payPeriodDOWStart: String,
-    val payPeriodDuration: Int,
-    val payPeriodUnit: String
+    val goLiveDate: Instant
 )
 
 fun OrganizationDto.toOrganization(id: String): Organization {
     return Organization(
         id = id,
         name = name,
-        payPeriodDOWStart = payPeriodDOWStart,
-        payPeriodDuration = payPeriodDuration,
-        payPeriodUnit = payperiodUnit
+        goLiveDate = Instant.parse(goLiveDate)
     )
 }

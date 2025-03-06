@@ -80,8 +80,9 @@ class PunchViewModel(
     }
 
     private fun getTimeSheet() {
+        val goLiveDate = _staticPunchState.value.organization?.goLiveDate ?: return
         val result = calculateTimeSheets(
-            goLiveDate = Instant.parse("2024-12-30T00:00:00.000Z"),
+            goLiveDate = goLiveDate,
             currentDate = Clock.System.now(),
         )
         _staticPunchState.update { it.copy(timeSheetDateList = result) }
