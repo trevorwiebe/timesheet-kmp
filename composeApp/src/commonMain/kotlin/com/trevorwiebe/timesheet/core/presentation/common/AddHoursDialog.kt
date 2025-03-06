@@ -56,7 +56,7 @@ fun AddHoursDialog(
 
     val error = remember { mutableStateOf("") }
 
-    val selectedRate = remember { mutableStateOf(rateList.firstOrNull()) }
+    val selectedRate = remember(rateList) { mutableStateOf(rateList.firstOrNull()) }
 
     if (visible) {
         Dialog(
@@ -132,8 +132,6 @@ fun AddHoursDialog(
                         selectedRate = selectedRate.value,
                         onRateSelected = {
                             selectedRate.value = it
-                            punchIn = punchIn.copy(rateId = it.id)
-                            punchOut = punchOut.copy(rateId = it.id)
                         }
                     )
 
@@ -163,7 +161,11 @@ fun AddHoursDialog(
                             onClick = {
                                 if (punchOut.dateTime < punchIn.dateTime) {
                                     error.value = "End time must be after start time"
+                                } else if (selectedRate.value == null) {
+                                    error.value = "Rate is required but not available"
                                 } else {
+                                    punchIn = punchIn.copy(rateId = selectedRate.value!!.id)
+                                    punchOut = punchOut.copy(rateId = selectedRate.value!!.id)
                                     onConfirm(punchIn, punchOut)
                                 }
                             },

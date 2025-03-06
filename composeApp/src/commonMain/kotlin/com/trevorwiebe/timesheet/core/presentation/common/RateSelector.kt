@@ -56,7 +56,7 @@ fun RateSelector(
             .clickable {
                 showRateSelector = true
             },
-        text = notNullSelectedRate.description,
+        text = selectedRate?.description ?: "unavailable",
         textAlign = TextAlign.Center,
     )
 
