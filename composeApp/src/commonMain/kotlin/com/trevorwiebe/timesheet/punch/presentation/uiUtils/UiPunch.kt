@@ -1,7 +1,7 @@
 package com.trevorwiebe.timesheet.punch.presentation.uiUtils
 
-import com.trevorwiebe.timesheet.core.model.Punch
-import com.trevorwiebe.timesheet.core.model.Rate
+import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.Rate
 
 data class UiPunch(
     val punchIn: Punch,

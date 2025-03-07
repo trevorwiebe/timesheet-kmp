@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.trevorwiebe.timesheet.authentication.presentation.auth.SignInScreen
 import com.trevorwiebe.timesheet.core.presentation.BottomNavigationBar
 import com.trevorwiebe.timesheet.punch.presentation.PunchScreen
+import com.trevorwiebe.timesheet.report.presentation.ReportScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -44,7 +45,7 @@ fun App() {
                 }
 
                 composable<Route.Report> {
-
+                    ReportScreen()
                 }
 
                 composable<Route.Calendar> {

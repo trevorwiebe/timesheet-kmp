@@ -1,6 +1,6 @@
 package com.trevorwiebe.timesheet.punch.domain.usecases
 
-import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant

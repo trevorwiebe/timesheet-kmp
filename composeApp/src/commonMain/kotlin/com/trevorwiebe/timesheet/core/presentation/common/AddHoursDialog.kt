@@ -23,8 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.trevorwiebe.timesheet.core.model.Punch
-import com.trevorwiebe.timesheet.core.model.Rate
+import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.secondary
 import com.trevorwiebe.timesheet.theme.tertiary

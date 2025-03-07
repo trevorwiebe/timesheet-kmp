@@ -3,9 +3,9 @@ package com.trevorwiebe.timesheet.punch.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.core.domain.Util.roundToTwoDecimals
-import com.trevorwiebe.timesheet.core.model.Organization
-import com.trevorwiebe.timesheet.core.model.Punch
-import com.trevorwiebe.timesheet.core.model.Rate
+import com.trevorwiebe.timesheet.core.domain.model.Organization
+import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
 import com.trevorwiebe.timesheet.punch.domain.usecases.ProcessPunchesForUi

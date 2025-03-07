@@ -1,27 +1,20 @@
 package com.trevorwiebe.timesheet.punch.data
 
+import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.TSResult
-import com.trevorwiebe.timesheet.core.domain.dto.OrganizationDto
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
 import com.trevorwiebe.timesheet.core.domain.dto.RateDto
-import com.trevorwiebe.timesheet.core.model.Punch
-import com.trevorwiebe.timesheet.core.model.toOrganization
-import com.trevorwiebe.timesheet.core.model.toPunch
-import com.trevorwiebe.timesheet.core.model.toPunchDto
-import com.trevorwiebe.timesheet.core.model.toRate
+import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.toPunch
+import com.trevorwiebe.timesheet.core.domain.model.toPunchDto
+import com.trevorwiebe.timesheet.core.domain.model.toRate
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.FirebaseUser
-import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 class PunchRepositoryImpl(
     private val firebaseDatabase: Firebase

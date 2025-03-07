@@ -1,7 +1,7 @@
 package com.trevorwiebe.timesheet.punch.presentation
 
-import com.trevorwiebe.timesheet.core.model.Organization
-import com.trevorwiebe.timesheet.core.model.Rate
+import com.trevorwiebe.timesheet.core.domain.model.Organization
+import com.trevorwiebe.timesheet.core.domain.model.Rate
 import kotlinx.datetime.Instant
 
 // This state isn't necessarily static, it just contains data this

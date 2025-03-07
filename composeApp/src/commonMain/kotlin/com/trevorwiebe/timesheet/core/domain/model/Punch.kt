@@ -1,4 +1,4 @@
-package com.trevorwiebe.timesheet.core.model
+package com.trevorwiebe.timesheet.core.domain.model
 
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
 import kotlinx.datetime.Instant

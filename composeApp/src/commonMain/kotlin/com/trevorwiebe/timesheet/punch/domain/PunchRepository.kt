@@ -1,7 +1,7 @@
 package com.trevorwiebe.timesheet.punch.domain
 
 import com.trevorwiebe.timesheet.core.domain.TSResult
-import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.Punch
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 

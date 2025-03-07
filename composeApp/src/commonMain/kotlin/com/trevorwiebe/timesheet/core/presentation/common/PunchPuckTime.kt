@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.isValidTimeFormat
-import com.trevorwiebe.timesheet.core.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.theme.errorRedBackground
 import com.trevorwiebe.timesheet.theme.primary
 

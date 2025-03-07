@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDate
 import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDayOfWeek
-import com.trevorwiebe.timesheet.core.model.Punch
-import com.trevorwiebe.timesheet.core.model.Rate
+import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.core.presentation.common.DestructiveButton
 import com.trevorwiebe.timesheet.core.presentation.common.PunchPuckTime
 import com.trevorwiebe.timesheet.core.presentation.common.RateSelector
