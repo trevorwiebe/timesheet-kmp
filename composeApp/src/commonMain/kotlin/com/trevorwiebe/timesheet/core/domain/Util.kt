@@ -31,7 +31,7 @@ object Util {
         val year = dateTime?.year
         val month = dateTime?.monthNumber
         val day = dateTime?.dayOfMonth
-        return "$year-$day-$month"
+        return "$month-$day-$year"
     }
 
     fun instantToFriendlyDayOfWeek(instant: Instant?): String {
