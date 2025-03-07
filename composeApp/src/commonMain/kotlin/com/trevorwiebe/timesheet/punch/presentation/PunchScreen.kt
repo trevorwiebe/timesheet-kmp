@@ -14,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -53,7 +54,9 @@ fun PunchScreen(
             modifier = Modifier.padding(it).fillMaxSize()
         ) {
             items(staticState.timeSheetDateList) { todayDate ->
-                val punchList = dynamicState.punches[todayDate] ?: emptyList()
+                val punchList = remember(todayDate) {
+                    dynamicState.punches[todayDate] ?: emptyList()
+                }
                 PunchItem(
                     date = todayDate,
                     punches = punchList,
