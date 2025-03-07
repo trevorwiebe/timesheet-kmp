@@ -41,7 +41,7 @@ fun PunchScreen(
             ){
                 Text(
                     modifier = Modifier.padding(16.dp),
-                    text = "Time Sheet",
+                    text = "Punch",
                     color = tertiary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
