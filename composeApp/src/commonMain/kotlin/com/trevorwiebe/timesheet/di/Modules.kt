@@ -10,6 +10,7 @@ import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
 import com.trevorwiebe.timesheet.punch.domain.usecases.ProcessPunchesForUi
 import com.trevorwiebe.timesheet.punch.presentation.PunchViewModel
+import com.trevorwiebe.timesheet.report.presentation.ReportViewModel
 import dev.gitlive.firebase.Firebase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
@@ -44,4 +45,5 @@ val sharedModule = module {
     single<ProcessPunchesForUi> { ProcessPunchesForUi() }
     viewModelOf(::SignInViewModel)
     viewModelOf(::PunchViewModel)
+    viewModelOf(::ReportViewModel)
 }
