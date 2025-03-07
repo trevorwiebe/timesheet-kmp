@@ -1,23 +1,34 @@
 package com.trevorwiebe.timesheet.punch.domain.usecases
 
+import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 
 class CalculateTimeSheets {
 
     operator fun invoke(
         goLiveDate: Instant,
-        currentDate: Instant
+        currentDate: Instant,
+        timeZone: TimeZone = TimeZone.currentSystemDefault()
     ): List<Instant> {
 
-        val elapsedTime = currentDate.minus(goLiveDate)
-        val daysIntoNewPayPeriod: Int = (elapsedTime.inWholeDays % 14).toInt() * 24
-        val payPeriodStartDate = currentDate.minus(daysIntoNewPayPeriod, DateTimeUnit.HOUR)
+        val truncatedCurrentDate =
+            currentDate.toLocalDateTime(timeZone).date.atStartOfDayIn(timeZone)
 
-        return generateSequence(payPeriodStartDate) { it.plus(24, DateTimeUnit.HOUR) }
-            .takeWhile { it <= currentDate }
+        val elapsedTime = truncatedCurrentDate - goLiveDate
+        val daysIntoNewPayPeriod: Int = (elapsedTime.inWholeDays % 14).toInt()
+        val payPeriodStartDate = truncatedCurrentDate.toLocalDateTime(timeZone).date.minus(
+            daysIntoNewPayPeriod,
+            DateTimeUnit.DAY
+        ).atStartOfDayIn(timeZone)
+
+        return generateSequence(payPeriodStartDate) { it.plus(DateTimePeriod(days = 1), timeZone) }
+            .takeWhile { it <= truncatedCurrentDate }
             .toList()
     }
 }
