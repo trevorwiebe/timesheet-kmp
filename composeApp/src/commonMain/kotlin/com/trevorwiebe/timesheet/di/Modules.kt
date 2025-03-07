@@ -10,6 +10,8 @@ import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
 import com.trevorwiebe.timesheet.punch.domain.usecases.ProcessPunchesForUi
 import com.trevorwiebe.timesheet.punch.presentation.PunchViewModel
+import com.trevorwiebe.timesheet.report.data.ReportRepositoryImpl
+import com.trevorwiebe.timesheet.report.domain.ReportRepository
 import com.trevorwiebe.timesheet.report.presentation.ReportViewModel
 import dev.gitlive.firebase.Firebase
 import org.koin.core.module.Module
@@ -41,6 +43,7 @@ val sharedModule = module {
     single<CoreRepository> { CoreRepositoryImpl(get()) }
     single<Authenticator> { AuthImpl(get(), get()) }
     single<PunchRepository> { PunchRepositoryImpl(get(), get()) }
+    single<ReportRepository> { ReportRepositoryImpl(get(), get()) }
     single<CalculateTimeSheets> { CalculateTimeSheets() }
     single<ProcessPunchesForUi> { ProcessPunchesForUi() }
     viewModelOf(::SignInViewModel)

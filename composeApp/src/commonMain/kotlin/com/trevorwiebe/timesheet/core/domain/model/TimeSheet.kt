@@ -4,6 +4,7 @@ import com.trevorwiebe.timesheet.core.domain.dto.TimeSheetDto
 import kotlinx.datetime.Instant
 
 data class TimeSheet(
+    val id: String,
     val confirmedByUser: Boolean,
     val holidayHours: Int,
     val vacationHours: Int,
@@ -11,7 +12,8 @@ data class TimeSheet(
     val payPeriodEnd: Instant,
 )
 
-fun TimeSheetDto.toTimeSheet() = TimeSheet(
+fun TimeSheetDto.toTimeSheet(id: String) = TimeSheet(
+    id = id,
     confirmedByUser = confirmedByUser,
     holidayHours = holidayHours,
     vacationHours = vacationHours,

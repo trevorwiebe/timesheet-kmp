@@ -1,8 +1,8 @@
 package com.trevorwiebe.timesheet.report.domain
 
-import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
+import com.trevorwiebe.timesheet.core.domain.TSResult
 
 interface ReportRepository {
 
-    suspend fun getTimeSheetsByUserId(userId: String): List<TimeSheet>
+    suspend fun getTimeSheets(): TSResult
 }
