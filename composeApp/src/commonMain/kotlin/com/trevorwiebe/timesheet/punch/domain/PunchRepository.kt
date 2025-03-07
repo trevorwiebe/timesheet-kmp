@@ -7,11 +7,7 @@ import kotlinx.datetime.Instant
 
 interface PunchRepository {
 
-    suspend fun getSignedInUser(): TSResult
-
     suspend fun getRates(): TSResult
-
-    suspend fun getOrganization(): TSResult
 
     suspend fun updatePunch(punch: Punch): TSResult
 

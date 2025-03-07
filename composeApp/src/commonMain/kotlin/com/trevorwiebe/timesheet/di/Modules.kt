@@ -3,6 +3,8 @@ package com.trevorwiebe.timesheet.di
 import com.trevorwiebe.timesheet.authentication.data.AuthImpl
 import com.trevorwiebe.timesheet.authentication.domain.Authenticator
 import com.trevorwiebe.timesheet.authentication.presentation.auth.SignInViewModel
+import com.trevorwiebe.timesheet.core.data.CoreRepositoryImpl
+import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.punch.data.PunchRepositoryImpl
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
@@ -35,8 +37,9 @@ val sharedModule = module {
         }
         firebase
     }
-    single<Authenticator> { AuthImpl(get()) }
-    single<PunchRepository> { PunchRepositoryImpl(get()) }
+    single<CoreRepository> { CoreRepositoryImpl(get()) }
+    single<Authenticator> { AuthImpl(get(), get()) }
+    single<PunchRepository> { PunchRepositoryImpl(get(), get()) }
     single<CalculateTimeSheets> { CalculateTimeSheets() }
     single<ProcessPunchesForUi> { ProcessPunchesForUi() }
     viewModelOf(::SignInViewModel)

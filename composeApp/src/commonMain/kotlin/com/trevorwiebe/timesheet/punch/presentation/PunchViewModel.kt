@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.punch.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.Util.roundToTwoDecimals
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.Punch
@@ -20,6 +21,7 @@ import kotlin.time.Duration
 
 class PunchViewModel(
     private val punchRepository: PunchRepository,
+    private val coreRepository: CoreRepository,
     private val calculateTimeSheets: CalculateTimeSheets,
     private val processPunchesForUi: ProcessPunchesForUi,
 ) : ViewModel() {
@@ -90,7 +92,7 @@ class PunchViewModel(
 
     private fun getOrganization() {
         viewModelScope.launch {
-            val result = punchRepository.getOrganization()
+            val result = coreRepository.getOrganization()
             if (result.error.isNullOrEmpty()) {
                 val organization = result.data as Organization
                 _staticPunchState.update { it.copy(organization = organization) }

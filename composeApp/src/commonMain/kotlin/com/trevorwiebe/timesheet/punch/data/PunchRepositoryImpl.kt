@@ -17,25 +17,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 
 class PunchRepositoryImpl(
-    private val firebaseDatabase: Firebase
+    private val firebaseDatabase: Firebase,
+    private val coreRepository: CoreRepository
 ) : PunchRepository {
 
-    override suspend fun getSignedInUser(): TSResult {
-        try {
-            val firebaseAuth = firebaseDatabase.auth
-            val firebaseUser = firebaseAuth.currentUser
-            return if (firebaseUser == null) {
-                TSResult(error = "User was null")
-            } else {
-                TSResult(data = firebaseUser)
-            }
-        } catch (e: Exception) {
-            return TSResult(error = e.message)
-        }
-    }
-
     override suspend fun getRates(): TSResult {
-        val organizationIdResult = getOrganizationId()
+        val organizationIdResult = coreRepository.getOrganizationId()
         if (organizationIdResult.error != null) return organizationIdResult
         val organizationId = organizationIdResult.data as String
         val ratesList = firebaseDatabase.firestore
@@ -49,28 +36,12 @@ class PunchRepositoryImpl(
         return TSResult(data = ratesList)
     }
 
-    override suspend fun getOrganization(): TSResult {
-        val organizationIdResult = getOrganizationId()
-        if (organizationIdResult.error != null) return organizationIdResult
-        val organizationId = organizationIdResult.data as String
-
-        val organization = firebaseDatabase.firestore
-            .collection("organizations")
-            .document(organizationId)
-            .get()
-
-        return TSResult(
-            data = organization.data<OrganizationDto>().toOrganization(id = organizationId)
-        )
-
-    }
-
     override suspend fun updatePunch(punch: Punch): TSResult {
-        val organizationIdResult = getOrganizationId()
+        val organizationIdResult = coreRepository.getOrganizationId()
         if (organizationIdResult.error != null) return organizationIdResult
         val organizationId = organizationIdResult.data as String
 
-        val userIdResult = getUserId()
+        val userIdResult = coreRepository.getUserId()
         if (userIdResult.error != null) return userIdResult
         val userId = userIdResult.data as String
 
@@ -100,11 +71,11 @@ class PunchRepositoryImpl(
     }
 
     override suspend fun getPunches(startDate: Instant, endDate: Instant): Flow<TSResult> {
-        val organizationIdResult = getOrganizationId()
+        val organizationIdResult = coreRepository.getOrganizationId()
         if (organizationIdResult.error != null) return flow { emit(organizationIdResult) }
         val organizationId = organizationIdResult.data as String
 
-        val userIdResult = getUserId()
+        val userIdResult = coreRepository.getUserId()
         if (userIdResult.error != null) return flow { emit(userIdResult) }
         val userId = userIdResult.data as String
 
@@ -124,11 +95,11 @@ class PunchRepositoryImpl(
     }
 
     override suspend fun addPunch(punch: Punch): TSResult {
-        val organizationIdResult = getOrganizationId()
+        val organizationIdResult = coreRepository.getOrganizationId()
         if (organizationIdResult.error != null) return organizationIdResult
         val organizationId = organizationIdResult.data as String
 
-        val userIdResult = getUserId()
+        val userIdResult = coreRepository.getUserId()
         if (userIdResult.error != null) return userIdResult
         val userId = userIdResult.data as String
 
@@ -155,11 +126,11 @@ class PunchRepositoryImpl(
     }
 
     override suspend fun deletePunches(punchIds: List<String?>): TSResult {
-        val organizationIdResult = getOrganizationId()
+        val organizationIdResult = coreRepository.getOrganizationId()
         if (organizationIdResult.error != null) return organizationIdResult
         val organizationId = organizationIdResult.data as String
 
-        val userIdResult = getUserId()
+        val userIdResult = coreRepository.getUserId()
         if (userIdResult.error != null) return userIdResult
         val userId = userIdResult.data as String
 
@@ -188,44 +159,5 @@ class PunchRepositoryImpl(
         return resultList.firstOrNull { it.error != null } ?: resultList.firstOrNull() ?: TSResult(
             error = "No punches processed"
         )
-    }
-
-    @OptIn(ExperimentalEncodingApi::class)
-    private suspend fun getOrganizationId(): TSResult {
-        val tsResult = getSignedInUser()
-        if (tsResult.error != null) return tsResult
-        val firebaseUser = tsResult.data as FirebaseUser
-        val idTokenResult = firebaseUser.getIdTokenResult(false)
-        val idToken = idTokenResult.token ?: return TSResult(error = "Token was null")
-
-        val parts = idToken.split(".")
-        if (parts.size < 2) throw IllegalArgumentException("Invalid JWT token")
-
-        var payloadBase64 = parts[1]
-        payloadBase64 = payloadBase64
-            .replace('-', '+')  // Convert URL-safe base64 to standard base64
-            .replace('_', '/')  // Convert URL-safe base64 to standard base64
-            .padEnd((payloadBase64.length + 3) / 4 * 4, '=') // Fix padding
-
-        val payload = Base64.decode(payloadBase64).decodeToString()
-
-        val claims = Json.parseToJsonElement(payload)
-        val organizationId = claims.jsonObject["organizationId"]?.toString()
-
-        return if (organizationId != null)
-            TSResult(
-                data = organizationId
-                    .removePrefix("\"")
-                    .removeSuffix("\"")
-            )
-        else TSResult(error = "Organization ID was null")
-    }
-
-    private suspend fun getUserId(): TSResult {
-        val tsResult = getSignedInUser()
-        if (tsResult.error != null) return tsResult
-        val firebaseUser = tsResult.data as FirebaseUser
-
-        return TSResult(data = firebaseUser.uid)
     }
 }
