@@ -1,7 +1,10 @@
 package com.trevorwiebe.timesheet.core.domain.model
 
 import com.trevorwiebe.timesheet.core.domain.dto.TimeSheetDto
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 data class TimeSheet(
     val id: String,
@@ -19,6 +22,6 @@ fun TimeSheetDto.toTimeSheet(id: String) = TimeSheet(
     submitted = submitted,
     holidayHours = holidayHours,
     vacationHours = vacationHours,
-    payPeriodStart = LocalDateTime.parse(payPeriodStart),
-    payPeriodEnd = LocalDateTime.parse(payPeriodEnd),
+    payPeriodStart = Instant.parse(payPeriodStart).toLocalDateTime(TimeZone.currentSystemDefault()),
+    payPeriodEnd = Instant.parse(payPeriodEnd).toLocalDateTime(TimeZone.currentSystemDefault()),
 )
