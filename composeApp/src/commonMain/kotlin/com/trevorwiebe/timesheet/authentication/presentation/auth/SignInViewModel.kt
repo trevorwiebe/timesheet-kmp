@@ -103,6 +103,7 @@ class SignInViewModel(
                 try {
                     val firebaseUser = result.data as? FirebaseUser
                     if (firebaseUser != null) {
+                        firebaseUser.getIdToken(true)
                         _onSignInSuccessful.send(Unit)
                     }
                 }catch (e: Exception){
