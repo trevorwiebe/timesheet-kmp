@@ -82,19 +82,35 @@ object Util {
         return kotlin.math.round(value * 100) / 100
     }
 
-    fun localDateTime(): LocalDateTime {
-        return Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    fun localDateTime(atTopOfDay: Boolean = false): LocalDateTime {
+        val dateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val topHour = LocalDateTime(
+            year = dateTime.year,
+            monthNumber = dateTime.monthNumber,
+            dayOfMonth = dateTime.dayOfMonth,
+            hour = 0,
+            minute = 0,
+            second = 0
+        )
+        return if (atTopOfDay) topHour else dateTime
     }
 
     fun LocalDateTime.minusSeconds(seconds: Int): LocalDateTime {
-        val timeZone = TimeZone.UTC
+        val timeZone = TimeZone.currentSystemDefault()
         return this.toInstant(timeZone)
             .minus(seconds, DateTimeUnit.SECOND, timeZone)
             .toLocalDateTime(timeZone)
     }
 
+    fun LocalDateTime.minusDays(days: Int): LocalDateTime {
+        val timeZone = TimeZone.currentSystemDefault()
+        return this.toInstant(timeZone)
+            .minus(days, DateTimeUnit.DAY, timeZone)
+            .toLocalDateTime(timeZone)
+    }
+
     fun LocalDateTime.plusDays(days: Int): LocalDateTime {
-        val timeZone = TimeZone.UTC
+        val timeZone = TimeZone.currentSystemDefault()
         return this.toInstant(timeZone)
             .plus(days, DateTimeUnit.DAY, timeZone)
             .toLocalDateTime(timeZone)
