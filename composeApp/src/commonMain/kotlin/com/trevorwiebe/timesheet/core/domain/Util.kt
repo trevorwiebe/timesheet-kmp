@@ -1,6 +1,5 @@
 package com.trevorwiebe.timesheet.core.domain
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -10,7 +9,7 @@ import kotlinx.datetime.toLocalDateTime
 object Util {
     fun instantToFriendlyTime(instant: Instant?): String {
 
-        val dateTime = instant?.toLocalDateTime(TimeZone.UTC)
+        val dateTime = instant?.toLocalDateTime(TimeZone.currentSystemDefault())
         val hour = dateTime?.hour ?: return ""
         val minute = dateTime.minute
 
