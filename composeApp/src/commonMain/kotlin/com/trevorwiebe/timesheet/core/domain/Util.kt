@@ -1,15 +1,18 @@
 package com.trevorwiebe.timesheet.core.domain
 
-import kotlinx.datetime.Instant
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration.Companion.hours
 
 object Util {
-    fun instantToFriendlyTime(instant: Instant?): String {
+    fun toFriendlyTime(dateTime: LocalDateTime?): String {
 
-        val dateTime = instant?.toLocalDateTime(TimeZone.currentSystemDefault())
         val hour = dateTime?.hour ?: return ""
         val minute = dateTime.minute
 
@@ -25,24 +28,22 @@ object Util {
         return "${formattedHour}:${minute.toString().padStart(2, '0')} $meridiem"
     }
 
-    fun instantToFriendlyDate(instant: Instant?): String {
-        val dateTime = instant?.toLocalDateTime(TimeZone.UTC)
+    fun toFriendlyDate(dateTime: LocalDateTime?): String {
         val year = dateTime?.year
         val month = dateTime?.monthNumber
         val day = dateTime?.dayOfMonth
         return "$month-$day-$year"
     }
 
-    fun instantToFriendlyDayOfWeek(instant: Instant?): String {
-        val dateTime = instant?.toLocalDateTime(TimeZone.UTC)
+    fun toFriendlyDayOfWeek(dateTime: LocalDateTime?): String {
         val dayOfWeek = dateTime?.dayOfWeek
         return "$dayOfWeek"
     }
 
-    fun parseTimeToInstant(
+    fun parseTimeToLocalDate(
         timeString: String,
-        contextDate: Instant
-    ): Instant {
+        contextDate: LocalDateTime
+    ): LocalDateTime {
 
         // Validate input first
         require(isValidTimeFormat(timeString)) { "Invalid time format" }
@@ -58,21 +59,14 @@ object Util {
             else -> hours
         }
 
-
-        println(adjustedHours)
-
         // Create LocalDateTime for the current date with specified time
-        val now = contextDate.toLocalDateTime(TimeZone.UTC)
-        val localDateTime = LocalDateTime(
-            year = now.year,
-            monthNumber = now.monthNumber,
-            dayOfMonth = now.dayOfMonth,
+        return LocalDateTime(
+            year = contextDate.year,
+            monthNumber = contextDate.monthNumber,
+            dayOfMonth = contextDate.dayOfMonth,
             hour = adjustedHours,
             minute = minutes
         )
-
-        // Convert to Instant in the specified time zone
-        return localDateTime.toInstant(TimeZone.UTC)
     }
 
     fun isValidTimeFormat(timeString: String): Boolean {
@@ -86,5 +80,30 @@ object Util {
 
     fun roundToTwoDecimals(value: Double): Double {
         return kotlin.math.round(value * 100) / 100
+    }
+
+    fun localDateTime(): LocalDateTime {
+        return Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    }
+
+    fun LocalDateTime.minusSeconds(seconds: Int): LocalDateTime {
+        val timeZone = TimeZone.UTC
+        return this.toInstant(timeZone)
+            .minus(seconds, DateTimeUnit.SECOND, timeZone)
+            .toLocalDateTime(timeZone)
+    }
+
+    fun LocalDateTime.plusDays(days: Int): LocalDateTime {
+        val timeZone = TimeZone.UTC
+        return this.toInstant(timeZone)
+            .plus(days, DateTimeUnit.DAY, timeZone)
+            .toLocalDateTime(timeZone)
+    }
+
+    fun LocalDateTime.plusHours(hours: Int): LocalDateTime {
+        val timeZone = TimeZone.currentSystemDefault()
+        return this.toInstant(timeZone)
+            .plus(hours.hours)
+            .toLocalDateTime(timeZone)
     }
 }

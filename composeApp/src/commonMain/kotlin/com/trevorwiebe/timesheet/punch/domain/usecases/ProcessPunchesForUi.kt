@@ -1,20 +1,19 @@
 package com.trevorwiebe.timesheet.punch.domain.usecases
 
+import com.trevorwiebe.timesheet.core.domain.Util.minusSeconds
+import com.trevorwiebe.timesheet.core.domain.Util.plusDays
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
+import kotlinx.datetime.LocalDateTime
 
 class ProcessPunchesForUi {
 
     operator fun invoke(
-        dateList: List<Instant>,
+        dateList: List<LocalDateTime>,
         punchList: List<Punch>
-    ): Map<Instant, List<UiPunch>> {
+    ): Map<LocalDateTime, List<UiPunch>> {
 
-        val punchMap: MutableMap<Instant, List<UiPunch>> = mutableMapOf()
+        val punchMap: MutableMap<LocalDateTime, List<UiPunch>> = mutableMapOf()
 
         val punchIn = punchList
             .sortedBy { it.dateTime }
@@ -28,7 +27,7 @@ class ProcessPunchesForUi {
 
             val mutablePunchList: MutableList<UiPunch> = mutableListOf()
 
-            val tomorrow = today.plus(24, DateTimeUnit.HOUR).minus(1, DateTimeUnit.SECOND)
+            val tomorrow = today.plusDays(1).minusSeconds(1)
             val todayPunchesIn = punchIn.filter { it.dateTime in today..tomorrow }
             val todayPunchesOut = punchOut.filter { it.dateTime in today..tomorrow }
 

@@ -3,6 +3,7 @@ package com.trevorwiebe.timesheet.punch.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
+import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
 import com.trevorwiebe.timesheet.core.domain.Util.roundToTwoDecimals
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.Punch
@@ -17,6 +18,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlin.time.Duration
 
 class PunchViewModel(
@@ -66,6 +70,7 @@ class PunchViewModel(
                 }
             }
             is PunchEvents.OnShowAddHoursDialog -> {
+                println(event.addHoursDialogTime)
                 _elementVisibilityState.update { it.copy(showAddHourDialogTime = event.addHoursDialogTime) }
             }
             is PunchEvents.OnUpdatePunch -> {
@@ -136,16 +141,17 @@ class PunchViewModel(
         viewModelScope.launch {
             val punch = Punch(
                 punchId = "",
-                dateTime = Clock.System.now(),
+                dateTime = localDateTime(),
                 rateId = rateId
             )
+            println(punch)
             punchRepository.addPunch(punch)
             _elementVisibilityState.update { it.copy(punchLoading = false) }
         }
     }
 
     private fun initiatePunchProcessing(
-        datesList: List<Instant>,
+        datesList: List<LocalDateTime>,
         punchList: List<Punch>
     ) {
         val punchMap = processPunchesForUi(datesList, punchList)
@@ -222,7 +228,7 @@ class PunchViewModel(
     }
 
     // Extension function to calculate duration between two Instants
-    private fun Duration.Companion.between(start: Instant, end: Instant): Duration {
-        return end - start
+    private fun Duration.Companion.between(start: LocalDateTime, end: LocalDateTime): Duration {
+        return end.toInstant(TimeZone.currentSystemDefault()) - start.toInstant(TimeZone.currentSystemDefault())
     }
 }

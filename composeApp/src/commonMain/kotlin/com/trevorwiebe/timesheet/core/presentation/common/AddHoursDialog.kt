@@ -23,18 +23,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.trevorwiebe.timesheet.core.domain.Util.plusHours
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.secondary
 import com.trevorwiebe.timesheet.theme.tertiary
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
-import kotlinx.datetime.plus
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun AddHoursDialog(
-    currentDate: Instant?,
+    currentDate: LocalDateTime?,
     onDismiss: () -> Unit,
     onConfirm: (Punch, Punch) -> Unit,
     rateList: List<Rate>,
@@ -53,7 +52,7 @@ fun AddHoursDialog(
         var punchOut = remember {
             Punch(
                 punchId = "",
-                dateTime = currentDate.plus(1, DateTimeUnit.HOUR),
+                dateTime = currentDate.plusHours(1),
                 rateId = rateList.firstOrNull()?.id ?: ""
             )
         }
@@ -162,8 +161,6 @@ fun AddHoursDialog(
                         TextButton(
                             colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
                             onClick = {
-                                println("Punch In: $punchIn")
-                                println("Punch Out: $punchOut")
 
                                 if (punchOut.dateTime < punchIn.dateTime) {
                                     error.value = "End time must be after start time"

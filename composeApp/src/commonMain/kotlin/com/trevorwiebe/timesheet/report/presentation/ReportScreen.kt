@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDate
+import com.trevorwiebe.timesheet.core.domain.Util.toFriendlyDate
 import com.trevorwiebe.timesheet.report.presentation.uiUtils.TimeSheetStatus
 import com.trevorwiebe.timesheet.report.presentation.uiUtils.UiTimeSheet
 import com.trevorwiebe.timesheet.theme.secondary
@@ -84,7 +84,8 @@ private fun ReportItem(
             modifier = Modifier.fillMaxWidth()
         ){
 
-            val payPeriodString =  instantToFriendlyDate(timeSheet.payPeriodStart) + " - " + instantToFriendlyDate(timeSheet.payPeriodEnd)
+            val payPeriodString =
+                toFriendlyDate(timeSheet.payPeriodStart) + " - " + toFriendlyDate(timeSheet.payPeriodEnd)
             Text(
                 modifier = Modifier.padding(8.dp),
                 text = payPeriodString,

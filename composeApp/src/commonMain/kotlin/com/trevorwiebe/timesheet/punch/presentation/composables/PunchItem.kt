@@ -32,8 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
-import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDate
-import com.trevorwiebe.timesheet.core.domain.Util.instantToFriendlyDayOfWeek
+import com.trevorwiebe.timesheet.core.domain.Util.toFriendlyDate
+import com.trevorwiebe.timesheet.core.domain.Util.toFriendlyDayOfWeek
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.core.presentation.common.DestructiveButton
@@ -42,11 +42,11 @@ import com.trevorwiebe.timesheet.core.presentation.common.RateSelector
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.secondary
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun PunchItem(
-    date: Instant,
+    date: LocalDateTime,
     hoursWorked: List<Pair<String, Double>>,
     punches: List<UiPunch>,
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
@@ -89,19 +89,19 @@ fun PunchItem(
 }
 
 @Composable
-private fun PunchHeader(date: Instant) {
+private fun PunchHeader(date: LocalDateTime) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = instantToFriendlyDayOfWeek(date),
+            text = toFriendlyDayOfWeek(date),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = secondary
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = instantToFriendlyDate(date),
+            text = toFriendlyDate(date),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = secondary
@@ -252,7 +252,7 @@ fun EditableTextField(
                     onTimeSelected = onTimeSelected,
                 )
             } else {
-                val time = remember(punch) { Util.instantToFriendlyTime(punch?.dateTime) }
+                val time = remember(punch) { Util.toFriendlyTime(punch?.dateTime) }
                 Text(
                     modifier = Modifier.width(80.dp).padding(0.dp),
                     text = time,

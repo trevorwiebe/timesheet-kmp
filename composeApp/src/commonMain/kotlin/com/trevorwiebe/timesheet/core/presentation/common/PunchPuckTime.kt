@@ -27,7 +27,7 @@ fun PunchPuckTime(
     onTimeSelected: (Punch) -> Unit,
 ) {
 
-    val initialTimeString = Util.instantToFriendlyTime(initialTime.dateTime)
+    val initialTimeString = Util.toFriendlyTime(initialTime.dateTime)
     var timeString by remember(initialTimeString) { mutableStateOf(initialTimeString) }
     var error by remember { mutableStateOf(false) }
 
@@ -45,7 +45,7 @@ fun PunchPuckTime(
             if (isValidTimeFormat(timeString)) {
                 error = false
                 val newPunch = initialTime.copy(
-                    dateTime = Util.parseTimeToInstant(
+                    dateTime = Util.parseTimeToLocalDate(
                         timeString = timeString,
                         contextDate = initialTime.dateTime
                     )

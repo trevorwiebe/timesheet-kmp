@@ -14,7 +14,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,6 +22,7 @@ import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
 import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
+import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.tertiary
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -54,7 +54,7 @@ fun PunchScreen(
             modifier = Modifier.padding(it).fillMaxSize()
         ) {
             items(staticState.timeSheetDateList) { todayDate ->
-                val punchList = dynamicState.punches[todayDate] ?: emptyList()
+                val punchList: List<UiPunch> = dynamicState.punches[todayDate] ?: emptyList()
                 PunchItem(
                     date = todayDate,
                     punches = punchList,
