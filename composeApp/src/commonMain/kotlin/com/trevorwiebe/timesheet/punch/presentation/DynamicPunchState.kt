@@ -1,10 +1,10 @@
 package com.trevorwiebe.timesheet.punch.presentation
 
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 
 data class DynamicPunchState(
-    val punches: Map<LocalDateTime, List<UiPunch>> = emptyMap()
+    val punches: Map<LocalDate, List<UiPunch>> = emptyMap()
 ) {
     fun isClockedIn(): Boolean {
         val mutablePunchList = mutableListOf<UiPunch>()

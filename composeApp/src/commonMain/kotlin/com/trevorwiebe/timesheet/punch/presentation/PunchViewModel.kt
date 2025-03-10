@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -151,7 +152,7 @@ class PunchViewModel(
     }
 
     private fun initiatePunchProcessing(
-        datesList: List<LocalDateTime>,
+        datesList: List<LocalDate>,
         punchList: List<Punch>
     ) {
         val punchMap = processPunchesForUi(datesList, punchList)

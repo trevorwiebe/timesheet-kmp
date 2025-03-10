@@ -29,11 +29,12 @@ import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.secondary
 import com.trevorwiebe.timesheet.theme.tertiary
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun AddHoursDialog(
-    currentDate: LocalDateTime?,
+    currentDate: LocalDate?,
     onDismiss: () -> Unit,
     onConfirm: (Punch, Punch) -> Unit,
     rateList: List<Rate>,
@@ -41,10 +42,19 @@ fun AddHoursDialog(
 
     if (currentDate != null) {
 
+        val currentDateTime = LocalDateTime(
+            year = currentDate.year,
+            monthNumber = currentDate.monthNumber,
+            dayOfMonth = currentDate.dayOfMonth,
+            hour = 0,
+            minute = 0,
+            second = 0
+        )
+
         var punchIn = remember {
             Punch(
                 punchId = "",
-                dateTime = currentDate,
+                dateTime = currentDateTime,
                 rateId = rateList.firstOrNull()?.id ?: ""
             )
         }
@@ -52,7 +62,7 @@ fun AddHoursDialog(
         var punchOut = remember {
             Punch(
                 punchId = "",
-                dateTime = currentDate.plusHours(1),
+                dateTime = currentDateTime.plusHours(1),
                 rateId = rateList.firstOrNull()?.id ?: ""
             )
         }

@@ -42,11 +42,11 @@ import com.trevorwiebe.timesheet.core.presentation.common.RateSelector
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.secondary
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun PunchItem(
-    date: LocalDateTime,
+    date: LocalDate,
     hoursWorked: List<Pair<String, Double>>,
     punches: List<UiPunch>,
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
@@ -89,7 +89,7 @@ fun PunchItem(
 }
 
 @Composable
-private fun PunchHeader(date: LocalDateTime) {
+private fun PunchHeader(date: LocalDate) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {

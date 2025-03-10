@@ -1,11 +1,10 @@
 package com.trevorwiebe.timesheet.core.domain.model
 
+import com.trevorwiebe.timesheet.core.domain.Util.convertStringToLocalDateTime
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 
 data class Punch(
     val punchId: String,
@@ -16,7 +15,7 @@ data class Punch(
 fun PunchDto.toPunch(punchId: String): Punch {
     return Punch(
         punchId = punchId,
-        dateTime = Instant.parse(this.dateTime).toLocalDateTime(TimeZone.currentSystemDefault()),
+        dateTime = convertStringToLocalDateTime(this.dateTime),
         rateId = this.rateId
     )
 }

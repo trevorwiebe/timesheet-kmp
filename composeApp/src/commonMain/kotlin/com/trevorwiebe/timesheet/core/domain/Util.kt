@@ -2,6 +2,8 @@ package com.trevorwiebe.timesheet.core.domain
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
@@ -28,14 +30,14 @@ object Util {
         return "${formattedHour}:${minute.toString().padStart(2, '0')} $meridiem"
     }
 
-    fun toFriendlyDate(dateTime: LocalDateTime?): String {
+    fun toFriendlyDate(dateTime: LocalDate?): String {
         val year = dateTime?.year
         val month = dateTime?.monthNumber
         val day = dateTime?.dayOfMonth
         return "$month-$day-$year"
     }
 
-    fun toFriendlyDayOfWeek(dateTime: LocalDateTime?): String {
+    fun toFriendlyDayOfWeek(dateTime: LocalDate?): String {
         val dayOfWeek = dateTime?.dayOfWeek
         return "$dayOfWeek"
     }
@@ -121,5 +123,16 @@ object Util {
         return this.toInstant(timeZone)
             .plus(hours.hours)
             .toLocalDateTime(timeZone)
+    }
+
+    fun convertStringToLocalDateTime(dateTimeString: String): LocalDateTime {
+        return Instant.parse(dateTimeString)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+    }
+
+    fun convertStringToLocalDate(dateTimeString: String): LocalDate {
+        return Instant.parse(dateTimeString)
+            .toLocalDateTime(TimeZone.UTC)
+            .date
     }
 }
