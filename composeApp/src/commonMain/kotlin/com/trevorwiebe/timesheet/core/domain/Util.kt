@@ -10,7 +10,7 @@ import kotlinx.datetime.toLocalDateTime
 object Util {
     fun instantToFriendlyTime(instant: Instant?): String {
 
-        val dateTime = instant?.toLocalDateTime(TimeZone.currentSystemDefault())
+        val dateTime = instant?.toLocalDateTime(TimeZone.UTC)
         val hour = dateTime?.hour ?: return ""
         val minute = dateTime.minute
 
@@ -27,7 +27,7 @@ object Util {
     }
 
     fun instantToFriendlyDate(instant: Instant?): String {
-        val dateTime = instant?.toLocalDateTime(TimeZone.currentSystemDefault())
+        val dateTime = instant?.toLocalDateTime(TimeZone.UTC)
         val year = dateTime?.year
         val month = dateTime?.monthNumber
         val day = dateTime?.dayOfMonth
@@ -35,15 +35,16 @@ object Util {
     }
 
     fun instantToFriendlyDayOfWeek(instant: Instant?): String {
-        val dateTime = instant?.toLocalDateTime(TimeZone.currentSystemDefault())
+        val dateTime = instant?.toLocalDateTime(TimeZone.UTC)
         val dayOfWeek = dateTime?.dayOfWeek
         return "$dayOfWeek"
     }
 
     fun parseTimeToInstant(
         timeString: String,
-        timeZone: TimeZone = TimeZone.currentSystemDefault()
+        contextDate: Instant
     ): Instant {
+
         // Validate input first
         require(isValidTimeFormat(timeString)) { "Invalid time format" }
 
@@ -58,8 +59,11 @@ object Util {
             else -> hours
         }
 
+
+        println(adjustedHours)
+
         // Create LocalDateTime for the current date with specified time
-        val now = Clock.System.now().toLocalDateTime(timeZone)
+        val now = contextDate.toLocalDateTime(TimeZone.UTC)
         val localDateTime = LocalDateTime(
             year = now.year,
             monthNumber = now.monthNumber,
@@ -69,7 +73,7 @@ object Util {
         )
 
         // Convert to Instant in the specified time zone
-        return localDateTime.toInstant(timeZone)
+        return localDateTime.toInstant(TimeZone.UTC)
     }
 
     fun isValidTimeFormat(timeString: String): Boolean {

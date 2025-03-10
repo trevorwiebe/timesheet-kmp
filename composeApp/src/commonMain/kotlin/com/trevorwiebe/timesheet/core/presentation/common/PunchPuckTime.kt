@@ -45,7 +45,10 @@ fun PunchPuckTime(
             if (isValidTimeFormat(timeString)) {
                 error = false
                 val newPunch = initialTime.copy(
-                    dateTime = Util.parseTimeToInstant(timeString)
+                    dateTime = Util.parseTimeToInstant(
+                        timeString = timeString,
+                        contextDate = initialTime.dateTime
+                    )
                 )
                 onTimeSelected(newPunch)
             } else {

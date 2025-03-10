@@ -1,31 +1,30 @@
 package com.trevorwiebe.timesheet.punch.domain.usecases
 
+import com.trevorwiebe.timesheet.core.domain.model.Organization
+import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimePeriod
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
-class CalculateTimeSheets {
+class CalculateTimeSheets(
+    private val getCurrentPayPeriodStartAndEnd: GetCurrentPayPeriodStartAndEnd
+) {
 
     operator fun invoke(
-        goLiveDate: Instant,
-        currentDate: Instant,
-        timeZone: TimeZone = TimeZone.currentSystemDefault()
+        organization: Organization,
     ): List<Instant> {
+
+        val currentDate = Clock.System.now()
+        val timeZone = TimeZone.UTC
+
+        val payPeriodStartDate = getCurrentPayPeriodStartAndEnd(organization).first
 
         val truncatedCurrentDate =
             currentDate.toLocalDateTime(timeZone).date.atStartOfDayIn(timeZone)
-
-        val elapsedTime = truncatedCurrentDate - goLiveDate
-        val daysIntoNewPayPeriod: Int = (elapsedTime.inWholeDays % 14).toInt()
-        val payPeriodStartDate = truncatedCurrentDate.toLocalDateTime(timeZone).date.minus(
-            daysIntoNewPayPeriod,
-            DateTimeUnit.DAY
-        ).atStartOfDayIn(timeZone)
 
         return generateSequence(payPeriodStartDate) { it.plus(DateTimePeriod(days = 1), timeZone) }
             .takeWhile { it <= truncatedCurrentDate }

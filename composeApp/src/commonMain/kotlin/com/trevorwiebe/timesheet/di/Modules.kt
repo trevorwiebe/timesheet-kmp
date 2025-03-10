@@ -5,6 +5,7 @@ import com.trevorwiebe.timesheet.authentication.domain.Authenticator
 import com.trevorwiebe.timesheet.authentication.presentation.auth.SignInViewModel
 import com.trevorwiebe.timesheet.core.data.CoreRepositoryImpl
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
+import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
 import com.trevorwiebe.timesheet.punch.data.PunchRepositoryImpl
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
@@ -44,7 +45,8 @@ val sharedModule = module {
     single<Authenticator> { AuthImpl(get(), get()) }
     single<PunchRepository> { PunchRepositoryImpl(get(), get()) }
     single<ReportRepository> { ReportRepositoryImpl(get(), get()) }
-    single<CalculateTimeSheets> { CalculateTimeSheets() }
+    single<GetCurrentPayPeriodStartAndEnd> { GetCurrentPayPeriodStartAndEnd() }
+    single<CalculateTimeSheets> { CalculateTimeSheets(get()) }
     single<ProcessPunchesForUi> { ProcessPunchesForUi() }
     viewModelOf(::SignInViewModel)
     viewModelOf(::PunchViewModel)

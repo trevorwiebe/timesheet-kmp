@@ -162,6 +162,9 @@ fun AddHoursDialog(
                         TextButton(
                             colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
                             onClick = {
+                                println("Punch In: $punchIn")
+                                println("Punch Out: $punchOut")
+
                                 if (punchOut.dateTime < punchIn.dateTime) {
                                     error.value = "End time must be after start time"
                                 } else if (selectedRate.value == null) {

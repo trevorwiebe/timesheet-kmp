@@ -54,9 +54,7 @@ fun PunchScreen(
             modifier = Modifier.padding(it).fillMaxSize()
         ) {
             items(staticState.timeSheetDateList) { todayDate ->
-                val punchList = remember(todayDate) {
-                    dynamicState.punches[todayDate] ?: emptyList()
-                }
+                val punchList = dynamicState.punches[todayDate] ?: emptyList()
                 PunchItem(
                     date = todayDate,
                     punches = punchList,

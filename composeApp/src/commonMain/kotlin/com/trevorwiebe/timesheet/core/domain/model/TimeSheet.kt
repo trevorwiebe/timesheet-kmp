@@ -6,6 +6,7 @@ import kotlinx.datetime.Instant
 data class TimeSheet(
     val id: String,
     val confirmedByUser: Boolean,
+    val submitted: Boolean,
     val holidayHours: Int,
     val vacationHours: Int,
     val payPeriodStart: Instant,
@@ -15,6 +16,7 @@ data class TimeSheet(
 fun TimeSheetDto.toTimeSheet(id: String) = TimeSheet(
     id = id,
     confirmedByUser = confirmedByUser,
+    submitted = submitted,
     holidayHours = holidayHours,
     vacationHours = vacationHours,
     payPeriodStart = Instant.parse(payPeriodStart),
