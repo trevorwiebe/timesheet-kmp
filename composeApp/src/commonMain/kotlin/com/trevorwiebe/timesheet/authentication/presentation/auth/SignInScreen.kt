@@ -6,12 +6,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -43,6 +48,9 @@ fun SignInScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val inset = WindowInsets.ime.asPaddingValues()
+    val scrollState = rememberScrollState()
+
     LaunchedEffect(viewModel.onSignInSuccessful){
         viewModel.onSignInSuccessful.collect{
             // navigate to home screen
@@ -51,7 +59,10 @@ fun SignInScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .padding(inset)
+            .fillMaxSize()
+            .verticalScroll(scrollState),
         contentAlignment = Alignment.Center
     ){
         Column(
