@@ -1,8 +1,8 @@
-package com.trevorwiebe.timesheet.authentication.data
+package com.trevorwiebe.timesheet.signin.data
 
-import com.trevorwiebe.timesheet.authentication.domain.Authenticator
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.TSResult
+import com.trevorwiebe.timesheet.signin.domain.Authenticator
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseException
 import dev.gitlive.firebase.FirebaseNetworkException

@@ -1,4 +1,4 @@
-package com.trevorwiebe.timesheet.authentication.presentation.auth
+package com.trevorwiebe.timesheet.signin.presentation.auth
 
 sealed interface SignInEvents {
     data class OnEmailChange(val email: String) : SignInEvents

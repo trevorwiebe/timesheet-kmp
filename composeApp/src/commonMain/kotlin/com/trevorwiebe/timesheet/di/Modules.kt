@@ -1,8 +1,5 @@
 package com.trevorwiebe.timesheet.di
 
-import com.trevorwiebe.timesheet.authentication.data.AuthImpl
-import com.trevorwiebe.timesheet.authentication.domain.Authenticator
-import com.trevorwiebe.timesheet.authentication.presentation.auth.SignInViewModel
 import com.trevorwiebe.timesheet.core.data.CoreRepositoryImpl
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
@@ -14,6 +11,9 @@ import com.trevorwiebe.timesheet.punch.presentation.PunchViewModel
 import com.trevorwiebe.timesheet.report.data.ReportRepositoryImpl
 import com.trevorwiebe.timesheet.report.domain.ReportRepository
 import com.trevorwiebe.timesheet.report.presentation.ReportViewModel
+import com.trevorwiebe.timesheet.signin.data.AuthImpl
+import com.trevorwiebe.timesheet.signin.domain.Authenticator
+import com.trevorwiebe.timesheet.signin.presentation.auth.SignInViewModel
 import dev.gitlive.firebase.Firebase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf

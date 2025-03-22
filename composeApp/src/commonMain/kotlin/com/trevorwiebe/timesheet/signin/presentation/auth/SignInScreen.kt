@@ -1,4 +1,4 @@
-package com.trevorwiebe.timesheet.authentication.presentation.auth
+package com.trevorwiebe.timesheet.signin.presentation.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -77,10 +77,11 @@ fun SignInScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Timesheet",
+                text = "Sante Fe Carriers",
                 textAlign = TextAlign.Center,
                 fontSize = 48.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                lineHeight = 48.sp
             )
 
             Spacer(modifier = Modifier.height(36.dp))

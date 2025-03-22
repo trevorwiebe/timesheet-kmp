@@ -1,4 +1,4 @@
-package com.trevorwiebe.timesheet.authentication.domain
+package com.trevorwiebe.timesheet.signin.domain
 
 import com.trevorwiebe.timesheet.core.domain.TSResult
 

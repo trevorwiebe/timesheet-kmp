@@ -1,4 +1,4 @@
-package com.trevorwiebe.timesheet.authentication.presentation.auth
+package com.trevorwiebe.timesheet.signin.presentation.auth
 
 data class SignInState (
     val email: String = "",

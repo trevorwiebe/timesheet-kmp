@@ -13,10 +13,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.trevorwiebe.timesheet.authentication.presentation.auth.SignInScreen
 import com.trevorwiebe.timesheet.core.presentation.BottomNavigationBar
 import com.trevorwiebe.timesheet.punch.presentation.PunchScreen
 import com.trevorwiebe.timesheet.report.presentation.ReportScreen
+import com.trevorwiebe.timesheet.signin.presentation.auth.SignInScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

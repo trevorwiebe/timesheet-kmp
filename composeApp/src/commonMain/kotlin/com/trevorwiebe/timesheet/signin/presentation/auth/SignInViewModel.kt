@@ -1,8 +1,8 @@
-package com.trevorwiebe.timesheet.authentication.presentation.auth
+package com.trevorwiebe.timesheet.signin.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trevorwiebe.timesheet.authentication.domain.Authenticator
+import com.trevorwiebe.timesheet.signin.domain.Authenticator
 import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
