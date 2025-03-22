@@ -179,12 +179,14 @@ private fun AddPunch(
             modifier = Modifier.width(150.dp).height(50.dp),
             text = buttonText,
             onClick = onPunch,
+            loading = loadingPunch
         )
         Spacer(modifier = Modifier.weight(1f))
         TimeSheetButton(
             modifier = Modifier.width(150.dp).height(50.dp),
             text = "Add PTO",
             onClick = onAddToPTO,
+            loading = false
         )
     }
 }
