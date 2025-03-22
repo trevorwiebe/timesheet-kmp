@@ -109,19 +109,19 @@ private fun ReportItem(
                     }
                     TimeSheetStatus.CONFIRMED -> {
                         ChipItem(
-                            text = "Confirmed",
+                            text = "Submitted",
                             color = successGreenText
                         )
                     }
                     TimeSheetStatus.CONFIRM_HOURS_NOW -> {
                         ChipItem(
-                            text = "Unconfirmed",
+                            text = "Unsubmitted",
                             color = warningYellowText
                         )
                     }
                     TimeSheetStatus.PERIOD_CLOSED -> {
                         ChipItem(
-                            text = "Period Closed",
+                            text = "Pay Period Closed",
                             color = secondary
                         )
                     }
