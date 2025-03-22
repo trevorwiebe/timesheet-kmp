@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -19,6 +20,7 @@ import org.jetbrains.compose.resources.painterResource
 import timesheet.composeapp.generated.resources.Res
 import timesheet.composeapp.generated.resources.baseline_article_24
 import timesheet.composeapp.generated.resources.baseline_calendar_month_24
+import timesheet.composeapp.generated.resources.baseline_more_horiz_24
 import timesheet.composeapp.generated.resources.baseline_punch_clock_24
 
 @Composable
@@ -27,7 +29,8 @@ fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Punch,
         BottomNavItem.Report,
-        BottomNavItem.Calendar
+        BottomNavItem.Calendar,
+        BottomNavItem.More
     )
 
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -41,7 +44,12 @@ fun BottomNavigationBar(navController: NavController) {
 
                 val selected = currentRoute?.substringAfterLast('.') == item.route.toString()
                 BottomNavigationItem(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(
+                        start = 8.dp,
+                        end = 8.dp,
+                        top = 16.dp,
+                        bottom = 20.dp
+                    ),
                     icon = {
                         Icon(
                             painter = painterResource(item.icon),
@@ -51,7 +59,9 @@ fun BottomNavigationBar(navController: NavController) {
                     label = {
                         Text(
                             text = item.label,
-                            color = if (selected) tertiary else Color.Black.copy(0.4f)
+                            color = if (selected) tertiary else Color.Black.copy(0.4f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     },
                     selected = selected,
@@ -71,4 +81,5 @@ sealed class BottomNavItem(val route: Route, val icon: DrawableResource, val lab
     data object Report : BottomNavItem(Route.Report, Res.drawable.baseline_article_24, "Report")
     data object Calendar :
         BottomNavItem(Route.Calendar, Res.drawable.baseline_calendar_month_24, "Calendar")
+    data object More : BottomNavItem(Route.More, Res.drawable.baseline_more_horiz_24, "More")
 }

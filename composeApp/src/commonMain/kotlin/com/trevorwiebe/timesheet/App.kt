@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.trevorwiebe.timesheet.core.presentation.BottomNavigationBar
+import com.trevorwiebe.timesheet.more.MoreScreen
 import com.trevorwiebe.timesheet.punch.presentation.PunchScreen
 import com.trevorwiebe.timesheet.report.presentation.ReportScreen
 import com.trevorwiebe.timesheet.signin.presentation.auth.SignInScreen
@@ -46,6 +47,17 @@ fun App() {
                 navController = navController,
                 startDestination = Route.SignIn
             ){
+
+                // Sign In
+                composable<Route.SignIn> {
+                    SignInScreen(
+                        onSignInSuccessful = {
+                            navController.navigate(Route.Punch)
+                        }
+                    )
+                }
+
+                // Main
                 composable<Route.Punch> {
                     PunchScreen()
                 }
@@ -58,12 +70,8 @@ fun App() {
 
                 }
 
-                composable<Route.SignIn> {
-                    SignInScreen(
-                        onSignInSuccessful = {
-                            navController.navigate(Route.Punch)
-                        }
-                    )
+                composable<Route.More> {
+                    MoreScreen()
                 }
             }
         }
