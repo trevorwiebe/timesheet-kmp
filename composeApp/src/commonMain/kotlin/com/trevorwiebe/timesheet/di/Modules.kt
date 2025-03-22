@@ -28,7 +28,7 @@ expect fun createEmulatorConfig(): FirebaseEmulatorConfig
 
 object Debug {
     // This will be set during initialization
-    var isDebug: Boolean = false
+    var isDebug: Boolean = true
 }
 
 expect val platformModule: Module
