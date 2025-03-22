@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.trevorwiebe.timesheet.calendar.presentation.CalendarScreen
 import com.trevorwiebe.timesheet.core.presentation.BottomNavigationBar
 import com.trevorwiebe.timesheet.more.MoreScreen
 import com.trevorwiebe.timesheet.punch.presentation.PunchScreen
@@ -67,7 +68,7 @@ fun App() {
                 }
 
                 composable<Route.Calendar> {
-
+                    CalendarScreen()
                 }
 
                 composable<Route.More> {
