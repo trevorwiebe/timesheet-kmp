@@ -279,7 +279,8 @@ fun ConfirmChangesRow(
             TimeSheetButton(
                 modifier = Modifier.width(150.dp).height(50.dp),
                 onClick = onShowAddHours,
-                text = "Add Hours"
+                text = "Add Hours",
+                loading = false
             )
         }
     }

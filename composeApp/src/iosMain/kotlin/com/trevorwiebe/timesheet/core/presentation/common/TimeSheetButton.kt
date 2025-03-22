@@ -17,7 +17,8 @@ import com.trevorwiebe.timesheet.theme.tertiary
 actual fun TimeSheetButton(
     onClick: () -> Unit,
     text: String,
-    modifier: Modifier
+    modifier: Modifier,
+    loading: Boolean
 ) {
     TextButton(
         onClick = onClick,

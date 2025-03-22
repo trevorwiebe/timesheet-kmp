@@ -7,5 +7,6 @@ import androidx.compose.ui.Modifier
 expect fun TimeSheetButton(
     onClick: () -> Unit,
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier,
+    loading: Boolean
 )
