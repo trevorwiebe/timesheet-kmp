@@ -1,5 +1,10 @@
 package com.trevorwiebe.timesheet.core.domain
 
+import dev.gitlive.firebase.FirebaseException
+import dev.gitlive.firebase.FirebaseNetworkException
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
+import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -134,5 +139,20 @@ object Util {
         return Instant.parse(dateTimeString)
             .toLocalDateTime(TimeZone.UTC)
             .date
+    }
+
+    fun getReadableErrorMessage(e: FirebaseException): String {
+        return when {
+            e is FirebaseAuthInvalidUserException -> "No account exists with this email. Please contact your manager."
+            e is FirebaseAuthInvalidCredentialsException -> "Invalid username or password. Please try again."
+            e is FirebaseAuthUserCollisionException -> "An account already exists with this email."
+            e is FirebaseNetworkException -> "Network error. Please check your connection and try again."
+            e.message?.contains("INVALID_LOGIN_CREDENTIALS") == true -> "Invalid email or password. Please check your credentials."
+            e.message?.contains("TOO_MANY_ATTEMPTS_TRY_LATER") == true -> "Too many unsuccessful login attempts. Please try again later."
+            e.message?.contains("EMAIL_NOT_FOUND") == true -> "No account exists with this email address."
+            e.message?.contains("INVALID_PASSWORD") == true -> "The password is invalid for this account."
+            e.message?.contains("USER_DISABLED") == true -> "This account has been disabled."
+            else -> "Authentication failed: ${e.message}"
+        }
     }
 }

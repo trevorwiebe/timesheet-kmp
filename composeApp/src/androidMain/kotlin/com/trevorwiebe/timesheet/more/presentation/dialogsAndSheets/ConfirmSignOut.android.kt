@@ -19,6 +19,7 @@ import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 @Composable
 actual fun ConfirmSignOut(
     show: Boolean,
+    loadingSignOut: Boolean,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -41,7 +42,7 @@ actual fun ConfirmSignOut(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Yes",
                     onClick = onConfirm,
-                    loading = false
+                    loading = loadingSignOut
                 )
                 Spacer(Modifier.height(16.dp))
             }

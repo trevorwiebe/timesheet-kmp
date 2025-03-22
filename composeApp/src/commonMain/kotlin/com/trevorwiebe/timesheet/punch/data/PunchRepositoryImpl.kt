@@ -11,9 +11,6 @@ import com.trevorwiebe.timesheet.core.domain.model.toRate
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 
 class PunchRepositoryImpl(
@@ -45,11 +42,6 @@ class PunchRepositoryImpl(
         if (userIdResult.error != null) return userIdResult
         val userId = userIdResult.data as String
 
-        val isoFormattedDateTime = punch.toString()
-
-        println(isoFormattedDateTime)
-        println(punch.punchId)
-
         firebaseDatabase.firestore
             .collection("organizations")
             .document(organizationId)
@@ -70,28 +62,28 @@ class PunchRepositoryImpl(
         return updatePunchResult
     }
 
-    override suspend fun getPunches(startDate: Instant, endDate: Instant): Flow<TSResult> {
+    override suspend fun getPunches(startDate: Instant, endDate: Instant): TSResult {
         val organizationIdResult = coreRepository.getOrganizationId()
-        if (organizationIdResult.error != null) return flow { emit(organizationIdResult) }
+        if (organizationIdResult.error != null) return organizationIdResult
         val organizationId = organizationIdResult.data as String
 
         val userIdResult = coreRepository.getUserId()
-        if (userIdResult.error != null) return flow { emit(userIdResult) }
+        if (userIdResult.error != null) return userIdResult
         val userId = userIdResult.data as String
 
-        return firebaseDatabase.firestore
+        val punchList = firebaseDatabase.firestore
             .collection("organizations")
             .document(organizationId)
             .collection("users")
             .document(userId)
             .collection("punches")
-            .snapshots
-            .map { snapshot ->
-                snapshot.documents.map { documentSnapshot ->
-                    documentSnapshot.data<PunchDto>().toPunch(punchId = documentSnapshot.id)
-                }
-            }.map { TSResult(data = it) }
+            .get()
+            .documents
+            .map { documentSnapshot ->
+                documentSnapshot.data<PunchDto>().toPunch(punchId = documentSnapshot.id)
+            }
 
+        return TSResult(data = punchList)
     }
 
     override suspend fun addPunch(punch: Punch): TSResult {
@@ -118,8 +110,6 @@ class PunchRepositoryImpl(
         startPunch: Punch,
         endPunch: Punch
     ): TSResult {
-        println(startPunch.rateId)
-        println(endPunch.rateId)
         val addPunchResult = addPunch(startPunch)
         val addPunch2Result = addPunch(endPunch)
         return addPunchResult

@@ -2,9 +2,11 @@ package com.trevorwiebe.timesheet.core.data
 
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.TSResult
+import com.trevorwiebe.timesheet.core.domain.Util.getReadableErrorMessage
 import com.trevorwiebe.timesheet.core.domain.dto.OrganizationDto
 import com.trevorwiebe.timesheet.core.domain.model.toOrganization
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.FirebaseException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
@@ -84,5 +86,16 @@ class CoreRepositoryImpl(
         val firebaseUser = tsResult.data as FirebaseUser
 
         return TSResult(data = firebaseUser.uid)
+    }
+
+    override suspend fun signOut(): TSResult {
+        return try {
+            val firebaseAuth = firebaseDatabase.auth
+            val result = firebaseAuth.signOut()
+            TSResult(data = result)
+        } catch (e: FirebaseException) {
+            val errorMessage = getReadableErrorMessage(e)
+            TSResult(error = errorMessage)
+        }
     }
 }

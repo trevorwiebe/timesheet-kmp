@@ -72,7 +72,13 @@ fun App() {
                 }
 
                 composable<Route.More> {
-                    MoreScreen()
+                    MoreScreen(
+                        onSignOut = {
+                            navController.navigate(Route.SignIn) {
+                                popUpTo(Route.SignIn) { inclusive = true }
+                            }
+                        }
+                    )
                 }
             }
         }

@@ -123,16 +123,15 @@ class PunchViewModel(
         end: Instant
     ) {
         viewModelScope.launch {
-            punchRepository.getPunches(start, end).collect { result ->
-                if (result.error.isNullOrEmpty()) {
+            val result = punchRepository.getPunches(start, end)
+            if (result.error.isNullOrEmpty()) {
 
-                    val punchList = result.data as List<Punch>
-                    val datesList = _staticPunchState.value.timeSheetDateList
-                    initiatePunchProcessing(datesList, punchList)
+                val punchList = result.data as List<Punch>
+                val datesList = _staticPunchState.value.timeSheetDateList
+                initiatePunchProcessing(datesList, punchList)
 
-                } else {
-                    println(result.error)
-                }
+            } else {
+                println(result.error)
             }
         }
     }

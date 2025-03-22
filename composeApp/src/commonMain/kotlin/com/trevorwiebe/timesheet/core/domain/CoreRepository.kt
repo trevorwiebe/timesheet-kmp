@@ -9,4 +9,6 @@ interface CoreRepository {
     suspend fun getOrganizationId(): TSResult
 
     suspend fun getUserId(): TSResult
+
+    suspend fun signOut(): TSResult
 }
