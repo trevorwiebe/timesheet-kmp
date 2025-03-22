@@ -78,7 +78,7 @@ class ReportViewModel(
             }
 
             _staticReportState.value = _staticReportState.value.copy(
-                timeSheets = mutableTimeSheet.toList()
+                timeSheets = mutableTimeSheet.toList().sortedBy { it.timeSheet.payPeriodStart }
             )
         }
     }

@@ -21,5 +21,6 @@ class CalculateTimeSheets(
         return generateSequence(payPeriodStartDate) { it.plus(1, DateTimeUnit.DAY) }
             .takeWhile { it <= currentDate }
             .toList()
+            .sortedDescending()
     }
 }
