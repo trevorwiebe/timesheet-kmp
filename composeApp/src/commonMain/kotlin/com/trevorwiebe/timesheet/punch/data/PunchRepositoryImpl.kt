@@ -1,5 +1,6 @@
 package com.trevorwiebe.timesheet.punch.data
 
+import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.TSResult
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
@@ -11,6 +12,9 @@ import com.trevorwiebe.timesheet.core.domain.model.toRate
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
@@ -63,19 +67,19 @@ class PunchRepositoryImpl(
         return updatePunchResult
     }
 
-    override suspend fun getPunches(startDate: LocalDate, endDate: LocalDate): TSResult {
+    override suspend fun getPunches(startDate: LocalDate, endDate: LocalDate): Flow<TSResult> {
         val organizationIdResult = coreRepository.getOrganizationId()
-        if (organizationIdResult.error != null) return organizationIdResult
+        if (organizationIdResult.error != null) return flow { emit(organizationIdResult) }
         val organizationId = organizationIdResult.data as String
 
         val userIdResult = coreRepository.getUserId()
-        if (userIdResult.error != null) return userIdResult
+        if (userIdResult.error != null) return flow { emit(userIdResult) }
         val userId = userIdResult.data as String
 
         val startTimeStamp = Instant.parse(startDate.toString() + "T00:00:00Z")
         val endTimeStamp = Instant.parse(endDate.toString() + "T23:59:59Z")
 
-        val punchList = firebaseDatabase.firestore
+        val flow = firebaseDatabase.firestore
             .collection("organizations")
             .document(organizationId)
             .collection("users")
@@ -85,13 +89,14 @@ class PunchRepositoryImpl(
                 "dateTime" greaterThanOrEqualTo startTimeStamp.toString()
                 "dateTime" lessThanOrEqualTo endTimeStamp.toString()
             }
-            .get()
-            .documents
-            .map { documentSnapshot ->
+            .snapshots
+            .map { snapshot ->
+                snapshot.documents.map { documentSnapshot ->
                 documentSnapshot.data<PunchDto>().toPunch(punchId = documentSnapshot.id)
             }
+            }.map { TSResult(data = it) }
 
-        return TSResult(data = punchList)
+        return FirestoreListenerRegistry.registerFlow(flow)
     }
 
     override suspend fun addPunch(punch: Punch): TSResult {

@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.punch.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
 import com.trevorwiebe.timesheet.core.domain.Util.roundToTwoDecimals
@@ -124,18 +125,18 @@ class PunchViewModel(
         start: LocalDate,
         end: LocalDate
     ) {
-        viewModelScope.launch {
-            val result = punchRepository.getPunches(start, end)
-            if (result.error.isNullOrEmpty()) {
-
-                val punchList = result.data as List<Punch>
-                val datesList = _staticPunchState.value.timeSheetDateList
-                initiatePunchProcessing(datesList, punchList)
-
-            } else {
-                println(result.error)
+        val job = viewModelScope.launch {
+            punchRepository.getPunches(start, end).collect { result ->
+                if (result.error.isNullOrEmpty()) {
+                    val punchList = result.data as List<Punch>
+                    val datesList = _staticPunchState.value.timeSheetDateList
+                    initiatePunchProcessing(datesList, punchList)
+                } else {
+                    println(result.error)
+                }
             }
         }
+        FirestoreListenerRegistry.registerJob(job)
     }
 
     private fun sendPunch(rateId: String) {

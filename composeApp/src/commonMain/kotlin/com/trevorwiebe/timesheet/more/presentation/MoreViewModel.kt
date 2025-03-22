@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.more.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.Channel
@@ -40,6 +41,7 @@ class MoreViewModel(
     private fun signOut() {
         _state.update { it.copy(signOutLoading = true) }
         viewModelScope.launch {
+            FirestoreListenerRegistry.clearAllListeners()
             val result = coreRepository.signOut()
             if (result.error == null) {
                 _state.update { it.copy(confirmSignOutSheet = false) }
@@ -60,6 +62,5 @@ class MoreViewModel(
                 }
             }
         }
-
     }
 }
