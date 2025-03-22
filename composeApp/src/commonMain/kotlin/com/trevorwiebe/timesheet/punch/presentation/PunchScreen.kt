@@ -51,12 +51,6 @@ fun PunchScreen(
 
     val listState = rememberLazyListState()
 
-    LaunchedEffect(staticState.timeSheetDateList, dynamicState.punches) {
-        if (staticState.timeSheetDateList.isNotEmpty()) {
-            listState.scrollToItem(staticState.timeSheetDateList.size - 1)
-        }
-    }
-
     val contentUnavailable = staticState.timeSheetDateList.isEmpty()
     LaunchedEffect(contentUnavailable) {
         if (!contentUnavailable) {
