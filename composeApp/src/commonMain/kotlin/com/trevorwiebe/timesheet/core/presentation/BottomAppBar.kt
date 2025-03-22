@@ -80,6 +80,6 @@ sealed class BottomNavItem(val route: Route, val icon: DrawableResource, val lab
     data object Punch : BottomNavItem(Route.Punch, Res.drawable.baseline_punch_clock_24, "Punch")
     data object Report : BottomNavItem(Route.Report, Res.drawable.baseline_article_24, "Report")
     data object Calendar :
-        BottomNavItem(Route.Calendar, Res.drawable.baseline_calendar_month_24, "Calendar")
+        BottomNavItem(Route.Calendar, Res.drawable.baseline_calendar_month_24, "Time Off")
     data object More : BottomNavItem(Route.More, Res.drawable.baseline_more_horiz_24, "More")
 }
