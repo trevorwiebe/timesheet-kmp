@@ -3,6 +3,7 @@ package com.trevorwiebe.timesheet.more.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
+import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +20,10 @@ class MoreViewModel(
 
     private val _onSignOutChannel = Channel<Unit>()
     val onSignOutChannel = _onSignOutChannel.receiveAsFlow()
+
+    init {
+        getCurrentUser()
+    }
 
     fun onEvent(event: MoreEvents) {
         when (event) {
@@ -41,5 +46,20 @@ class MoreViewModel(
                 _onSignOutChannel.send(Unit)
             }
         }
+    }
+
+    private fun getCurrentUser() {
+        viewModelScope.launch {
+            val result = coreRepository.getSignedInUser()
+            if (result.error == null) {
+                try {
+                    val user = result.data as FirebaseUser
+                    _state.update { it.copy(currentUser = user) }
+                } catch (e: Exception) {
+                    _state.update { it.copy(currentUser = null) }
+                }
+            }
+        }
+
     }
 }

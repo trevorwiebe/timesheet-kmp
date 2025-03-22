@@ -55,8 +55,8 @@ fun MoreScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             ItemRow(
-                primaryText = "Trevor Wiebe",
-                secondaryText = "thisistrevor4@gmail.com"
+                primaryText = state.currentUser?.displayName ?: "",
+                secondaryText = state.currentUser?.email ?: ""
             )
             ItemRow(
                 primaryText = "Sign Out",
