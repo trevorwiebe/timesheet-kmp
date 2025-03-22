@@ -20,7 +20,7 @@ class GetCurrentPayPeriodStartAndEnd {
 
         // Calculate days since go-live date in local time
         val daysSinceGoLive = currentDate.minus(goLiveLocalDate)
-        val daysIntoNewPayPeriod = daysSinceGoLive.days
+        val daysIntoNewPayPeriod = daysSinceGoLive.days % 14
 
         // Calculate start date in local time
         val startLocalDate = currentDate.minus(daysIntoNewPayPeriod, DateTimeUnit.DAY)
