@@ -60,7 +60,10 @@ class SignInViewModel(
     }
 
     private fun signIn() {
-        _state.value = _state.value.copy(loadingSignIn = true)
+        _state.value = _state.value.copy(
+            loadingSignIn = true,
+            signInError = null
+        )
         viewModelScope.launch {
             state.value.let {
                 val result = authenticator.signIn(

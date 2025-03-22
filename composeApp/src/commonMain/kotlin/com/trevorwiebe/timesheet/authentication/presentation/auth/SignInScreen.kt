@@ -6,15 +6,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -24,11 +22,16 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.core.presentation.common.TimesheetTextField
 import com.trevorwiebe.timesheet.theme.tertiary
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -48,7 +52,10 @@ fun SignInScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val inset = WindowInsets.ime.asPaddingValues()
+    val focusRequester1 = remember { FocusRequester() }
+    val focusRequester2 = remember { FocusRequester() }
+    val coroutineScope = rememberCoroutineScope()
+
     val scrollState = rememberScrollState()
 
     LaunchedEffect(viewModel.onSignInSuccessful){
@@ -60,7 +67,6 @@ fun SignInScreen(
 
     Box(
         modifier = Modifier
-            .padding(inset)
             .fillMaxSize()
             .verticalScroll(scrollState),
         contentAlignment = Alignment.Center
@@ -80,18 +86,32 @@ fun SignInScreen(
             Spacer(modifier = Modifier.height(36.dp))
 
             TimesheetTextField(
+                modifier = Modifier.focusRequester(focusRequester1),
                 text = state.email,
                 placeholder = "Email",
                 onTextChange = {
                     viewModel.onEvent(
                         SignInEvents.OnEmailChange(it)
                     )
-                }
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Email,
+                    capitalization = KeyboardCapitalization.None
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        coroutineScope.launch {
+                            focusRequester2.requestFocus()
+                        }
+                    }
+                )
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             TimesheetTextField(
+                modifier = Modifier.focusRequester(focusRequester2),
                 text = state.password,
                 placeholder = "Password",
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -103,7 +123,12 @@ fun SignInScreen(
                     viewModel.onEvent(
                         SignInEvents.OnPasswordChange(it)
                     )
-                }
+                },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        viewModel.onEvent(SignInEvents.OnSignInClick)
+                    }
+                )
             )
 
             Text(
@@ -143,7 +168,7 @@ fun SignInScreen(
                 viewModel.onEvent(SignInEvents.OnSetSendPasswordResetDialog(false))
             }
         ){
-            Card{
+            Card { //todo Make sure the border radius matches other dialogs
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ){
