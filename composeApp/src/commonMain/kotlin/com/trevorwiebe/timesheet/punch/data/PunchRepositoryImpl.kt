@@ -12,6 +12,7 @@ import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 class PunchRepositoryImpl(
     private val firebaseDatabase: Firebase,
@@ -62,7 +63,7 @@ class PunchRepositoryImpl(
         return updatePunchResult
     }
 
-    override suspend fun getPunches(startDate: Instant, endDate: Instant): TSResult {
+    override suspend fun getPunches(startDate: LocalDate, endDate: LocalDate): TSResult {
         val organizationIdResult = coreRepository.getOrganizationId()
         if (organizationIdResult.error != null) return organizationIdResult
         val organizationId = organizationIdResult.data as String
@@ -71,12 +72,19 @@ class PunchRepositoryImpl(
         if (userIdResult.error != null) return userIdResult
         val userId = userIdResult.data as String
 
+        val startTimeStamp = Instant.parse(startDate.toString() + "T00:00:00Z")
+        val endTimeStamp = Instant.parse(endDate.toString() + "T23:59:59Z")
+
         val punchList = firebaseDatabase.firestore
             .collection("organizations")
             .document(organizationId)
             .collection("users")
             .document(userId)
             .collection("punches")
+            .where {
+                "dateTime" greaterThanOrEqualTo startTimeStamp.toString()
+                "dateTime" lessThanOrEqualTo endTimeStamp.toString()
+            }
             .get()
             .documents
             .map { documentSnapshot ->

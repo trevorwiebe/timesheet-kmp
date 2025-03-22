@@ -8,6 +8,7 @@ import com.trevorwiebe.timesheet.core.domain.Util.roundToTwoDecimals
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.core.domain.model.Rate
+import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
 import com.trevorwiebe.timesheet.punch.domain.usecases.ProcessPunchesForUi
@@ -16,8 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -29,6 +28,7 @@ class PunchViewModel(
     private val coreRepository: CoreRepository,
     private val calculateTimeSheets: CalculateTimeSheets,
     private val processPunchesForUi: ProcessPunchesForUi,
+    private val getCurrentPayPeriodStartAndEnd: GetCurrentPayPeriodStartAndEnd
 ) : ViewModel() {
 
     private val _staticPunchState = MutableStateFlow(StaticPunchState())
@@ -43,9 +43,12 @@ class PunchViewModel(
     init {
         getOrganization()
         getRates {
+            val currentPayPeriodStartAndEnd = getCurrentPayPeriodStartAndEnd(
+                organization = _staticPunchState.value.organization ?: return@getRates
+            )
             getPunches(
-                start = Clock.System.now(),
-                end = Clock.System.now()
+                start = currentPayPeriodStartAndEnd.first,
+                end = currentPayPeriodStartAndEnd.second
             )
         }
     }
@@ -71,7 +74,6 @@ class PunchViewModel(
                 }
             }
             is PunchEvents.OnShowAddHoursDialog -> {
-                println(event.addHoursDialogTime)
                 _elementVisibilityState.update { it.copy(showAddHourDialogTime = event.addHoursDialogTime) }
             }
             is PunchEvents.OnUpdatePunch -> {
@@ -119,8 +121,8 @@ class PunchViewModel(
 
     @Suppress("UNCHECKED_CAST")
     private fun getPunches(
-        start: Instant,
-        end: Instant
+        start: LocalDate,
+        end: LocalDate
     ) {
         viewModelScope.launch {
             val result = punchRepository.getPunches(start, end)

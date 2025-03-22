@@ -2,7 +2,7 @@ package com.trevorwiebe.timesheet.punch.domain
 
 import com.trevorwiebe.timesheet.core.domain.TSResult
 import com.trevorwiebe.timesheet.core.domain.model.Punch
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 interface PunchRepository {
 
@@ -12,7 +12,7 @@ interface PunchRepository {
 
     suspend fun updatePunchesWithNewRate(punchIn: Punch, punchOut: Punch?): TSResult
 
-    suspend fun getPunches(startDate: Instant, endDate: Instant): TSResult
+    suspend fun getPunches(startDate: LocalDate, endDate: LocalDate): TSResult
 
     suspend fun addPunch(punch: Punch): TSResult
 
