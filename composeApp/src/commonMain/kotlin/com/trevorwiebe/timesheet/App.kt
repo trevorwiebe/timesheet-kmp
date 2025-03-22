@@ -3,11 +3,13 @@ package com.trevorwiebe.timesheet
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,16 +26,23 @@ fun App() {
 
         val navController = rememberNavController()
         val deviceCutoutPadding = WindowInsets.displayCutout.asPaddingValues()
+        val imePadding = WindowInsets.ime.asPaddingValues()
 
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(navController)
             }
         ) {
+
+            val finishedPadding = if (imePadding.calculateBottomPadding() == 0.dp) {
+                it
+            } else {
+                imePadding
+            }
             NavHost(
                 modifier = Modifier
-                    .padding(it)
-                    .padding(deviceCutoutPadding),
+                    .padding(deviceCutoutPadding)
+                    .padding(finishedPadding),
                 navController = navController,
                 startDestination = Route.SignIn
             ){
