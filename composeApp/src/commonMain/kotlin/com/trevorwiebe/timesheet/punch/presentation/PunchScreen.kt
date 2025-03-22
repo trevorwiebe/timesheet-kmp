@@ -90,9 +90,18 @@ fun PunchScreen(
                 exit = fadeOut()
             ) {
                 LazyColumn(
+                    reverseLayout = true,
                     modifier = Modifier.padding(it).fillMaxSize(),
                     state = listState
                 ) {
+                    item {
+                        AddPunch(
+                            loadingPunch = elementVisibilityState.punchLoading,
+                            onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
+                            onAddToPTO = {},
+                            buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In"
+                        )
+                    }
                     items(staticState.timeSheetDateList) { todayDate ->
                         val punchList: List<UiPunch> =
                             dynamicState.punches[todayDate] ?: emptyList()
@@ -127,14 +136,6 @@ fun PunchScreen(
                                 punchList,
                                 staticState.rateList
                             )
-                        )
-                    }
-                    item {
-                        AddPunch(
-                            loadingPunch = elementVisibilityState.punchLoading,
-                            onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
-                            onAddToPTO = {},
-                            buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In"
                         )
                     }
                 }

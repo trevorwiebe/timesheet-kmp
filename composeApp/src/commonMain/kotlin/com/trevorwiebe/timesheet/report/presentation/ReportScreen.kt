@@ -57,6 +57,7 @@ fun ReportScreen(
         }
     ) {
         LazyColumn(
+            reverseLayout = true,
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
