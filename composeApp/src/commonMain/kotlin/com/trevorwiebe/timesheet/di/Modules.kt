@@ -3,6 +3,7 @@ package com.trevorwiebe.timesheet.di
 import com.trevorwiebe.timesheet.core.data.CoreRepositoryImpl
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
+import com.trevorwiebe.timesheet.more.presentation.MoreViewModel
 import com.trevorwiebe.timesheet.punch.data.PunchRepositoryImpl
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
@@ -51,4 +52,5 @@ val sharedModule = module {
     viewModelOf(::SignInViewModel)
     viewModelOf(::PunchViewModel)
     viewModelOf(::ReportViewModel)
+    viewModelOf(::MoreViewModel)
 }

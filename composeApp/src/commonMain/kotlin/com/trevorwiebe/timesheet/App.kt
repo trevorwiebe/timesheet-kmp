@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.trevorwiebe.timesheet.calendar.presentation.CalendarScreen
 import com.trevorwiebe.timesheet.core.presentation.BottomNavigationBar
-import com.trevorwiebe.timesheet.more.MoreScreen
+import com.trevorwiebe.timesheet.more.presentation.MoreScreen
 import com.trevorwiebe.timesheet.punch.presentation.PunchScreen
 import com.trevorwiebe.timesheet.report.presentation.ReportScreen
 import com.trevorwiebe.timesheet.signin.presentation.auth.SignInScreen
