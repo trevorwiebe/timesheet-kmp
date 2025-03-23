@@ -35,7 +35,14 @@ fun BottomNavigationBar(navController: NavController) {
 
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    if (currentRoute != "com.trevorwiebe.timesheet.Route.SignIn") {
+    val routesToShow = listOf(
+        "com.trevorwiebe.timesheet.Route.Punch",
+        "com.trevorwiebe.timesheet.Route.Report",
+        "com.trevorwiebe.timesheet.Route.Calendar",
+        "com.trevorwiebe.timesheet.Route.More"
+    )
+
+    if (routesToShow.contains(currentRoute)) {
         BottomNavigation(
             backgroundColor = primary,
             contentColor = Color.Black
