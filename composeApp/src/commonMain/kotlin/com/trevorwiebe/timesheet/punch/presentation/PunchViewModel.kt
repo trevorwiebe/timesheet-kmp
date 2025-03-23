@@ -18,13 +18,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.daysUntil
+import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlin.time.Duration
 
 class PunchViewModel(
+    private val startDate: String?,
+    private val endDate: String?,
     private val punchRepository: PunchRepository,
     private val coreRepository: CoreRepository,
     private val calculateTimeSheets: CalculateTimeSheets,
@@ -44,12 +49,16 @@ class PunchViewModel(
     init {
         getOrganization()
         getRates {
-            val currentPayPeriodStartAndEnd = getCurrentPayPeriodStartAndEnd(
-                organization = _staticPunchState.value.organization ?: return@getRates
-            )
+            val payPeriod = if (startDate == null && endDate == null) {
+                getCurrentPayPeriodStartAndEnd(
+                    organization = _staticPunchState.value.organization ?: return@getRates
+                )
+            } else {
+                LocalDate.parse(startDate!!) to LocalDate.parse(endDate!!)
+            }
             getPunches(
-                start = currentPayPeriodStartAndEnd.first,
-                end = currentPayPeriodStartAndEnd.second
+                start = payPeriod.first,
+                end = payPeriod.second
             )
         }
     }
@@ -91,9 +100,25 @@ class PunchViewModel(
     }
 
     private fun getTimeSheet() {
-        val result = calculateTimeSheets(
-            organization = _staticPunchState.value.organization ?: return
-        )
+        val result = if (startDate == null && endDate == null) {
+            calculateTimeSheets(
+                organization = _staticPunchState.value.organization ?: return
+            )
+        } else {
+            val startLocalDate = LocalDate.parse(startDate!!)
+            val endLocalDate = LocalDate.parse(endDate!!)
+
+            val result = mutableListOf<LocalDate>()
+
+            // Calculate number of days between the dates
+            val daysBetween = startLocalDate.daysUntil(endLocalDate)
+
+            // Add all dates to the list
+            for (i in 0..daysBetween) {
+                result.add(startLocalDate.plus(i, DateTimeUnit.DAY))
+            }
+            result.toList().reversed()
+        }
         _staticPunchState.update { it.copy(timeSheetDateList = result) }
     }
 

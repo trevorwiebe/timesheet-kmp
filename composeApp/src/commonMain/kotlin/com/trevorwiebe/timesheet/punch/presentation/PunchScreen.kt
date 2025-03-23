@@ -37,10 +37,13 @@ import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun PunchScreen(
-    viewModel: PunchViewModel = koinViewModel()
+    startDate: String? = null,
+    endDate: String? = null,
+    viewModel: PunchViewModel = koinViewModel { parametersOf(startDate, endDate) }
 ) {
 
     val staticState by viewModel.staticPunchState.collectAsState()
@@ -99,7 +102,8 @@ fun PunchScreen(
                             loadingPunch = elementVisibilityState.punchLoading,
                             onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
                             onAddToPTO = {},
-                            buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In"
+                            buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In",
+                            showPunchButton = (startDate == null && endDate == null)
                         )
                     }
                     items(staticState.timeSheetDateList) { todayDate ->
@@ -168,6 +172,7 @@ fun PunchScreen(
 
 @Composable
 private fun AddPunch(
+    showPunchButton: Boolean,
     loadingPunch: Boolean,
     buttonText: String,
     onPunch: () -> Unit,
@@ -183,11 +188,13 @@ private fun AddPunch(
             loading = false
         )
         Spacer(modifier = Modifier.weight(1f))
-        TimeSheetButton(
-            modifier = Modifier.width(150.dp).height(50.dp),
-            text = buttonText,
-            onClick = onPunch,
-            loading = loadingPunch
-        )
+        if (showPunchButton) {
+            TimeSheetButton(
+                modifier = Modifier.width(150.dp).height(50.dp),
+                text = buttonText,
+                onClick = onPunch,
+                loading = loadingPunch
+            )
+        }
     }
 }

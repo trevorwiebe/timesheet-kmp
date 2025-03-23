@@ -15,6 +15,12 @@ sealed interface Route {
     data object Report : Route
 
     @Serializable
+    data class ReportDetail(
+        val startTime: String,
+        val endTime: String
+    ) : Route
+
+    @Serializable
     data object Calendar :Route
 
     @Serializable

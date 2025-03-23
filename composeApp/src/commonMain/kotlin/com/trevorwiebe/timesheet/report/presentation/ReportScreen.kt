@@ -1,6 +1,7 @@
 package com.trevorwiebe.timesheet.report.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ReportScreen(
-    viewModel: ReportViewModel = koinViewModel()
+    viewModel: ReportViewModel = koinViewModel(),
+    onReportClick: (startTime: String, endTime: String) -> Unit
 ) {
 
     val staticState by viewModel.staticReportState.collectAsState()
@@ -63,7 +65,9 @@ fun ReportScreen(
                 .fillMaxSize()
         ) {
             items(staticState.timeSheets) { timeSheet ->
-                ReportItem(timeSheet)
+                ReportItem(timeSheet) { startTime, endTime ->
+                    onReportClick(startTime, endTime)
+                }
             }
         }
     }
@@ -71,7 +75,8 @@ fun ReportScreen(
 
 @Composable
 private fun ReportItem(
-    uitTimeSheet: UiTimeSheet
+    uitTimeSheet: UiTimeSheet,
+    onReportClick: (startTime: String, endTime: String) -> Unit
 ){
 
     val timeSheet = uitTimeSheet.timeSheet
@@ -82,7 +87,12 @@ private fun ReportItem(
         modifier = Modifier.fillMaxWidth().padding(8.dp)
     ){
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().clickable {
+                onReportClick(
+                    timeSheet.payPeriodStart.toString(),
+                    timeSheet.payPeriodEnd.toString()
+                )
+            }
         ){
 
             val payPeriodString =

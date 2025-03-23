@@ -50,7 +50,18 @@ val sharedModule = module {
     single<CalculateTimeSheets> { CalculateTimeSheets(get()) }
     single<ProcessPunchesForUi> { ProcessPunchesForUi() }
     viewModelOf(::SignInViewModel)
-    viewModelOf(::PunchViewModel)
     viewModelOf(::ReportViewModel)
     viewModelOf(::MoreViewModel)
+    // Replace PunchViewModel with a factory definition that accepts parameters
+    factory { (startDate: String, endDate: String) ->
+        PunchViewModel(
+            startDate = startDate,
+            endDate = endDate,
+            punchRepository = get(),
+            coreRepository = get(),
+            calculateTimeSheets = get(),
+            processPunchesForUi = get(),
+            getCurrentPayPeriodStartAndEnd = get()
+        )
+    }
 }

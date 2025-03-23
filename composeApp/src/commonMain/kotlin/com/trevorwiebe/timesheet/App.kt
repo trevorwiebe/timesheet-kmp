@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.trevorwiebe.timesheet.calendar.presentation.CalendarScreen
 import com.trevorwiebe.timesheet.core.presentation.BottomNavigationBar
 import com.trevorwiebe.timesheet.more.presentation.MoreScreen
@@ -64,7 +65,17 @@ fun App() {
                 }
 
                 composable<Route.Report> {
-                    ReportScreen()
+                    ReportScreen { startTime, endTime ->
+                        navController.navigate(Route.ReportDetail(startTime, endTime))
+                    }
+                }
+
+                composable<Route.ReportDetail> { entry ->
+                    val args = entry.toRoute<Route.ReportDetail>()
+                    PunchScreen(
+                        startDate = args.startTime,
+                        endDate = args.endTime
+                    )
                 }
 
                 composable<Route.Calendar> {
