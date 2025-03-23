@@ -98,6 +98,9 @@ fun PunchScreen(
                     state = listState
                 ) {
                     item {
+                        Spacer(modifier = Modifier.height(30.dp))
+                    }
+                    item {
                         AddPunch(
                             loadingPunch = elementVisibilityState.punchLoading,
                             onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
