@@ -45,8 +45,8 @@ fun BottomNavigationBar(navController: NavController) {
                 val selected = currentRoute?.substringAfterLast('.') == item.route.toString()
                 BottomNavigationItem(
                     modifier = Modifier.padding(
-                        start = 8.dp,
-                        end = 8.dp,
+                        start = 0.dp,
+                        end = 0.dp,
                         top = 16.dp,
                         bottom = 20.dp
                     ),
