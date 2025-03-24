@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.trevorwiebe.timesheet.calendar.presentation.CalendarScreen
-import com.trevorwiebe.timesheet.core.presentation.BottomNavigationBar
+import com.trevorwiebe.timesheet.core.presentation.BottomAppBar
 import com.trevorwiebe.timesheet.more.presentation.MoreScreen
 import com.trevorwiebe.timesheet.punch.presentation.PunchScreen
 import com.trevorwiebe.timesheet.report.presentation.ReportScreen
@@ -33,7 +33,7 @@ fun App() {
 
         Scaffold(
             bottomBar = {
-                BottomNavigationBar(navController)
+                BottomAppBar(navController)
             }
         ) {
 
