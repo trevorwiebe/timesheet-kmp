@@ -23,3 +23,12 @@ fun TimeSheetDto.toTimeSheet(id: String) = TimeSheet(
     payPeriodStart = convertStringToLocalDate(payPeriodStart),
     payPeriodEnd = convertStringToLocalDate(payPeriodEnd),
 )
+
+fun TimeSheet.toTimeSheetDto() = TimeSheetDto(
+    confirmedByUser = confirmedByUser,
+    submitted = submitted,
+    holidayHours = holidayHours,
+    vacationHours = vacationHours,
+    payPeriodStart = payPeriodStart.toString(),
+    payPeriodEnd = payPeriodEnd.toString()
+)

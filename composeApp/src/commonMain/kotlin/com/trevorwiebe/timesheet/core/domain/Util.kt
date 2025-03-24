@@ -135,10 +135,8 @@ object Util {
             .toLocalDateTime(TimeZone.currentSystemDefault())
     }
 
-    fun convertStringToLocalDate(dateTimeString: String): LocalDate {
-        return Instant.parse(dateTimeString)
-            .toLocalDateTime(TimeZone.UTC)
-            .date
+    fun convertStringToLocalDate(dateString: String): LocalDate {
+        return LocalDate.parse(dateString)
     }
 
     fun getReadableErrorMessage(e: FirebaseException): String {
