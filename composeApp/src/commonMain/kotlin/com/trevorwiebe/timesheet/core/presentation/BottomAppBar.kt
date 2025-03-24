@@ -16,10 +16,6 @@ fun BottomAppBar(navController: NavController) {
         "com.trevorwiebe.timesheet.Route.More"
     )
 
-    val reportDetailRoute = "com.trevorwiebe.timesheet.Route.ReportDetail/{startTime}/{endTime}"
-
-    println(currentRoute)
-
     if (mainScreenRoutes.contains(currentRoute)) {
         MainScreenBottomBar(
             currentRoute = currentRoute,
@@ -30,9 +26,5 @@ fun BottomAppBar(navController: NavController) {
                 }
             }
         )
-    }
-
-    if (currentRoute == reportDetailRoute) {
-        ShiftBottomBar()
     }
 }

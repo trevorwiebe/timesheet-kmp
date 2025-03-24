@@ -50,7 +50,6 @@ fun App() {
                 startDestination = Route.SignIn
             ){
 
-                // Sign In
                 composable<Route.SignIn> {
                     SignInScreen(
                         onSignInSuccessful = {
@@ -63,7 +62,6 @@ fun App() {
                     )
                 }
 
-                // Main
                 composable<Route.Punch> {
                     PunchScreen()
                 }

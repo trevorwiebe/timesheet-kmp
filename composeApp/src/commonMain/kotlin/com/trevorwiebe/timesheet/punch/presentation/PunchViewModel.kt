@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.punch.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.timesheet.DataRepository
 import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
@@ -9,6 +10,7 @@ import com.trevorwiebe.timesheet.core.domain.Util.roundToTwoDecimals
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.core.domain.model.Rate
+import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
 import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
@@ -92,9 +94,20 @@ class PunchViewModel(
             is PunchEvents.OnAddHours -> {
                 initiateAddingHours(event.punchIn, event.punchOut)
             }
-
             is PunchEvents.OnUpdateRate -> {
                 initiateUpdatePunchesWithNewRate(event.punchIn, event.punchOut)
+            }
+            is PunchEvents.OnSetSubmitPayPeriodDialog -> {
+                _elementVisibilityState.update {
+                    it.copy(submitPayPeriodDialog = event.visible)
+                }
+            }
+
+            is PunchEvents.OnConfirmPayPeriod -> {
+                val timeSheet = DataRepository.timeSheet?.copy(
+                    confirmedByUser = true
+                )
+                updateTimeSheet(timeSheet)
             }
         }
     }
@@ -258,5 +271,16 @@ class PunchViewModel(
     // Extension function to calculate duration between two Instants
     private fun Duration.Companion.between(start: LocalDateTime, end: LocalDateTime): Duration {
         return end.toInstant(TimeZone.currentSystemDefault()) - start.toInstant(TimeZone.currentSystemDefault())
+    }
+
+    private fun updateTimeSheet(timeSheet: TimeSheet?) {
+        viewModelScope.launch {
+            if (timeSheet != null) {
+                val result = punchRepository.updateTimeSheet(timeSheet)
+                if (result.error.isNullOrEmpty()) {
+                    _elementVisibilityState.update { it.copy(submitPayPeriodDialog = false) }
+                }
+            }
+        }
     }
 }

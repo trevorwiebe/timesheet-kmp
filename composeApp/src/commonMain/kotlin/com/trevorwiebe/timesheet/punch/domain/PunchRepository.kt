@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.punch.domain
 
 import com.trevorwiebe.timesheet.core.domain.TSResult
 import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
@@ -20,4 +21,6 @@ interface PunchRepository {
     suspend fun addHours(startPunch: Punch, endPunch: Punch): TSResult
 
     suspend fun deletePunches(punchIds: List<String?>): TSResult
+
+    suspend fun updateTimeSheet(timeSheet: TimeSheet): TSResult
 }

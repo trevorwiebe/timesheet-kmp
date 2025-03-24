@@ -27,12 +27,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.trevorwiebe.timesheet.core.domain.Util
+import com.trevorwiebe.timesheet.core.presentation.ShiftBottomBar
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
 import com.trevorwiebe.timesheet.core.presentation.common.BackIcon
 import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
+import com.trevorwiebe.timesheet.punch.presentation.composables.SubmitPayPeriodDialog
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.coroutines.delay
@@ -99,57 +101,72 @@ fun PunchScreen(
                 enter = fadeIn(animationSpec = tween(500)),
                 exit = fadeOut()
             ) {
-                LazyColumn(
-                    reverseLayout = true,
-                    modifier = Modifier.padding(it).fillMaxSize(),
-                    state = listState
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.BottomCenter
                 ) {
-                    item {
-                        Spacer(modifier = Modifier.height(30.dp))
-                    }
-                    item {
-                        AddPunch(
-                            loadingPunch = elementVisibilityState.punchLoading,
-                            onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
-                            onAddToPTO = {},
-                            buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In",
-                            showPunchButton = (startDate == null && endDate == null)
-                        )
-                    }
-                    items(staticState.timeSheetDateList) { todayDate ->
-                        val punchList: List<UiPunch> =
-                            dynamicState.punches[todayDate] ?: emptyList()
-                        PunchItem(
-                            date = todayDate,
-                            punches = punchList,
-                            onShowConfirmDelete = { uiPunch ->
-                                viewModel.onEvent(
-                                    PunchEvents.OnShowConfirmDeletePunchesSheet(
-                                        uiPunch
-                                    )
-                                )
-                            },
-                            onShowAddHours = {
-                                viewModel.onEvent(
-                                    PunchEvents.OnShowAddHoursDialog(
-                                        todayDate
-                                    )
-                                )
-                            },
-                            onTimeSelected = { viewModel.onEvent(PunchEvents.OnUpdatePunch(it)) },
-                            onUpdateRate = {
-                                viewModel.onEvent(
-                                    PunchEvents.OnUpdateRate(
-                                        it.punchIn,
-                                        it.punchOut
-                                    )
-                                )
-                            },
-                            rateList = staticState.rateList,
-                            hoursWorked = viewModel.getHoursWorkedForDay(
-                                punchList,
-                                staticState.rateList
+
+                    LazyColumn(
+                        reverseLayout = true,
+                        modifier = Modifier.padding(it).fillMaxSize(),
+                        state = listState
+                    ) {
+                        item {
+                            Spacer(modifier = Modifier.height(100.dp))
+                        }
+                        item {
+                            AddPunch(
+                                loadingPunch = elementVisibilityState.punchLoading,
+                                onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
+                                onAddToPTO = {},
+                                buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In",
+                                showPunchButton = (startDate == null && endDate == null)
                             )
+                        }
+                        items(staticState.timeSheetDateList) { todayDate ->
+                            val punchList: List<UiPunch> =
+                                dynamicState.punches[todayDate] ?: emptyList()
+                            PunchItem(
+                                date = todayDate,
+                                punches = punchList,
+                                onShowConfirmDelete = { uiPunch ->
+                                    viewModel.onEvent(
+                                        PunchEvents.OnShowConfirmDeletePunchesSheet(
+                                            uiPunch
+                                        )
+                                    )
+                                },
+                                onShowAddHours = {
+                                    viewModel.onEvent(
+                                        PunchEvents.OnShowAddHoursDialog(
+                                            todayDate
+                                        )
+                                    )
+                                },
+                                onTimeSelected = { viewModel.onEvent(PunchEvents.OnUpdatePunch(it)) },
+                                onUpdateRate = {
+                                    viewModel.onEvent(
+                                        PunchEvents.OnUpdateRate(
+                                            it.punchIn,
+                                            it.punchOut
+                                        )
+                                    )
+                                },
+                                rateList = staticState.rateList,
+                                hoursWorked = viewModel.getHoursWorkedForDay(
+                                    punchList,
+                                    staticState.rateList
+                                )
+                            )
+                        }
+                    }
+
+                    if (startDate != null) {
+                        ShiftBottomBar(
+                            onConfirmPayPeriod = {
+                                viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(true))
+                            },
+                            onShowInfo = {}
                         )
                     }
                 }
@@ -178,6 +195,13 @@ fun PunchScreen(
         },
         rateList = staticState.rateList
     )
+
+    SubmitPayPeriodDialog(
+        visible = elementVisibilityState.submitPayPeriodDialog,
+        onDismiss = { viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(false)) },
+        onConfirm = { viewModel.onEvent(PunchEvents.OnConfirmPayPeriod) }
+    )
+
 }
 
 @Composable

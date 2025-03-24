@@ -6,9 +6,11 @@ import com.trevorwiebe.timesheet.core.domain.TSResult
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
 import com.trevorwiebe.timesheet.core.domain.dto.RateDto
 import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
 import com.trevorwiebe.timesheet.core.domain.model.toPunch
 import com.trevorwiebe.timesheet.core.domain.model.toPunchDto
 import com.trevorwiebe.timesheet.core.domain.model.toRate
+import com.trevorwiebe.timesheet.core.domain.model.toTimeSheetDto
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
@@ -162,5 +164,26 @@ class PunchRepositoryImpl(
         return resultList.firstOrNull { it.error != null } ?: resultList.firstOrNull() ?: TSResult(
             error = "No punches processed"
         )
+    }
+
+    override suspend fun updateTimeSheet(timeSheet: TimeSheet): TSResult {
+        val organizationIdResult = coreRepository.getOrganizationId()
+        if (organizationIdResult.error != null) return organizationIdResult
+        val organizationId = organizationIdResult.data as String
+
+        val userIdResult = coreRepository.getUserId()
+        if (userIdResult.error != null) return userIdResult
+        val userId = userIdResult.data as String
+
+        firebaseDatabase.firestore
+            .collection("organizations")
+            .document(organizationId)
+            .collection("users")
+            .document(userId)
+            .collection("timeSheets")
+            .document(timeSheet.id)
+            .set(timeSheet.toTimeSheetDto(), merge = true)
+
+        return TSResult(data = "Timesheet updated successfully")
     }
 }

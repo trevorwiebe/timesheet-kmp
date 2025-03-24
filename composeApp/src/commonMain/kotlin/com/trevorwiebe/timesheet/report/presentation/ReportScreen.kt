@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.DataRepository
 import com.trevorwiebe.timesheet.core.domain.Util.toFriendlyDate
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.report.presentation.uiUtils.TimeSheetStatus
@@ -77,6 +78,7 @@ private fun ReportItem(
     ){
         Column(
             modifier = Modifier.fillMaxWidth().clickable {
+                DataRepository.timeSheet = timeSheet
                 onReportClick(
                     timeSheet.payPeriodStart.toString(),
                     timeSheet.payPeriodEnd.toString()
