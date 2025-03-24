@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.more.presentation.dialogsAndSheets.ConfirmSignOut
 import com.trevorwiebe.timesheet.theme.secondary
-import com.trevorwiebe.timesheet.theme.tertiary
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -37,19 +37,7 @@ fun MoreScreen(
     }
 
     Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    modifier = Modifier.padding(16.dp),
-                    text = "More",
-                    color = tertiary,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
+        topBar = { TopBar("More") }
     ) {
         Column(
             modifier = Modifier.fillMaxSize()

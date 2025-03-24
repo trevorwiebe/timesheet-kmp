@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util.toFriendlyDate
+import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.report.presentation.uiUtils.TimeSheetStatus
 import com.trevorwiebe.timesheet.report.presentation.uiUtils.UiTimeSheet
 import com.trevorwiebe.timesheet.theme.secondary
@@ -38,25 +39,13 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ReportScreen(
     viewModel: ReportViewModel = koinViewModel(),
-    onReportClick: (startTime: String, endTime: String) -> Unit
+    onReportClick: (startTime: String, endTime: String) -> Unit,
 ) {
 
     val staticState by viewModel.staticReportState.collectAsState()
 
     Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    modifier = Modifier.padding(16.dp),
-                    text = "Reports",
-                    color = tertiary,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
+        topBar = { TopBar(title = "Pay Periods") }
     ) {
         LazyColumn(
             reverseLayout = true,
