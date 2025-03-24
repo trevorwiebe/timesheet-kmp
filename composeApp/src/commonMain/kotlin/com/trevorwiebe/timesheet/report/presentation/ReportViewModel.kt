@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.report.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
@@ -26,13 +27,15 @@ class ReportViewModel(
 
     @Suppress("UNCHECKED_CAST")
     private fun getTimeSheets() {
-        viewModelScope.launch {
-            val result = reportRepository.getTimeSheets()
-            if (result.error.isNullOrEmpty()) {
-                val timeSheets = result.data as List<TimeSheet>
-                initiateTimeSheetStatusProcessing(timeSheets)
+        val job = viewModelScope.launch {
+            reportRepository.getTimeSheets().collect { result ->
+                if (result.error.isNullOrEmpty()) {
+                    val timeSheets = result.data as List<TimeSheet>
+                    initiateTimeSheetStatusProcessing(timeSheets)
+                }
             }
         }
+        FirestoreListenerRegistry.registerJob(job)
     }
 
     private suspend fun initiateTimeSheetStatusProcessing(timeSheets: List<TimeSheet>){
