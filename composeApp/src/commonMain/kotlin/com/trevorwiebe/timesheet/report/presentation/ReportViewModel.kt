@@ -48,33 +48,24 @@ class ReportViewModel(
                 val currentPayPeriodStart = payPeriodStartAndEnd.first
                 val currentPayPeriodEnd = payPeriodStartAndEnd.second
 
+                val statusList = mutableListOf<TimeSheetStatus>()
+
                 // Check if the time sheet is in the current pay period
                 if(currentPayPeriodStart == it.payPeriodStart && currentPayPeriodEnd == it.payPeriodEnd){
-                    val uiTimeSheet = UiTimeSheet(
-                        timeSheet = it,
-                        status = TimeSheetStatus.CURRENT_PERIOD
-                    )
-                    mutableTimeSheet.add(uiTimeSheet)
-                }else if(it.confirmedByUser.not()){
-                    // Check if the time sheet needs to be confirmed
-                    val uiTimeSheet = UiTimeSheet(
-                        timeSheet = it,
-                        status = TimeSheetStatus.CONFIRM_HOURS_NOW
-                    )
-                    mutableTimeSheet.add(uiTimeSheet)
-                }else if(it.submitted.not() && it.confirmedByUser){
-                    val uiTimeSheet = UiTimeSheet(
-                        timeSheet = it,
-                        status = TimeSheetStatus.CONFIRMED
-                    )
-                    mutableTimeSheet.add(uiTimeSheet)
-                }else{
-                    val uiTimeSheet = UiTimeSheet(
-                        timeSheet = it,
-                        status = TimeSheetStatus.PERIOD_CLOSED
-                    )
-                    mutableTimeSheet.add(uiTimeSheet)
+                    statusList.add(TimeSheetStatus.CURRENT_PERIOD)
                 }
+                if (it.confirmedByUser.not()) {
+                    // Check if the time sheet needs to be confirmed
+                    statusList.add(TimeSheetStatus.CONFIRM_HOURS_NOW)
+                }
+                if (it.submitted.not() && it.confirmedByUser) {
+                    statusList.add(TimeSheetStatus.CONFIRMED)
+                }
+
+                if (it.submitted && it.confirmedByUser) {
+                    statusList.add(TimeSheetStatus.PERIOD_CLOSED)
+                }
+                mutableTimeSheet.add(UiTimeSheet(it, statusList))
             }
 
             _staticReportState.value = _staticReportState.value.copy(

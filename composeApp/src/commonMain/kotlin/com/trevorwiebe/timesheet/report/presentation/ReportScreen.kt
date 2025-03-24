@@ -101,30 +101,35 @@ private fun ReportItem(
                     .fillMaxWidth().horizontalScroll(rowScrollState)
             ) {
                 Spacer(modifier = Modifier.width(4.dp))
-                when(uitTimeSheet.status){
-                    TimeSheetStatus.CURRENT_PERIOD -> {
-                        ChipItem(
-                            text = "Current Period",
-                            color = tertiary
-                        )
-                    }
-                    TimeSheetStatus.CONFIRMED -> {
-                        ChipItem(
-                            text = "Submitted",
-                            color = successGreenText
-                        )
-                    }
-                    TimeSheetStatus.CONFIRM_HOURS_NOW -> {
-                        ChipItem(
-                            text = "Unsubmitted",
-                            color = warningYellowText
-                        )
-                    }
-                    TimeSheetStatus.PERIOD_CLOSED -> {
-                        ChipItem(
-                            text = "Pay Period Closed",
-                            color = secondary
-                        )
+                uitTimeSheet.status.forEach { status ->
+                    when (status) {
+                        TimeSheetStatus.CURRENT_PERIOD -> {
+                            ChipItem(
+                                text = "Current Period",
+                                color = tertiary
+                            )
+                        }
+
+                        TimeSheetStatus.CONFIRMED -> {
+                            ChipItem(
+                                text = "Submitted",
+                                color = successGreenText
+                            )
+                        }
+
+                        TimeSheetStatus.CONFIRM_HOURS_NOW -> {
+                            ChipItem(
+                                text = "Unsubmitted",
+                                color = warningYellowText
+                            )
+                        }
+
+                        TimeSheetStatus.PERIOD_CLOSED -> {
+                            ChipItem(
+                                text = "Pay Period Closed",
+                                color = secondary
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.width(4.dp))
