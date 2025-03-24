@@ -54,7 +54,11 @@ fun App() {
                 composable<Route.SignIn> {
                     SignInScreen(
                         onSignInSuccessful = {
-                            navController.navigate(Route.Punch)
+                            navController.navigate(Route.Punch) {
+                                popUpTo(Route.SignIn) {
+                                    inclusive = true
+                                }
+                            }
                         }
                     )
                 }
@@ -65,16 +69,19 @@ fun App() {
                 }
 
                 composable<Route.Report> {
-                    ReportScreen { startTime, endTime ->
-                        navController.navigate(Route.ReportDetail(startTime, endTime))
-                    }
+                    ReportScreen(
+                        onReportClick = { startTime, endTime ->
+                            navController.navigate(Route.ReportDetail(startTime, endTime))
+                        },
+                    )
                 }
 
                 composable<Route.ReportDetail> { entry ->
                     val args = entry.toRoute<Route.ReportDetail>()
                     PunchScreen(
                         startDate = args.startTime,
-                        endDate = args.endTime
+                        endDate = args.endTime,
+                        onBack = { navController.popBackStack() }
                     )
                 }
 
@@ -86,7 +93,7 @@ fun App() {
                     MoreScreen(
                         onSignOut = {
                             navController.navigate(Route.SignIn) {
-                                popUpTo(Route.SignIn) { inclusive = true }
+                                popUpTo(Route.Punch) { inclusive = true }
                             }
                         }
                     )

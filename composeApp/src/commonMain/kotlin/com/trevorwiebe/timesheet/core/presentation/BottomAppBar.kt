@@ -73,7 +73,11 @@ fun BottomNavigationBar(navController: NavController) {
                     },
                     selected = selected,
                     onClick = {
-                        navController.navigate(item.route)
+                        navController.navigate(item.route) {
+                            popUpTo(item.route) {
+                                inclusive = true
+                            }
+                        }
                     },
                     selectedContentColor = tertiary,
                     unselectedContentColor = Color.Black.copy(0.4f),
