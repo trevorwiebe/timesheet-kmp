@@ -51,9 +51,9 @@ class ReportViewModel(
                 val timeSheetStatus = getTimeSheetStatus(it, payPeriodStartAndEnd)
                 mutableTimeSheet.add(UiTimeSheet(it, timeSheetStatus))
             }
-
             _staticReportState.value = _staticReportState.value.copy(
-                timeSheets = mutableTimeSheet.toList().sortedBy { it.timeSheet.payPeriodStart }
+                timeSheets = mutableTimeSheet.toList()
+                    .sortedByDescending { it.timeSheet.payPeriodStart }
             )
         }
     }
