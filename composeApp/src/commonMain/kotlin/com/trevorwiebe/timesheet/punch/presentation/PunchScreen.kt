@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.trevorwiebe.timesheet.DataRepository
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.getTimeSheetStatus
 import com.trevorwiebe.timesheet.core.presentation.ShiftBottomBar
@@ -48,8 +47,9 @@ import org.koin.core.parameter.parametersOf
 fun PunchScreen(
     startDate: String? = null,
     endDate: String? = null,
+    timeSheetId: String? = null,
     onBack: () -> Unit = {},
-    viewModel: PunchViewModel = koinViewModel { parametersOf(startDate, endDate) }
+    viewModel: PunchViewModel = koinViewModel { parametersOf(startDate, endDate, timeSheetId) },
 ) {
 
     val staticState by viewModel.staticPunchState.collectAsState()
@@ -170,7 +170,7 @@ fun PunchScreen(
                             },
                             onShowInfo = {},
                             status = getTimeSheetStatus(
-                                DataRepository.timeSheet,
+                                dynamicState.timeSheet,
                                 Pair(LocalDate.parse(startDate), LocalDate.parse(endDate))
                             )
                         )

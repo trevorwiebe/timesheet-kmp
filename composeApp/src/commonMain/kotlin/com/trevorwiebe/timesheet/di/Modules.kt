@@ -53,10 +53,11 @@ val sharedModule = module {
     viewModelOf(::ReportViewModel)
     viewModelOf(::MoreViewModel)
     // Replace PunchViewModel with a factory definition that accepts parameters
-    factory { (startDate: String, endDate: String) ->
+    factory { (startDate: String, endDate: String, timeSheetId: String) ->
         PunchViewModel(
             startDate = startDate,
             endDate = endDate,
+            timeSheetId = timeSheetId,
             punchRepository = get(),
             coreRepository = get(),
             calculateTimeSheets = get(),

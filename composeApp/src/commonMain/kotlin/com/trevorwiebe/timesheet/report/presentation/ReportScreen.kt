@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trevorwiebe.timesheet.DataRepository
 import com.trevorwiebe.timesheet.core.domain.Util.toFriendlyDate
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.report.presentation.uiUtils.ChipItem
@@ -33,7 +32,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ReportScreen(
     viewModel: ReportViewModel = koinViewModel(),
-    onReportClick: (startTime: String, endTime: String) -> Unit,
+    onReportClick: (startTime: String, endTime: String, timesheetId: String) -> Unit,
 ) {
 
     val staticState by viewModel.staticReportState.collectAsState()
@@ -48,8 +47,8 @@ fun ReportScreen(
                 .fillMaxSize()
         ) {
             items(staticState.timeSheets) { timeSheet ->
-                ReportItem(timeSheet) { startTime, endTime ->
-                    onReportClick(startTime, endTime)
+                ReportItem(timeSheet) { startTime, endTime, timeSheetId ->
+                    onReportClick(startTime, endTime, timeSheetId)
                 }
             }
         }
@@ -59,7 +58,7 @@ fun ReportScreen(
 @Composable
 private fun ReportItem(
     uitTimeSheet: UiTimeSheet,
-    onReportClick: (startTime: String, endTime: String) -> Unit
+    onReportClick: (startTime: String, endTime: String, timesheetId: String) -> Unit,
 ){
 
     val timeSheet = uitTimeSheet.timeSheet
@@ -71,10 +70,10 @@ private fun ReportItem(
     ){
         Column(
             modifier = Modifier.fillMaxWidth().clickable {
-                DataRepository.timeSheet = timeSheet
                 onReportClick(
                     timeSheet.payPeriodStart.toString(),
-                    timeSheet.payPeriodEnd.toString()
+                    timeSheet.payPeriodEnd.toString(),
+                    timeSheet.id
                 )
             }
         ){

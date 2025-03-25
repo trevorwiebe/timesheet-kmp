@@ -23,4 +23,6 @@ interface PunchRepository {
     suspend fun deletePunches(punchIds: List<String?>): TSResult
 
     suspend fun updateTimeSheet(timeSheet: TimeSheet): TSResult
+
+    suspend fun getTimeSheetById(id: String): Flow<TSResult>
 }

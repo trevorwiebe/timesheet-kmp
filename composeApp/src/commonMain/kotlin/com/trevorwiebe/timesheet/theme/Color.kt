@@ -16,3 +16,5 @@ val successGreenText = Color(0xFF388E3C)
 
 val warningYellowBackground = Color(0xFFFB8C00)
 val warningYellowText = Color(0xFFFB8C00)
+
+val disabledButtonTertiaryColor = Color(0XFFb5a39e)

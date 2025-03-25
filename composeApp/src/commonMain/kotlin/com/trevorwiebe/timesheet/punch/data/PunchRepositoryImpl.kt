@@ -5,11 +5,13 @@ import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.TSResult
 import com.trevorwiebe.timesheet.core.domain.dto.PunchDto
 import com.trevorwiebe.timesheet.core.domain.dto.RateDto
+import com.trevorwiebe.timesheet.core.domain.dto.TimeSheetDto
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
 import com.trevorwiebe.timesheet.core.domain.model.toPunch
 import com.trevorwiebe.timesheet.core.domain.model.toPunchDto
 import com.trevorwiebe.timesheet.core.domain.model.toRate
+import com.trevorwiebe.timesheet.core.domain.model.toTimeSheet
 import com.trevorwiebe.timesheet.core.domain.model.toTimeSheetDto
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
 import dev.gitlive.firebase.Firebase
@@ -185,5 +187,28 @@ class PunchRepositoryImpl(
             .set(timeSheet.toTimeSheetDto(), merge = true)
 
         return TSResult(data = "Timesheet updated successfully")
+    }
+
+    override suspend fun getTimeSheetById(id: String): Flow<TSResult> {
+        val organizationIdResult = coreRepository.getOrganizationId()
+        if (organizationIdResult.error != null) return flow { emit(organizationIdResult) }
+        val organizationId = organizationIdResult.data as String
+
+        val userIdResult = coreRepository.getUserId()
+        if (userIdResult.error != null) return flow { emit(userIdResult) }
+        val userId = userIdResult.data as String
+
+        val flow = firebaseDatabase.firestore
+            .collection("organizations")
+            .document(organizationId)
+            .collection("users")
+            .document(userId)
+            .collection("timeSheets")
+            .document(id)
+            .snapshots
+            .map { snapshot -> snapshot.data<TimeSheetDto>().toTimeSheet(id = snapshot.id) }
+            .map { TSResult(data = it) }
+
+        return FirestoreListenerRegistry.registerFlow(flow)
     }
 }

@@ -2,7 +2,6 @@ package com.trevorwiebe.timesheet.punch.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trevorwiebe.timesheet.DataRepository
 import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
@@ -32,11 +31,12 @@ import kotlin.time.Duration
 class PunchViewModel(
     private val startDate: String?,
     private val endDate: String?,
+    private val timeSheetId: String?,
     private val punchRepository: PunchRepository,
     private val coreRepository: CoreRepository,
     private val calculateTimeSheets: CalculateTimeSheets,
     private val processPunchesForUi: ProcessPunchesForUi,
-    private val getCurrentPayPeriodStartAndEnd: GetCurrentPayPeriodStartAndEnd
+    private val getCurrentPayPeriodStartAndEnd: GetCurrentPayPeriodStartAndEnd,
 ) : ViewModel() {
 
     private val _staticPunchState = MutableStateFlow(StaticPunchState())
@@ -62,6 +62,9 @@ class PunchViewModel(
                 start = payPeriod.first,
                 end = payPeriod.second
             )
+            if (timeSheetId != null) {
+                initiateGetTimeSheet(timeSheetId)
+            }
         }
     }
 
@@ -104,7 +107,7 @@ class PunchViewModel(
             }
 
             is PunchEvents.OnConfirmPayPeriod -> {
-                val timeSheet = DataRepository.timeSheet?.copy(
+                val timeSheet = _dynamicPunchState.value.timeSheet?.copy(
                     confirmedByUser = true
                 )
                 updateTimeSheet(timeSheet)
@@ -271,6 +274,17 @@ class PunchViewModel(
     // Extension function to calculate duration between two Instants
     private fun Duration.Companion.between(start: LocalDateTime, end: LocalDateTime): Duration {
         return end.toInstant(TimeZone.currentSystemDefault()) - start.toInstant(TimeZone.currentSystemDefault())
+    }
+
+    private fun initiateGetTimeSheet(id: String) {
+        viewModelScope.launch {
+            punchRepository.getTimeSheetById(id).collect { result ->
+                if (result.error.isNullOrEmpty()) {
+                    val timeSheet = result.data as TimeSheet
+                    _dynamicPunchState.update { it.copy(timeSheet = timeSheet) }
+                }
+            }
+        }
     }
 
     private fun updateTimeSheet(timeSheet: TimeSheet?) {

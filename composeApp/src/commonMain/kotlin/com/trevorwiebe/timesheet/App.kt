@@ -68,8 +68,14 @@ fun App() {
 
                 composable<Route.Report> {
                     ReportScreen(
-                        onReportClick = { startTime, endTime ->
-                            navController.navigate(Route.ReportDetail(startTime, endTime))
+                        onReportClick = { startTime, endTime, timeSheetId ->
+                            navController.navigate(
+                                Route.ReportDetail(
+                                    startTime,
+                                    endTime,
+                                    timeSheetId
+                                )
+                            )
                         },
                     )
                 }
@@ -79,6 +85,7 @@ fun App() {
                     PunchScreen(
                         startDate = args.startTime,
                         endDate = args.endTime,
+                        timeSheetId = args.timeSheetId,
                         onBack = { navController.popBackStack() }
                     )
                 }
