@@ -46,6 +46,7 @@ import kotlinx.datetime.LocalDate
 
 @Composable
 fun PunchItem(
+    editable: Boolean,
     date: LocalDate,
     hoursWorked: List<Pair<String, Double>>,
     punches: List<UiPunch>,
@@ -53,7 +54,7 @@ fun PunchItem(
     onShowAddHours: () -> Unit,
     onUpdateRate: (UiPunch) -> Unit,
     onTimeSelected: (Punch) -> Unit,
-    rateList: List<Rate>
+    rateList: List<Rate>,
 ) {
     var editing by remember { mutableStateOf(false) }
     val elevation by animateDpAsState(
@@ -61,10 +62,16 @@ fun PunchItem(
     )
     Card(
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { editing = !editing }
-            .padding(8.dp),
+        modifier = if (editable) {
+            Modifier
+                .fillMaxWidth()
+                .clickable { editing = !editing }
+                .padding(8.dp)
+        } else {
+            Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        },
         elevation = elevation
     ) {
         Column(

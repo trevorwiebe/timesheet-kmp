@@ -119,19 +119,22 @@ fun PunchScreen(
                         item {
                             Spacer(modifier = Modifier.height(if (timeSheetId == null) 20.dp else 100.dp))
                         }
-                        item {
-                            AddPunch(
-                                loadingPunch = elementVisibilityState.punchLoading,
-                                onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
-                                onAddToPTO = {},
-                                buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In",
-                                showPunchButton = (startDate == null && endDate == null)
-                            )
+                        if (dynamicState.timeSheet == null) {
+                            item {
+                                AddPunch(
+                                    loadingPunch = elementVisibilityState.punchLoading,
+                                    onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
+                                    onAddToPTO = {},
+                                    buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In",
+                                    showPunchButton = (startDate == null && endDate == null)
+                                )
+                            }
                         }
                         items(staticState.timeSheetDateList) { todayDate ->
                             val punchList: List<UiPunch> =
                                 dynamicState.punches[todayDate] ?: emptyList()
                             PunchItem(
+                                editable = dynamicState.timeSheet == null || dynamicState.timeSheet?.submitted == false,
                                 date = todayDate,
                                 punches = punchList,
                                 onShowConfirmDelete = { uiPunch ->
