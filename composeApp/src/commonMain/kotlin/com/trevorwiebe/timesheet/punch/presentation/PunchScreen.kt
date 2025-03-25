@@ -26,7 +26,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.trevorwiebe.timesheet.DataRepository
 import com.trevorwiebe.timesheet.core.domain.Util
+import com.trevorwiebe.timesheet.core.domain.Util.getTimeSheetStatus
 import com.trevorwiebe.timesheet.core.presentation.ShiftBottomBar
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
@@ -161,12 +163,16 @@ fun PunchScreen(
                         }
                     }
 
-                    if (startDate != null) {
+                    if (startDate != null && endDate != null) {
                         ShiftBottomBar(
                             onConfirmPayPeriod = {
                                 viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(true))
                             },
-                            onShowInfo = {}
+                            onShowInfo = {},
+                            status = getTimeSheetStatus(
+                                DataRepository.timeSheet,
+                                Pair(LocalDate.parse(startDate), LocalDate.parse(endDate))
+                            )
                         )
                     }
                 }

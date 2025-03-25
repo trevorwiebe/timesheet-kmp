@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
+import com.trevorwiebe.timesheet.core.domain.Util.getTimeSheetStatus
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
 import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
 import com.trevorwiebe.timesheet.report.domain.ReportRepository
-import com.trevorwiebe.timesheet.report.presentation.uiUtils.TimeSheetStatus
 import com.trevorwiebe.timesheet.report.presentation.uiUtils.UiTimeSheet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,27 +48,8 @@ class ReportViewModel(
             val payPeriodStartAndEnd = getCurrentPayPeriodStartAndEnd(organization)
 
             timeSheets.forEach {
-                val currentPayPeriodStart = payPeriodStartAndEnd.first
-                val currentPayPeriodEnd = payPeriodStartAndEnd.second
-
-                val statusList = mutableListOf<TimeSheetStatus>()
-
-                // Check if the time sheet is in the current pay period
-                if(currentPayPeriodStart == it.payPeriodStart && currentPayPeriodEnd == it.payPeriodEnd){
-                    statusList.add(TimeSheetStatus.CURRENT_PERIOD)
-                }
-                if (it.confirmedByUser.not()) {
-                    // Check if the time sheet needs to be confirmed
-                    statusList.add(TimeSheetStatus.CONFIRM_HOURS_NOW)
-                }
-                if (it.submitted.not() && it.confirmedByUser) {
-                    statusList.add(TimeSheetStatus.CONFIRMED)
-                }
-
-                if (it.submitted && it.confirmedByUser) {
-                    statusList.add(TimeSheetStatus.PERIOD_CLOSED)
-                }
-                mutableTimeSheet.add(UiTimeSheet(it, statusList))
+                val timeSheetStatus = getTimeSheetStatus(it, payPeriodStartAndEnd)
+                mutableTimeSheet.add(UiTimeSheet(it, timeSheetStatus))
             }
 
             _staticReportState.value = _staticReportState.value.copy(

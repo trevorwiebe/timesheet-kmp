@@ -1,5 +1,7 @@
 package com.trevorwiebe.timesheet.core.domain
 
+import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
+import com.trevorwiebe.timesheet.report.presentation.uiUtils.TimeSheetStatus
 import dev.gitlive.firebase.FirebaseException
 import dev.gitlive.firebase.FirebaseNetworkException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -152,5 +154,36 @@ object Util {
             e.message?.contains("USER_DISABLED") == true -> "This account has been disabled."
             else -> "Authentication failed: ${e.message}"
         }
+    }
+
+    fun getTimeSheetStatus(
+        timeSheet: TimeSheet?,
+        payPeriodStartAndEnd: Pair<LocalDate, LocalDate>,
+    ): List<TimeSheetStatus> {
+
+        if (timeSheet == null) return emptyList()
+
+        val currentPayPeriodStart = payPeriodStartAndEnd.first
+        val currentPayPeriodEnd = payPeriodStartAndEnd.second
+
+        val statusList = mutableListOf<TimeSheetStatus>()
+
+        // Check if the time sheet is in the current pay period
+        if (currentPayPeriodStart == timeSheet.payPeriodStart && currentPayPeriodEnd == timeSheet.payPeriodEnd) {
+            statusList.add(TimeSheetStatus.CURRENT_PERIOD)
+        }
+        if (timeSheet.confirmedByUser.not()) {
+            // Check if the time sheet needs to be confirmed
+            statusList.add(TimeSheetStatus.CONFIRM_HOURS_NOW)
+        }
+        if (timeSheet.submitted.not() && timeSheet.confirmedByUser) {
+            statusList.add(TimeSheetStatus.CONFIRMED)
+        }
+
+        if (timeSheet.submitted && timeSheet.confirmedByUser) {
+            statusList.add(TimeSheetStatus.PERIOD_CLOSED)
+        }
+
+        return statusList
     }
 }
