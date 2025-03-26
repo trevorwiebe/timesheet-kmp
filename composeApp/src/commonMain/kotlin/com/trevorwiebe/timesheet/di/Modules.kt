@@ -1,7 +1,9 @@
 package com.trevorwiebe.timesheet.di
 
 import com.trevorwiebe.timesheet.core.data.CoreRepositoryImpl
+import com.trevorwiebe.timesheet.core.data.HttpInterfaceImpl
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
+import com.trevorwiebe.timesheet.core.domain.HttpInterface
 import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
 import com.trevorwiebe.timesheet.more.presentation.MoreViewModel
 import com.trevorwiebe.timesheet.punch.data.PunchRepositoryImpl
@@ -16,6 +18,7 @@ import com.trevorwiebe.timesheet.signin.data.AuthImpl
 import com.trevorwiebe.timesheet.signin.domain.Authenticator
 import com.trevorwiebe.timesheet.signin.presentation.auth.SignInViewModel
 import dev.gitlive.firebase.Firebase
+import io.ktor.client.HttpClient
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -26,9 +29,11 @@ interface FirebaseEmulatorConfig {
 
 expect fun createEmulatorConfig(): FirebaseEmulatorConfig
 
+expect fun httpClient(): HttpClient
+
 object Debug {
     // This will be set during initialization
-    var isDebug: Boolean = true
+    var isDebug: Boolean = false
 }
 
 expect val platformModule: Module
@@ -42,7 +47,8 @@ val sharedModule = module {
         }
         firebase
     }
-    single<CoreRepository> { CoreRepositoryImpl(get()) }
+    single<HttpInterface> { HttpInterfaceImpl(httpClient()) }
+    single<CoreRepository> { CoreRepositoryImpl(get(), get()) }
     single<Authenticator> { AuthImpl(get(), get()) }
     single<PunchRepository> { PunchRepositoryImpl(get(), get()) }
     single<ReportRepository> { ReportRepositoryImpl(get(), get()) }

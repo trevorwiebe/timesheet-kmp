@@ -1,5 +1,6 @@
 package com.trevorwiebe.timesheet.punch.presentation
 
+import com.trevorwiebe.timesheet.core.domain.model.Holiday
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.Rate
 import kotlinx.datetime.LocalDate
@@ -10,5 +11,6 @@ import kotlinx.datetime.LocalDate
 data class StaticPunchState(
     val organization: Organization? = null,
     val timeSheetDateList: List<LocalDate> = emptyList(),
-    val rateList: List<Rate> = emptyList()
+    val rateList: List<Rate> = emptyList(),
+    val holidays: List<Holiday> = emptyList(),
 )

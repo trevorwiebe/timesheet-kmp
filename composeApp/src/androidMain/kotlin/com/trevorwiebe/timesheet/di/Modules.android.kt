@@ -1,10 +1,13 @@
 package com.trevorwiebe.timesheet.di
 
 import com.trevorwiebe.timesheet.BuildConfig
+import com.trevorwiebe.timesheet.core.data.createHttpClient
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.initialize
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -30,4 +33,8 @@ actual val platformModule = module {
         }
         Firebase.initialize(androidContext())
     }
+}
+
+actual fun httpClient(): HttpClient {
+    return createHttpClient(OkHttp.create())
 }

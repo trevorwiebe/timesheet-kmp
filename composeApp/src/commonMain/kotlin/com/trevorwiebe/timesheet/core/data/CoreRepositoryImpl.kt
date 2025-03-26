@@ -1,9 +1,12 @@
 package com.trevorwiebe.timesheet.core.data
 
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
+import com.trevorwiebe.timesheet.core.domain.HttpInterface
 import com.trevorwiebe.timesheet.core.domain.TSResult
 import com.trevorwiebe.timesheet.core.domain.Util.getReadableErrorMessage
+import com.trevorwiebe.timesheet.core.domain.dto.HolidayDto
 import com.trevorwiebe.timesheet.core.domain.dto.OrganizationDto
+import com.trevorwiebe.timesheet.core.domain.model.toHoliday
 import com.trevorwiebe.timesheet.core.domain.model.toOrganization
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseException
@@ -16,7 +19,8 @@ import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 class CoreRepositoryImpl(
-    private val firebaseDatabase: Firebase
+    private val firebaseDatabase: Firebase,
+    private val httpInterface: HttpInterface,
 ) : CoreRepository {
 
     override suspend fun getSignedInUser(): TSResult {
@@ -97,5 +101,12 @@ class CoreRepositoryImpl(
             val errorMessage = getReadableErrorMessage(e)
             TSResult(error = errorMessage)
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override suspend fun getHolidays(): TSResult {
+        val result = httpInterface.getHolidays("2025", "US")
+        val holidays = (result.data as List<HolidayDto>).map { it.toHoliday() }
+        return result.copy(data = holidays)
     }
 }

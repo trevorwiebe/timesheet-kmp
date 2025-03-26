@@ -1,9 +1,12 @@
 package com.trevorwiebe.timesheet.di
 
+import com.trevorwiebe.timesheet.core.data.createHttpClient
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.initialize
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.darwin.Darwin
 import org.koin.dsl.module
 import kotlin.experimental.ExperimentalNativeApi
 
@@ -25,4 +28,8 @@ actual val platformModule = module {
         Debug.isDebug = Platform.isDebugBinary
         Firebase.initialize()
     }
+}
+
+actual fun httpClient(): HttpClient {
+    return createHttpClient(Darwin.create())
 }

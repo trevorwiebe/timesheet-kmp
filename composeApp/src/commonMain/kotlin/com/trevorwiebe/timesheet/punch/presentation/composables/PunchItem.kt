@@ -26,9 +26,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
@@ -42,6 +45,7 @@ import com.trevorwiebe.timesheet.core.presentation.common.RateSelector
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.secondary
+import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -77,7 +81,7 @@ fun PunchItem(
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
-            PunchHeader(date = date)
+            PunchHeader(date = date, holiday = "New Year's Day")
             PunchBody(
                 editing = editing,
                 punches = punches,
@@ -96,9 +100,10 @@ fun PunchItem(
 }
 
 @Composable
-private fun PunchHeader(date: LocalDate) {
+private fun PunchHeader(date: LocalDate, holiday: String? = null) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = CenterVertically
     ) {
         Text(
             text = toFriendlyDayOfWeek(date),
@@ -106,6 +111,15 @@ private fun PunchHeader(date: LocalDate) {
             fontSize = 18.sp,
             color = secondary
         )
+        if (holiday != null) {
+            Text(
+                modifier = Modifier.padding(start = 16.dp),
+                text = holiday.toUpperCase(Locale.current),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = tertiary
+            )
+        }
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = toFriendlyDate(date),
@@ -142,14 +156,14 @@ private fun PunchBody(
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = CenterVertically
                 ) {
                     Column(
                         modifier = Modifier.weight(1f)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = CenterVertically,
                         ) {
                             Text("In: ", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.weight(1f))
@@ -157,7 +171,7 @@ private fun PunchBody(
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = CenterVertically,
                         ) {
                             Text("Out: ", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.weight(1f))
@@ -170,7 +184,7 @@ private fun PunchBody(
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = CenterVertically,
                         ) {
                             Text(
                                 text = "Rate:",
@@ -281,7 +295,7 @@ fun ConfirmChangesRow(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = CenterVertically
         ) {
             TimeSheetButton(
                 modifier = Modifier.width(150.dp).height(50.dp),

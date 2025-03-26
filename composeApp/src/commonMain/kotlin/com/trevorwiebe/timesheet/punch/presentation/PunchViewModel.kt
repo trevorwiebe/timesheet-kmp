@@ -6,6 +6,7 @@ import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
 import com.trevorwiebe.timesheet.core.domain.Util.roundToTwoDecimals
+import com.trevorwiebe.timesheet.core.domain.model.Holiday
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.core.domain.model.Rate
@@ -65,6 +66,8 @@ class PunchViewModel(
             if (timeSheetId != null) {
                 initiateGetTimeSheet(timeSheetId)
             }
+
+            getHolidays()
         }
     }
 
@@ -294,6 +297,18 @@ class PunchViewModel(
                 if (result.error.isNullOrEmpty()) {
                     _elementVisibilityState.update { it.copy(submitPayPeriodDialog = false) }
                 }
+            }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun getHolidays() {
+        viewModelScope.launch {
+            val result = coreRepository.getHolidays()
+            if (result.error.isNullOrEmpty()) {
+                val holidays = result.data as List<Holiday>
+                _staticPunchState.update { it.copy(holidays = holidays) }
+                println(holidays)
             }
         }
     }

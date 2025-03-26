@@ -11,4 +11,6 @@ interface CoreRepository {
     suspend fun getUserId(): TSResult
 
     suspend fun signOut(): TSResult
+
+    suspend fun getHolidays(): TSResult
 }
