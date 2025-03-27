@@ -14,4 +14,5 @@ sealed class PunchEvents {
     data class OnUpdateRate(val punchIn: Punch, val punchOut: Punch?) : PunchEvents()
     data class OnSetSubmitPayPeriodDialog(val visible: Boolean) : PunchEvents()
     data object OnConfirmPayPeriod : PunchEvents()
+    data class OnShowInfo(val showInfoSheet: Boolean) : PunchEvents()
 }

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
-import com.trevorwiebe.timesheet.core.domain.Util.roundToTwoDecimals
 import com.trevorwiebe.timesheet.core.domain.model.Holiday
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.Punch
@@ -13,6 +12,7 @@ import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
 import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
+import com.trevorwiebe.timesheet.punch.domain.usecases.AddUpHours
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
 import com.trevorwiebe.timesheet.punch.domain.usecases.ProcessPunchesForUi
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
@@ -23,13 +23,10 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
-import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Duration
 
 class PunchViewModel(
     private val startDate: String?,
@@ -39,6 +36,7 @@ class PunchViewModel(
     private val coreRepository: CoreRepository,
     private val calculateTimeSheets: CalculateTimeSheets,
     private val processPunchesForUi: ProcessPunchesForUi,
+    private val addUpHours: AddUpHours,
     private val getCurrentPayPeriodStartAndEnd: GetCurrentPayPeriodStartAndEnd,
 ) : ViewModel() {
 
@@ -50,6 +48,18 @@ class PunchViewModel(
 
     private val _elementVisibilityState = MutableStateFlow(ElementVisibilityState())
     val elementVisibilityState = _elementVisibilityState.asStateFlow()
+
+    fun getHoursWorked(
+        currentDate: LocalDate,
+        punches: List<UiPunch>,
+    ): List<Pair<String, Double>> {
+        val punchMap = mapOf(currentDate to punches)
+        val hours = addUpHours(
+            punchMap,
+            _staticPunchState.value.rateList
+        )
+        return hours
+    }
 
     init {
         getOrganization()
@@ -122,6 +132,11 @@ class PunchViewModel(
                     confirmedByUser = true
                 )
                 updateTimeSheet(timeSheet)
+            }
+            is PunchEvents.OnShowInfo -> {
+                _elementVisibilityState.update {
+                    it.copy(showPayPeriodInfoSheet = event.showInfoSheet)
+                }
             }
         }
     }
@@ -210,7 +225,9 @@ class PunchViewModel(
         punchList: List<Punch>
     ) {
         val punchMap = processPunchesForUi(datesList, punchList)
+        val totalHours = addUpHours(punchMap, _staticPunchState.value.rateList)
         _dynamicPunchState.update { it.copy(punches = punchMap) }
+        _staticPunchState.update { it.copy(hoursMap = totalHours) }
     }
 
     private fun initiateDeletePunches(
@@ -246,45 +263,6 @@ class PunchViewModel(
         viewModelScope.launch {
             val response = punchRepository.updatePunchesWithNewRate(punchIn, punchOut)
         }
-    }
-
-    fun getHoursWorkedForDay(
-        uiPunchList: List<UiPunch>,
-        rateList: List<Rate>
-    ): List<Pair<String, Double>> {
-        if (uiPunchList.isEmpty()) return emptyList()
-
-        val totalHours = mutableListOf<Pair<String, Double>>()
-
-        rateList.forEach { rate ->
-            val ratePunchList = uiPunchList.filter { it.getRate(rateList)?.id == rate.id }
-
-            var rateTotalMinutes = 0L
-
-            ratePunchList.forEach { uiPunch ->
-                val punchIn = uiPunch.punchIn
-                val punchOut = uiPunch.punchOut ?: return@forEach
-
-                // Calculate duration in minutes
-                val durationMinutes =
-                    Duration.between(punchIn.dateTime, punchOut.dateTime).inWholeMinutes
-                rateTotalMinutes += durationMinutes
-            }
-
-            // Convert total minutes to hours and round to nearest integer
-            val totalRateHours = (rateTotalMinutes / 60.0)
-
-            val ratePair = Pair("${rate.description} Hours", roundToTwoDecimals(totalRateHours))
-
-            totalHours.add(ratePair)
-        }
-
-        return totalHours
-    }
-
-    // Extension function to calculate duration between two Instants
-    private fun Duration.Companion.between(start: LocalDateTime, end: LocalDateTime): Duration {
-        return end.toInstant(TimeZone.currentSystemDefault()) - start.toInstant(TimeZone.currentSystemDefault())
     }
 
     private fun initiateGetTimeSheet(id: String) {

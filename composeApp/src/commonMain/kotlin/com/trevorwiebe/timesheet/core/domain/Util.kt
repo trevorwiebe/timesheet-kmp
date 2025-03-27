@@ -17,6 +17,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
 object Util {
@@ -139,6 +140,11 @@ object Util {
 
     fun convertStringToLocalDate(dateString: String): LocalDate {
         return LocalDate.parse(dateString)
+    }
+
+    // Extension function to calculate duration between two Instants
+    fun Duration.Companion.between(start: LocalDateTime, end: LocalDateTime): Duration {
+        return end.toInstant(TimeZone.currentSystemDefault()) - start.toInstant(TimeZone.currentSystemDefault())
     }
 
     fun getReadableErrorMessage(e: FirebaseException): String {

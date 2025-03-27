@@ -8,4 +8,5 @@ data class ElementVisibilityState(
     val showConfirmDeletePunchesSheetUiPunch: UiPunch? = null,
     val showAddHourDialogTime: LocalDate? = null,
     val submitPayPeriodDialog: Boolean = false,
+    val showPayPeriodInfoSheet: Boolean = false,
 )

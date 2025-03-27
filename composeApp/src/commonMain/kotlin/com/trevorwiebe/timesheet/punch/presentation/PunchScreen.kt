@@ -34,6 +34,7 @@ import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
 import com.trevorwiebe.timesheet.core.presentation.common.BackIcon
 import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
+import com.trevorwiebe.timesheet.punch.presentation.composables.PayPeriodInfo
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
 import com.trevorwiebe.timesheet.punch.presentation.composables.SubmitPayPeriodDialog
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
@@ -163,9 +164,9 @@ fun PunchScreen(
                                     )
                                 },
                                 rateList = staticState.rateList,
-                                hoursWorked = viewModel.getHoursWorkedForDay(
+                                hoursWorked = viewModel.getHoursWorked(
+                                    todayDate,
                                     punchList,
-                                    staticState.rateList
                                 ),
                                 holiday = holiday?.name
                             )
@@ -182,7 +183,9 @@ fun PunchScreen(
                             onConfirmPayPeriod = {
                                 viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(true))
                             },
-                            onShowInfo = {},
+                            onShowInfo = {
+                                viewModel.onEvent(PunchEvents.OnShowInfo(true))
+                            },
                             status = getTimeSheetStatus(
                                 dynamicState.timeSheet,
                                 isCurrentPeriod
@@ -220,6 +223,13 @@ fun PunchScreen(
         visible = elementVisibilityState.submitPayPeriodDialog,
         onDismiss = { viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(false)) },
         onConfirm = { viewModel.onEvent(PunchEvents.OnConfirmPayPeriod) }
+    )
+
+    PayPeriodInfo(
+        show = elementVisibilityState.showPayPeriodInfoSheet,
+        onDismiss = { viewModel.onEvent(PunchEvents.OnShowInfo(false)) },
+        currentPayPeriod = staticState.currentPeriod,
+        hoursMap = staticState.hoursMap
     )
 
 }

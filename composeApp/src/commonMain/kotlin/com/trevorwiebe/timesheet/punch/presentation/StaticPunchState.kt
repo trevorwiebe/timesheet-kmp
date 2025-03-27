@@ -14,4 +14,5 @@ data class StaticPunchState(
     val timeSheetDateList: List<LocalDate> = emptyList(),
     val rateList: List<Rate> = emptyList(),
     val holidays: List<Holiday> = emptyList(),
+    val hoursMap: List<Pair<String, Double>> = emptyList(),
 )
