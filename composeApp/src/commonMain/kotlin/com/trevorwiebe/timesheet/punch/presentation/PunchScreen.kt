@@ -175,7 +175,6 @@ fun PunchScreen(
 
                     if (timeSheetId != null) {
                         val currentPayPeriodStartAndEnd = staticState.currentPeriod
-                        println(currentPayPeriodStartAndEnd)
                         val isCurrentPeriod =
                             currentPayPeriodStartAndEnd?.first.toString() == startDate
                                     && currentPayPeriodStartAndEnd?.second.toString() == endDate

@@ -214,7 +214,6 @@ class PunchViewModel(
                 dateTime = localDateTime(),
                 rateId = rateId
             )
-            println(punch)
             punchRepository.addPunch(punch)
             _elementVisibilityState.update { it.copy(punchLoading = false) }
         }
