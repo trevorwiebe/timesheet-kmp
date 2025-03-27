@@ -1,6 +1,5 @@
 package com.trevorwiebe.timesheet.di
 
-import com.trevorwiebe.timesheet.BuildConfig
 import com.trevorwiebe.timesheet.core.data.createHttpClient
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
@@ -26,11 +25,6 @@ class AndroidFirebaseEmulatorConfig : FirebaseEmulatorConfig {
 actual val platformModule = module {
     single {
         // Set debug flag based on BuildConfig
-        Debug.isDebug = try {
-            BuildConfig.DEBUG
-        } catch (e: Exception) {
-            false
-        }
         Firebase.initialize(androidContext())
     }
 }

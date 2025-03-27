@@ -25,7 +25,6 @@ class IosFirebaseEmulatorConfig : FirebaseEmulatorConfig {
 actual val platformModule = module {
     single {
         // Set debug flag for iOS
-        Debug.isDebug = Platform.isDebugBinary
         Firebase.initialize()
     }
 }
