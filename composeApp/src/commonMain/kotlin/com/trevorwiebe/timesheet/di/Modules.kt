@@ -1,5 +1,6 @@
 package com.trevorwiebe.timesheet.di
 
+import com.trevorwiebe.timesheet.calendar.presentation.CalendarViewModel
 import com.trevorwiebe.timesheet.core.data.CoreRepositoryImpl
 import com.trevorwiebe.timesheet.core.data.HttpInterfaceImpl
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
@@ -60,6 +61,7 @@ val sharedModule = module {
     viewModelOf(::SignInViewModel)
     viewModelOf(::ReportViewModel)
     viewModelOf(::MoreViewModel)
+    viewModelOf(::CalendarViewModel)
     // Replace PunchViewModel with a factory definition that accepts parameters
     factory { (startDate: String, endDate: String, timeSheetId: String) ->
         PunchViewModel(

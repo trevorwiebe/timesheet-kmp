@@ -2,6 +2,8 @@ package com.trevorwiebe.timesheet.core.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
@@ -19,7 +21,8 @@ import com.trevorwiebe.timesheet.theme.tertiary
 fun TopBar(
     title: String,
     backIcon: @Composable() (() -> Unit?)? = null,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    actions: @Composable() RowScope.() -> Unit = {},
 ) {
 
     Column(
@@ -40,6 +43,8 @@ fun TopBar(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
+            Spacer(modifier = Modifier.weight(1f))
+            actions()
         }
         Divider()
     }
