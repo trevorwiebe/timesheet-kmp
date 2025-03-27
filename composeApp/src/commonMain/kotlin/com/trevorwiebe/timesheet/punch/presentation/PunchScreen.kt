@@ -58,7 +58,7 @@ fun PunchScreen(
     val elementVisibilityState by viewModel.elementVisibilityState.collectAsState()
 
     val listVisible = remember { mutableStateOf(false) }
-    val shiftBottomBarVisible = remember { mutableStateOf(false) }
+    val shiftBottomBarVisible = remember { mutableStateOf(true) }
     val listState = rememberLazyListState()
 
     val contentUnavailable = staticState.timeSheetDateList.isEmpty()
@@ -173,7 +173,7 @@ fun PunchScreen(
                         }
                     }
 
-                    if (timeSheetId != null) {
+                    if (timeSheetId != null && shiftBottomBarVisible.value) {
                         val currentPayPeriodStartAndEnd = staticState.currentPeriod
                         val isCurrentPeriod =
                             currentPayPeriodStartAndEnd?.first.toString() == startDate
