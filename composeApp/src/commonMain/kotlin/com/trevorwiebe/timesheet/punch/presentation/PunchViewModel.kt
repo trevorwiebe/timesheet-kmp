@@ -68,18 +68,14 @@ class PunchViewModel(
             calculatePayPeriodDateList()
 
             getRates {
-                println("On received rates")
                 val payPeriod = if (startDate == null && endDate == null) {
-                    println("Getting current pay period")
                     getCurrentPayPeriodStartAndEnd(
                         organization = _staticPunchState.value.organization
                             ?: throw Exception("Organization is null")
                     )
                 } else {
-                    println("Getting custom pay period")
                     LocalDate.parse(startDate!!) to LocalDate.parse(endDate!!)
                 }
-                println(payPeriod)
                 _staticPunchState.update { it.copy(currentPeriod = payPeriod) }
                 getPunches(
                     start = payPeriod.first,
@@ -187,10 +183,8 @@ class PunchViewModel(
 
     @Suppress("UNCHECKED_CAST")
     private fun getRates(received: () -> Unit = {}) {
-        println("trying to get rates")
         viewModelScope.launch {
             val result = punchRepository.getRates()
-            println(result)
             if (result.error.isNullOrEmpty()) {
                 val rates = result.data as List<Rate>
                 _staticPunchState.update { it.copy(rateList = rates) }
@@ -204,15 +198,12 @@ class PunchViewModel(
         start: LocalDate,
         end: LocalDate
     ) {
-        println("trying to get punches")
         val job = viewModelScope.launch {
             punchRepository.getPunches(start, end).collect { result ->
                 if (result.error.isNullOrEmpty()) {
                     val punchList = result.data as List<Punch>
                     val datesList = _staticPunchState.value.timeSheetDateList
                     initiatePunchProcessing(datesList, punchList)
-                } else {
-                    println(result.error)
                 }
             }
         }
