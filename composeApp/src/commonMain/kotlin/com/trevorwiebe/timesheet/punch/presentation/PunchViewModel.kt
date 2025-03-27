@@ -62,30 +62,40 @@ class PunchViewModel(
     }
 
     init {
-        getOrganization()
-        getRates {
-            val payPeriod = if (startDate == null && endDate == null) {
-                getCurrentPayPeriodStartAndEnd(
-                    organization = _staticPunchState.value.organization ?: return@getRates
-                )
-            } else {
-                LocalDate.parse(startDate!!) to LocalDate.parse(endDate!!)
-            }
-            _staticPunchState.update { it.copy(currentPeriod = payPeriod) }
-            getPunches(
-                start = payPeriod.first,
-                end = payPeriod.second
-            )
-            if (timeSheetId != null) {
-                initiateGetTimeSheet(timeSheetId)
-            }
+        getOrganization {
 
-            val currentYear = Clock.System.now()
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .year
-                .toString()
-            val countryCode = "US"
-            getHolidays(currentYear, countryCode)
+            // Calculate the current date list
+            calculatePayPeriodDateList()
+
+            getRates {
+                println("On received rates")
+                val payPeriod = if (startDate == null && endDate == null) {
+                    println("Getting current pay period")
+                    getCurrentPayPeriodStartAndEnd(
+                        organization = _staticPunchState.value.organization
+                            ?: throw Exception("Organization is null")
+                    )
+                } else {
+                    println("Getting custom pay period")
+                    LocalDate.parse(startDate!!) to LocalDate.parse(endDate!!)
+                }
+                println(payPeriod)
+                _staticPunchState.update { it.copy(currentPeriod = payPeriod) }
+                getPunches(
+                    start = payPeriod.first,
+                    end = payPeriod.second
+                )
+                if (timeSheetId != null) {
+                    initiateGetTimeSheet(timeSheetId)
+                }
+
+                val currentYear = Clock.System.now()
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .year
+                    .toString()
+                val countryCode = "US"
+                getHolidays(currentYear, countryCode)
+            }
         }
     }
 
@@ -141,7 +151,7 @@ class PunchViewModel(
         }
     }
 
-    private fun getTimeSheet() {
+    private fun calculatePayPeriodDateList() {
         val result = if (startDate == null && endDate == null) {
             calculateTimeSheets(
                 organization = _staticPunchState.value.organization ?: return
@@ -164,21 +174,23 @@ class PunchViewModel(
         _staticPunchState.update { it.copy(timeSheetDateList = result) }
     }
 
-    private fun getOrganization() {
+    private fun getOrganization(onReceived: () -> Unit) {
         viewModelScope.launch {
             val result = coreRepository.getOrganization()
             if (result.error.isNullOrEmpty()) {
                 val organization = result.data as Organization
                 _staticPunchState.update { it.copy(organization = organization) }
-                getTimeSheet()
+                onReceived()
             }
         }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun getRates(received: () -> Unit = {}) {
+        println("trying to get rates")
         viewModelScope.launch {
             val result = punchRepository.getRates()
+            println(result)
             if (result.error.isNullOrEmpty()) {
                 val rates = result.data as List<Rate>
                 _staticPunchState.update { it.copy(rateList = rates) }
@@ -192,6 +204,7 @@ class PunchViewModel(
         start: LocalDate,
         end: LocalDate
     ) {
+        println("trying to get punches")
         val job = viewModelScope.launch {
             punchRepository.getPunches(start, end).collect { result ->
                 if (result.error.isNullOrEmpty()) {
