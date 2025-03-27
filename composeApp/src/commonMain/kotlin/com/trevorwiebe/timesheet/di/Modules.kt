@@ -8,6 +8,7 @@ import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAn
 import com.trevorwiebe.timesheet.more.presentation.MoreViewModel
 import com.trevorwiebe.timesheet.punch.data.PunchRepositoryImpl
 import com.trevorwiebe.timesheet.punch.domain.PunchRepository
+import com.trevorwiebe.timesheet.punch.domain.usecases.AddUpHours
 import com.trevorwiebe.timesheet.punch.domain.usecases.CalculateTimeSheets
 import com.trevorwiebe.timesheet.punch.domain.usecases.ProcessPunchesForUi
 import com.trevorwiebe.timesheet.punch.presentation.PunchViewModel
@@ -55,6 +56,7 @@ val sharedModule = module {
     single<GetCurrentPayPeriodStartAndEnd> { GetCurrentPayPeriodStartAndEnd() }
     single<CalculateTimeSheets> { CalculateTimeSheets(get()) }
     single<ProcessPunchesForUi> { ProcessPunchesForUi() }
+    single<AddUpHours> { AddUpHours() }
     viewModelOf(::SignInViewModel)
     viewModelOf(::ReportViewModel)
     viewModelOf(::MoreViewModel)
@@ -68,6 +70,7 @@ val sharedModule = module {
             coreRepository = get(),
             calculateTimeSheets = get(),
             processPunchesForUi = get(),
+            addUpHours = get(),
             getCurrentPayPeriodStartAndEnd = get()
         )
     }
