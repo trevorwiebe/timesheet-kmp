@@ -4,6 +4,7 @@ import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.daysUntil
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 
@@ -16,11 +17,9 @@ class GetCurrentPayPeriodStartAndEnd {
 
         val goLiveLocalDate = organization.goLiveDate
 
-        currentDate.minus(goLiveLocalDate)
-
         // Calculate days since go-live date in local time
-        val daysSinceGoLive = currentDate.minus(goLiveLocalDate)
-        val daysIntoNewPayPeriod = daysSinceGoLive.days % 14
+        val daysSinceGoLive = goLiveLocalDate.daysUntil(currentDate)
+        val daysIntoNewPayPeriod = daysSinceGoLive % 14
 
         // Calculate start date in local time
         val startLocalDate = currentDate.minus(daysIntoNewPayPeriod, DateTimeUnit.DAY)

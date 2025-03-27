@@ -10,6 +10,7 @@ import kotlinx.datetime.LocalDate
 
 data class StaticPunchState(
     val organization: Organization? = null,
+    val currentPeriod: Pair<LocalDate, LocalDate>? = null,
     val timeSheetDateList: List<LocalDate> = emptyList(),
     val rateList: List<Rate> = emptyList(),
     val holidays: List<Holiday> = emptyList(),

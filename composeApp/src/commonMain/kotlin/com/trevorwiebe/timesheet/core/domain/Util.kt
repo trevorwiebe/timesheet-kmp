@@ -158,18 +158,15 @@ object Util {
 
     fun getTimeSheetStatus(
         timeSheet: TimeSheet?,
-        payPeriodStartAndEnd: Pair<LocalDate, LocalDate>,
+        currentPeriod: Boolean,
     ): List<TimeSheetStatus> {
 
         if (timeSheet == null) return emptyList()
 
-        val currentPayPeriodStart = payPeriodStartAndEnd.first
-        val currentPayPeriodEnd = payPeriodStartAndEnd.second
-
         val statusList = mutableListOf<TimeSheetStatus>()
 
         // Check if the time sheet is in the current pay period
-        if (currentPayPeriodStart == timeSheet.payPeriodStart && currentPayPeriodEnd == timeSheet.payPeriodEnd) {
+        if (currentPeriod) {
             statusList.add(TimeSheetStatus.CURRENT_PERIOD)
         }
         if (timeSheet.confirmedByUser.not()) {

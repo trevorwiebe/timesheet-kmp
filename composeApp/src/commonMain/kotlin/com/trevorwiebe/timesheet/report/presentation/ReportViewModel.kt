@@ -48,7 +48,9 @@ class ReportViewModel(
             val payPeriodStartAndEnd = getCurrentPayPeriodStartAndEnd(organization)
 
             timeSheets.forEach {
-                val timeSheetStatus = getTimeSheetStatus(it, payPeriodStartAndEnd)
+                val currentPeriod = it.payPeriodStart == payPeriodStartAndEnd.first
+                        && it.payPeriodEnd == payPeriodStartAndEnd.second
+                val timeSheetStatus = getTimeSheetStatus(it, currentPeriod)
                 mutableTimeSheet.add(UiTimeSheet(it, timeSheetStatus))
             }
             _staticReportState.value = _staticReportState.value.copy(

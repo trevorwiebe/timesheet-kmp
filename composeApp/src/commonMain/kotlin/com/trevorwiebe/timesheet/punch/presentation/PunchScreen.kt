@@ -57,7 +57,7 @@ fun PunchScreen(
     val elementVisibilityState by viewModel.elementVisibilityState.collectAsState()
 
     val listVisible = remember { mutableStateOf(false) }
-    val shiftBottomBarVisible = remember { mutableStateOf(true) }
+    val shiftBottomBarVisible = remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
 
     val contentUnavailable = staticState.timeSheetDateList.isEmpty()
@@ -172,7 +172,12 @@ fun PunchScreen(
                         }
                     }
 
-                    if (startDate != null && endDate != null && shiftBottomBarVisible.value) {
+                    if (timeSheetId != null) {
+                        val currentPayPeriodStartAndEnd = staticState.currentPeriod
+                        println(currentPayPeriodStartAndEnd)
+                        val isCurrentPeriod =
+                            currentPayPeriodStartAndEnd?.first.toString() == startDate
+                                    && currentPayPeriodStartAndEnd?.second.toString() == endDate
                         ShiftBottomBar(
                             onConfirmPayPeriod = {
                                 viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(true))
@@ -180,7 +185,7 @@ fun PunchScreen(
                             onShowInfo = {},
                             status = getTimeSheetStatus(
                                 dynamicState.timeSheet,
-                                Pair(LocalDate.parse(startDate), LocalDate.parse(endDate))
+                                isCurrentPeriod
                             )
                         )
                     }

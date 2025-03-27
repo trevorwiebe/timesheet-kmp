@@ -61,6 +61,7 @@ class PunchViewModel(
             } else {
                 LocalDate.parse(startDate!!) to LocalDate.parse(endDate!!)
             }
+            _staticPunchState.update { it.copy(currentPeriod = payPeriod) }
             getPunches(
                 start = payPeriod.first,
                 end = payPeriod.second
