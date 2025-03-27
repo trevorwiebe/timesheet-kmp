@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.getTimeSheetStatus
@@ -245,7 +246,7 @@ private fun AddPunch(
         modifier = Modifier.fillMaxWidth().padding(16.dp)
     ) {
         TimeSheetButton(
-            modifier = Modifier.width(150.dp).height(50.dp),
+            modifier = Modifier.width(150.dp).height(50.dp).alpha(0.0f),
             text = "Add PTO",
             onClick = onAddToPTO,
             loading = false
