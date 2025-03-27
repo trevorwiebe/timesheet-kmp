@@ -36,8 +36,10 @@ actual fun ConfirmSignOut(
                         fontWeight = FontWeight.Bold
                     )
                     DialogButtonRow(
-                        onDismiss,
-                        onConfirm,
+                        onDismissText = "Cancel",
+                        onDismiss = onDismiss,
+                        onConfirmText = "Yes",
+                        onConfirm = onConfirm,
                         actionLoading = loadingSignOut
                     )
                 }

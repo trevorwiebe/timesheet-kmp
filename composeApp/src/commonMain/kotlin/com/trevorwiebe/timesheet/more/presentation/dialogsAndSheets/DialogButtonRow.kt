@@ -20,7 +20,9 @@ import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
 fun DialogButtonRow(
+    onDismissText: String?,
     onDismiss: () -> Unit,
+    onConfirmText: String?,
     onConfirm: () -> Unit,
     actionLoading: Boolean = false,
 ) {
@@ -28,29 +30,35 @@ fun DialogButtonRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
     ) {
-        TextButton(
-            colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
-            onClick = onDismiss
-        ) {
-            Text("Cancel")
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        TextButton(
-            colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
-            onClick = onConfirm,
-        ) {
-            Box(
-                contentAlignment = Alignment.Center
+        if (onDismissText != null) {
+            TextButton(
+                colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
+                onClick = onDismiss
             ) {
-                if (actionLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        color = Color.White,
+                Text(onDismissText)
+            }
+        }
+        if (onDismissText != null && onConfirmText != null) {
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+        if (onConfirmText != null) {
+            TextButton(
+                colors = ButtonDefaults.textButtonColors(contentColor = tertiary),
+                onClick = onConfirm,
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (actionLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            color = Color.White,
+                        )
+                    }
+                    Text(
+                        text = onConfirmText
                     )
                 }
-                Text(
-                    text = "Yes"
-                )
             }
         }
     }

@@ -36,7 +36,9 @@ fun SubmitPayPeriodDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                     DialogButtonRow(
+                        onDismissText = "Cancel",
                         onDismiss = onDismiss,
+                        onConfirmText = "Yes",
                         onConfirm = onConfirm
                     )
                 }
