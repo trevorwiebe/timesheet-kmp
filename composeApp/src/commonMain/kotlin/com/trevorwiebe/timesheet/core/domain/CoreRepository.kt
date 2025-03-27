@@ -12,5 +12,5 @@ interface CoreRepository {
 
     suspend fun signOut(): TSResult
 
-    suspend fun getHolidays(): TSResult
+    suspend fun getHolidays(year: String, countryCode: String): TSResult
 }

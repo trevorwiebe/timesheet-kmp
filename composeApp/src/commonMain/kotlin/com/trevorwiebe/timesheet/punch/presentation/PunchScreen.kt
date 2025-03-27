@@ -133,6 +133,8 @@ fun PunchScreen(
                         items(staticState.timeSheetDateList) { todayDate ->
                             val punchList: List<UiPunch> =
                                 dynamicState.punches[todayDate] ?: emptyList()
+                            val holiday =
+                                staticState.holidays.firstOrNull { holiday -> holiday.date == todayDate }
                             PunchItem(
                                 editable = dynamicState.timeSheet == null || dynamicState.timeSheet?.submitted == false,
                                 date = todayDate,
@@ -164,7 +166,8 @@ fun PunchScreen(
                                 hoursWorked = viewModel.getHoursWorkedForDay(
                                     punchList,
                                     staticState.rateList
-                                )
+                                ),
+                                holiday = holiday?.name
                             )
                         }
                     }

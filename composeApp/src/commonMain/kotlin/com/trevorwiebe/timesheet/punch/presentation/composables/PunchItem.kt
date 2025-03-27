@@ -52,6 +52,7 @@ import kotlinx.datetime.LocalDate
 fun PunchItem(
     editable: Boolean,
     date: LocalDate,
+    holiday: String?,
     hoursWorked: List<Pair<String, Double>>,
     punches: List<UiPunch>,
     onShowConfirmDelete: (punchUiModel: UiPunch) -> Unit,
@@ -81,7 +82,7 @@ fun PunchItem(
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
-            PunchHeader(date = date, holiday = "New Year's Day")
+            PunchHeader(date = date, holiday = holiday)
             PunchBody(
                 editing = editing,
                 punches = punches,

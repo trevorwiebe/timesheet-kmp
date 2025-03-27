@@ -1,9 +1,10 @@
 package com.trevorwiebe.timesheet.core.domain.model
 
 import com.trevorwiebe.timesheet.core.domain.dto.HolidayDto
+import kotlinx.datetime.LocalDate
 
 data class Holiday(
-    val date: String,
+    val date: LocalDate,
     val localName: String,
     val name: String,
     val countryCode: String,
@@ -16,7 +17,7 @@ data class Holiday(
 
 fun HolidayDto.toHoliday(): Holiday {
     return Holiday(
-        date = date,
+        date = LocalDate.parse(date),
         localName = localName,
         name = name,
         countryCode = countryCode,

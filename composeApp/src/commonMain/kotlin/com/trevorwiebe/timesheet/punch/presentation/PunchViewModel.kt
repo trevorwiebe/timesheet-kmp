@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -27,6 +28,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
 
 class PunchViewModel(
@@ -67,7 +69,12 @@ class PunchViewModel(
                 initiateGetTimeSheet(timeSheetId)
             }
 
-            getHolidays()
+            val currentYear = Clock.System.now()
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .year
+                .toString()
+            val countryCode = "US"
+            getHolidays(currentYear, countryCode)
         }
     }
 
@@ -302,13 +309,12 @@ class PunchViewModel(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun getHolidays() {
+    private fun getHolidays(year: String, countryCode: String) {
         viewModelScope.launch {
-            val result = coreRepository.getHolidays()
+            val result = coreRepository.getHolidays(year, countryCode)
             if (result.error.isNullOrEmpty()) {
                 val holidays = result.data as List<Holiday>
                 _staticPunchState.update { it.copy(holidays = holidays) }
-                println(holidays)
             }
         }
     }

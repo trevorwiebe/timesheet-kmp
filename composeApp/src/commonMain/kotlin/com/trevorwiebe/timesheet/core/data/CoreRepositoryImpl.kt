@@ -104,9 +104,9 @@ class CoreRepositoryImpl(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun getHolidays(): TSResult {
-        val result = httpInterface.getHolidays("2025", "US")
-        val holidays = (result.data as List<HolidayDto>).map { it.toHoliday() }
+    override suspend fun getHolidays(year: String, countryCode: String): TSResult {
+        val result = httpInterface.getHolidays(year, countryCode)
+        val holidays = (result.data as? List<HolidayDto>)?.map { it.toHoliday() } ?: emptyList()
         return result.copy(data = holidays)
     }
 }
