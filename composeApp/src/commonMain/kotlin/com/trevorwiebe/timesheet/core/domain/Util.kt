@@ -8,13 +8,10 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
@@ -105,41 +102,34 @@ object Util {
         return if (atTopOfDay) topHour else dateTime
     }
 
-    fun LocalDateTime.minusSeconds(seconds: Int): LocalDateTime {
-        val timeZone = TimeZone.currentSystemDefault()
-        return this.toInstant(timeZone)
-            .minus(seconds, DateTimeUnit.SECOND, timeZone)
-            .toLocalDateTime(timeZone)
-    }
-
-    fun LocalDateTime.minusDays(days: Int): LocalDateTime {
-        val timeZone = TimeZone.currentSystemDefault()
-        return this.toInstant(timeZone)
-            .minus(days, DateTimeUnit.DAY, timeZone)
-            .toLocalDateTime(timeZone)
-    }
-
-    fun LocalDateTime.plusDays(days: Int): LocalDateTime {
-        val timeZone = TimeZone.currentSystemDefault()
-        return this.toInstant(timeZone)
-            .plus(days, DateTimeUnit.DAY, timeZone)
-            .toLocalDateTime(timeZone)
-    }
-
     fun LocalDateTime.plusHours(hours: Int): LocalDateTime {
         val timeZone = TimeZone.currentSystemDefault()
-        return this.toInstant(timeZone)
-            .plus(hours.hours)
-            .toLocalDateTime(timeZone)
+        return try {
+            this.toInstant(timeZone)
+                .plus(hours.hours)
+                .toLocalDateTime(timeZone)
+        } catch (e: Exception) {
+            defaultDate()
+        }
     }
 
     fun convertStringToLocalDateTime(dateTimeString: String): LocalDateTime {
-        return Instant.parse(dateTimeString)
-            .toLocalDateTime(TimeZone.currentSystemDefault())
+        if (dateTimeString.isEmpty() || dateTimeString == "null") return defaultDate()
+        return try {
+            Instant.parse(dateTimeString)
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+        } catch (e: Exception) {
+            defaultDate()
+        }
     }
 
     fun convertStringToLocalDate(dateString: String): LocalDate {
-        return LocalDate.parse(dateString)
+        if (dateString.isEmpty() || dateString == "null") return defaultDate().date
+        return try {
+            LocalDate.parse(dateString)
+        } catch (e: Exception) {
+            defaultDate().date
+        }
     }
 
     // Extension function to calculate duration between two Instants
@@ -188,5 +178,10 @@ object Util {
         }
 
         return statusList
+    }
+
+    private fun defaultDate(): LocalDateTime {
+        // date when android was released, because it's better than apple
+        return LocalDateTime(2008, 9, 23, 0, 0, 0)
     }
 }
