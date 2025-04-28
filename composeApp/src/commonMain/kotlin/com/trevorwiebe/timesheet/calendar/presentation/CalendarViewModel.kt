@@ -3,6 +3,7 @@ package com.trevorwiebe.timesheet.calendar.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.calendar.domain.usecases.GetCalendarStructure
+import com.trevorwiebe.timesheet.calendar.domain.usecases.GetTimeOffRequests
 import com.trevorwiebe.timesheet.calendar.domain.usecases.PostTimeOffRequest
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.model.TimeOffRequestModel
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 
 class CalendarViewModel(
     val postTimeOffRequest: PostTimeOffRequest,
-    val coreRepository: CoreRepository,
+    val getTimeOff: GetTimeOffRequests,
+    private val coreRepository: CoreRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CalendarState())
@@ -23,6 +25,7 @@ class CalendarViewModel(
     init {
         buildCalendarStructure()
         getSignedInUser()
+        getTimeOffRequests()
     }
 
     fun onEvent(event: CalendarEvent) {
@@ -35,6 +38,8 @@ class CalendarViewModel(
                 _state.update { it.copy(timeOffMode = event.mode) }
                 if (!event.mode) {
                     // finished selecting time off dates
+
+                    // submit time off request
                     submitTimeOffRequest()
                 }
             }
@@ -91,5 +96,45 @@ class CalendarViewModel(
             if (timeOffList.isEmpty()) return@launch
             postTimeOffRequest(timeOffList)
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun getTimeOffRequests() {
+        viewModelScope.launch {
+            getTimeOff().collect {
+                if (it.error == null) {
+                    val timeOffList = it.data as List<TimeOffRequestModel>
+
+                    val newDayUiList = _state.value.calendarStructure.map { dayUi ->
+                        val request = timeOffList.find { timeOffRequestModel ->
+                            timeOffRequestModel.requestOffTime == dayUi.date
+                        }
+                        if (request != null) {
+                            val currentList = dayUi.employeesOff.toMutableList()
+                            val existingRequestIndex = currentList
+                                .indexOfFirst { it.employeeId == request.employeeId }
+                            if (existingRequestIndex != -1) {
+                                currentList[existingRequestIndex] = request
+                            } else {
+                                currentList.add(request)
+                            }
+                            dayUi.copy(employeesOff = currentList)
+                        } else {
+                            dayUi
+                        }
+                    }
+
+                    _state.update { it.copy(calendarStructure = newDayUiList) }
+                }
+
+                // clear selected dates
+                unselectAllDates()
+            }
+        }
+    }
+
+    private fun unselectAllDates() {
+        val dayUiList = _state.value.calendarStructure.map { it.copy(selectedForTimeOff = false) }
+        _state.update { it.copy(calendarStructure = dayUiList) }
     }
 }

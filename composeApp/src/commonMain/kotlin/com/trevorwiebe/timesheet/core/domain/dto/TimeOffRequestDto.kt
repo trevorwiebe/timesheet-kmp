@@ -1,5 +1,6 @@
 package com.trevorwiebe.timesheet.core.domain.dto
 
+import com.trevorwiebe.timesheet.core.domain.model.TimeOffRequestModel
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
@@ -9,4 +10,13 @@ data class TimeOffRequestDto(
     val employeeName: String?,
     val requestOffTime: LocalDate,
     val timeOffRequestApproveTime: LocalDate?,
-)
+) {
+    fun toTimeOffRequestModel(): TimeOffRequestModel {
+        return TimeOffRequestModel(
+            employeeId = employeeId,
+            employeeName = employeeName,
+            requestOffTime = requestOffTime,
+            timeOffRequestApproveTime = timeOffRequestApproveTime
+        )
+    }
+}

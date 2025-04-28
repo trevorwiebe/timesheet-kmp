@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.di
 
 import com.trevorwiebe.timesheet.calendar.data.CalendarRepositoryImpl
 import com.trevorwiebe.timesheet.calendar.domain.CalendarRepository
+import com.trevorwiebe.timesheet.calendar.domain.usecases.GetTimeOffRequests
 import com.trevorwiebe.timesheet.calendar.domain.usecases.PostTimeOffRequest
 import com.trevorwiebe.timesheet.calendar.presentation.CalendarViewModel
 import com.trevorwiebe.timesheet.core.data.CoreRepositoryImpl
@@ -38,7 +39,7 @@ expect fun httpClient(): HttpClient
 
 object Debug {
     // This will be set during initialization
-    var isDebug: Boolean = false
+    var isDebug: Boolean = true
 }
 
 expect val platformModule: Module
@@ -64,6 +65,7 @@ val sharedModule = module {
     single<ProcessPunchesForUi> { ProcessPunchesForUi() }
     single<AddUpHours> { AddUpHours() }
     single<PostTimeOffRequest> { PostTimeOffRequest(get()) }
+    single<GetTimeOffRequests> { GetTimeOffRequests(get()) }
     viewModelOf(::SignInViewModel)
     viewModelOf(::ReportViewModel)
     viewModelOf(::MoreViewModel)
