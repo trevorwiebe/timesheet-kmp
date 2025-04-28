@@ -47,7 +47,7 @@ fun CalendarScreen(
     val lazyColumnState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
 
-    LaunchedEffect(state.calendarStructure, state.calendarType) {
+    LaunchedEffect(Unit, state.calendarType) {
         if (state.calendarType == CalendarType.GRID) {
             lazyGridState.scrollToItem(1000)
         } else {
