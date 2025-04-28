@@ -41,7 +41,10 @@ import com.trevorwiebe.timesheet.punch.presentation.composables.SubmitPayPeriodD
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.coroutines.delay
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -175,10 +178,12 @@ fun PunchScreen(
                     }
 
                     if (timeSheetId != null && shiftBottomBarVisible.value) {
+                        val currentDate =
+                            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
                         val currentPayPeriodStartAndEnd = staticState.currentPeriod
-                        val isCurrentPeriod =
-                            currentPayPeriodStartAndEnd?.first.toString() == startDate
-                                    && currentPayPeriodStartAndEnd?.second.toString() == endDate
+                        val isCurrentPeriod = currentPayPeriodStartAndEnd != null &&
+                                currentDate >= currentPayPeriodStartAndEnd.first &&
+                                currentDate <= currentPayPeriodStartAndEnd.second
                         ShiftBottomBar(
                             onConfirmPayPeriod = {
                                 viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(true))
