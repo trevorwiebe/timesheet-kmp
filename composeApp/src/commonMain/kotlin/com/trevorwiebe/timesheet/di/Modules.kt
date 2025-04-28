@@ -1,5 +1,8 @@
 package com.trevorwiebe.timesheet.di
 
+import com.trevorwiebe.timesheet.calendar.data.CalendarRepositoryImpl
+import com.trevorwiebe.timesheet.calendar.domain.CalendarRepository
+import com.trevorwiebe.timesheet.calendar.domain.usecases.PostTimeOffRequest
 import com.trevorwiebe.timesheet.calendar.presentation.CalendarViewModel
 import com.trevorwiebe.timesheet.core.data.CoreRepositoryImpl
 import com.trevorwiebe.timesheet.core.data.HttpInterfaceImpl
@@ -54,10 +57,13 @@ val sharedModule = module {
     single<Authenticator> { AuthImpl(get(), get()) }
     single<PunchRepository> { PunchRepositoryImpl(get(), get()) }
     single<ReportRepository> { ReportRepositoryImpl(get(), get()) }
+    single<CalendarRepository> { CalendarRepositoryImpl(get(), get()) }
+
     single<GetCurrentPayPeriodStartAndEnd> { GetCurrentPayPeriodStartAndEnd() }
     single<CalculateTimeSheets> { CalculateTimeSheets(get()) }
     single<ProcessPunchesForUi> { ProcessPunchesForUi() }
     single<AddUpHours> { AddUpHours() }
+    single<PostTimeOffRequest> { PostTimeOffRequest(get()) }
     viewModelOf(::SignInViewModel)
     viewModelOf(::ReportViewModel)
     viewModelOf(::MoreViewModel)
