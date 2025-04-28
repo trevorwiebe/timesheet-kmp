@@ -38,30 +38,26 @@ fun DayBlock(
                 modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 0.dp),
                 text = dayUi.date.dayOfMonth.toString(),
                 fontSize = 14.sp,
-//                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
 
-//        val filteredEventList = remember(dayUi.eventList){
-//            dayUi.eventList.filter { it.summary != "" }
-//        }
+        val userList = dayUi.employeesOff
 
-//        if(filteredEventList.size <= 4) {
-//            filteredEventList.forEach {
-//                DayBlockEventItem(
-//                    eventSummary = it.summary,
-//                    eventColor = it.color
-//                )
-//            }
-//        }else{
-//            filteredEventList.take(4).forEach{
-//                DayBlockEventItem(
-//                    eventSummary = it.summary,
-//                    eventColor = it.color
-//                )
-//            }
-//            MoreEventsEllipsis()
-//        }
-//    }
+        if (userList.size <= 3) {
+            userList.forEach {
+                DayBlockEventItem(
+                    employeeName = it.employeeName,
+                    approved = it.timeOffRequestApproveTime != null
+                )
+            }
+        } else {
+            userList.take(2).forEach {
+                DayBlockEventItem(
+                    employeeName = it.employeeName,
+                    approved = it.timeOffRequestApproveTime != null
+                )
+            }
+            MoreEventsEllipsis()
+        }
     }
 }

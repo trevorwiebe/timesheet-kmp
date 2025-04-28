@@ -54,21 +54,26 @@ fun DayList(
                     text = date,
                 )
             }
-
         }
 
-//        val filteredEventList = remember(dayUi.eventList){
-//            dayUi.eventList.filter { it.summary != "" }
-//        }
-//
-//        filteredEventList.forEach{
-//            DayListEventItem(
-//                eventSummary = it.summary,
-//                eventColor = it.color,
-//                eventStartDate = it.startDate.toFriendlyTime(),
-//                eventEndDate = it.endDate.toFriendlyTime()
-//            )
-//        }
+        val userList = dayUi.employeesOff
+        if (userList.size <= 3) {
+            userList.forEach {
+                DayListEventItem(
+                    employeeName = it.employeeName,
+                    approved = it.timeOffRequestApproveTime != null
+                )
+            }
+        } else {
+            userList.take(2).forEach {
+                DayListEventItem(
+                    employeeName = it.employeeName,
+                    approved = it.timeOffRequestApproveTime != null
+                )
+            }
+            MoreEventsEllipsis()
+        }
+
     }
 
 }

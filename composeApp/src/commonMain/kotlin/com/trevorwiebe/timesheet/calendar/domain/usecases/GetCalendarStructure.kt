@@ -10,8 +10,8 @@ import kotlinx.datetime.toLocalDateTime
 
 class GetCalendarStructure {
 
-    private val daysToGoForward = 100
-    private val daysToGoBackward = 100
+    private val daysToGoForward = 1000
+    private val daysToGoBackward = 1000
 
     operator fun invoke(): List<DayUi> {
 
@@ -34,17 +34,6 @@ class GetCalendarStructure {
             dateUiList.add(dayUi)
         }
 
-        println(dateUiList.sortedBy { it.date }.map { it.date })
         return dateUiList.sortedBy { it.date }
-
-//        val listToRemove = mutableListOf<DayUi>()
-//        for(dayUi in dateUiList){
-//            if(dayUi.date.dayOfWeek.value == 7){
-//                break
-//            }else{
-//                listToRemove.add(dayUi)
-//            }
-//        }
-//        return (dateUiList - listToRemove.toSet()).toList()
     }
 }

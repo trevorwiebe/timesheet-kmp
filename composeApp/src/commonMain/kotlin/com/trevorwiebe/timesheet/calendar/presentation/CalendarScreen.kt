@@ -29,10 +29,7 @@ import com.trevorwiebe.timesheet.calendar.presentation.composables.DayList
 import com.trevorwiebe.timesheet.calendar.presentation.composables.DayOfWeekText
 import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.CalendarType
 import com.trevorwiebe.timesheet.core.presentation.TopBar
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import timesheet.composeapp.generated.resources.Res
@@ -46,20 +43,14 @@ fun CalendarScreen(
 
     val state by viewModel.state.collectAsState()
 
-    val currentDate =
-        Clock.System.now().toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).date
-
-    val lazyGridState = rememberLazyGridState()
     val lazyColumnState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
 
-    LaunchedEffect(state.calendarStructure, lazyGridState, lazyColumnState) {
-        println(currentDate)
-        val scrollToPosition = state.calendarStructure.indexOfFirst {
-            it.date == currentDate
-        }
-        if (scrollToPosition != -1) {
-            lazyColumnState.scrollToItem(100)
-            lazyGridState.scrollToItem(100)
+    LaunchedEffect(state.calendarStructure, state.calendarType) {
+        if (state.calendarType == CalendarType.GRID) {
+            lazyGridState.scrollToItem(1000)
+        } else {
+            lazyColumnState.scrollToItem(1000)
         }
     }
 
