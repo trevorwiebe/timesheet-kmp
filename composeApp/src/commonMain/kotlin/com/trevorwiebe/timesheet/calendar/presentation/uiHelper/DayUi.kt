@@ -5,5 +5,9 @@ import kotlinx.datetime.LocalDate
 
 data class DayUi(
     val date: LocalDate,
+    val selectedForTimeOff: Boolean,
     var employeesOff: List<EmployeeModel> = emptyList(),
-)
+) {
+    val toggleTimeOff: DayUi
+        get() = copy(selectedForTimeOff = !selectedForTimeOff)
+}

@@ -11,23 +11,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
 fun TodayBlockDateLabel(
     date: String,
+    backgroundColor: Color,
+    textColor: Color,
 ) {
     Text(
         modifier = Modifier
             .width(26.dp)
             .padding(1.dp)
             .background(
-                tertiary,
+                backgroundColor,
                 RoundedCornerShape(6.dp)
             ),
         text = date,
         textAlign = TextAlign.Center,
         fontSize = 14.sp,
-        color = Color.White
+        color = textColor
     )
 }

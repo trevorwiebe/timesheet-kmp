@@ -35,6 +35,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import timesheet.composeapp.generated.resources.Res
 import timesheet.composeapp.generated.resources.baseline_calendar_view_day_24
 import timesheet.composeapp.generated.resources.baseline_calendar_view_month_24
+import timesheet.composeapp.generated.resources.check
 
 @Composable
 fun CalendarScreen(
@@ -57,29 +58,42 @@ fun CalendarScreen(
     Scaffold(
         topBar = {
             TopBar(
-                title = "Time Off",
+                title = if (state.timeOffMode) "Adding Time Off" else "Time Off",
                 actions = {
-                    if (state.calendarType == CalendarType.GRID) {
+                    if (state.timeOffMode) {
                         IconButton(
                             onClick = {
-                                viewModel.onEvent(CalendarEvent.OnSetCalendarType(CalendarType.LIST))
+                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(false))
                             }
                         ) {
                             Icon(
-                                painter = painterResource(Res.drawable.baseline_calendar_view_day_24),
-                                contentDescription = "calendar day view"
+                                painter = painterResource(Res.drawable.check),
+                                contentDescription = "check"
                             )
                         }
                     } else {
-                        IconButton(
-                            onClick = {
-                                viewModel.onEvent(CalendarEvent.OnSetCalendarType(CalendarType.GRID))
+                        if (state.calendarType == CalendarType.GRID) {
+                            IconButton(
+                                onClick = {
+                                    viewModel.onEvent(CalendarEvent.OnSetCalendarType(CalendarType.LIST))
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.baseline_calendar_view_day_24),
+                                    contentDescription = "calendar day view"
+                                )
                             }
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.baseline_calendar_view_month_24),
-                                contentDescription = "calendar month view"
-                            )
+                        } else {
+                            IconButton(
+                                onClick = {
+                                    viewModel.onEvent(CalendarEvent.OnSetCalendarType(CalendarType.GRID))
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.baseline_calendar_view_month_24),
+                                    contentDescription = "calendar month view"
+                                )
+                            }
                         }
                     }
                 }
@@ -123,16 +137,36 @@ fun CalendarScreen(
                             )
                         }
                     }
-                    items(state.calendarStructure) {
-                        DayBlock(dayUi = it)
+                    items(state.calendarStructure) { dayUi ->
+                        DayBlock(
+                            dayUi = dayUi,
+                            onClick = {
+                                if (state.timeOffMode) {
+                                    viewModel.onEvent(CalendarEvent.OnSetSelectedTimeOff(dayUi.date))
+                                }
+                            },
+                            onLongClick = {
+                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(true))
+                            }
+                        )
                     }
                 }
             } else {
                 LazyColumn(
                     state = lazyColumnState
                 ) {
-                    items(state.calendarStructure) {
-                        DayList(dayUi = it)
+                    items(state.calendarStructure) { dayUi ->
+                        DayList(
+                            dayUi = dayUi,
+                            onClick = {
+                                if (state.timeOffMode) {
+                                    viewModel.onEvent(CalendarEvent.OnSetSelectedTimeOff(dayUi.date))
+                                }
+                            },
+                            onLongClick = {
+                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(true))
+                            }
+                        )
                     }
                 }
             }

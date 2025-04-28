@@ -21,16 +21,16 @@ class GetCalendarStructure {
         var backwardsDate = currentDate
         repeat(daysToGoBackward) {
             backwardsDate = backwardsDate.minus(1, DateTimeUnit.DAY)
-            val dayUi = DayUi(backwardsDate, emptyList())
+            val dayUi = DayUi(backwardsDate, false, emptyList())
             dateUiList.add(dayUi)
         }
 
-        dateUiList.add(DayUi(currentDate, emptyList()))
+        dateUiList.add(DayUi(currentDate, false, emptyList()))
 
         var forwardsDate = currentDate
         repeat(daysToGoForward) {
             forwardsDate = forwardsDate.plus(1, DateTimeUnit.DAY)
-            val dayUi = DayUi(forwardsDate, emptyList())
+            val dayUi = DayUi(forwardsDate, false, emptyList())
             dateUiList.add(dayUi)
         }
 

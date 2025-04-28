@@ -20,6 +20,28 @@ class CalendarViewModel : ViewModel() {
             is CalendarEvent.OnSetCalendarType -> {
                 _state.update { it.copy(calendarType = event.type) }
             }
+
+            is CalendarEvent.OnSetAddTimeOffMode -> {
+                _state.update { it.copy(timeOffMode = event.mode) }
+            }
+
+            is CalendarEvent.OnAddTimeOff -> {
+
+            }
+
+            is CalendarEvent.OnSetSelectedTimeOff -> {
+                val dayUiList = _state.value.calendarStructure.toMutableList()
+                val dayIndex = dayUiList.indexOfFirst { it.date == event.date }
+
+                if (dayIndex != -1) {
+                    val updatedDay = dayUiList[dayIndex].toggleTimeOff
+                    dayUiList[dayIndex] = updatedDay
+
+                    _state.update {
+                        it.copy(calendarStructure = dayUiList)
+                    }
+                }
+            }
         }
     }
 

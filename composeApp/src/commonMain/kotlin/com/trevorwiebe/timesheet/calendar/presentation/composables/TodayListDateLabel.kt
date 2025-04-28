@@ -12,34 +12,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
 fun TodayListDateLabel(
     day: String,
     date: String,
+    backgroundColor: Color,
+    textColor: Color,
 ) {
     Row {
         Text(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(3.dp)
-                .background(tertiary, RoundedCornerShape(8.dp))
+                .background(backgroundColor, RoundedCornerShape(8.dp))
                 .padding(3.dp),
             text = day,
             textAlign = TextAlign.Center,
-            color = Color.White
+            color = textColor
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(3.dp)
-                .background(tertiary, RoundedCornerShape(8.dp))
+                .background(backgroundColor, RoundedCornerShape(8.dp))
                 .padding(3.dp),
             text = date,
             textAlign = TextAlign.Center,
-            color = Color.White
+            color = textColor
         )
     }
 
