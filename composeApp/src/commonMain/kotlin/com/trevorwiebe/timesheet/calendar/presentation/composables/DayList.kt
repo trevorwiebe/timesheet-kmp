@@ -83,14 +83,14 @@ fun DayList(
         if (userList.size <= 3) {
             userList.forEach {
                 DayListEventItem(
-                    employeeName = it.employeeName,
+                    employeeName = it.employeeName ?: "unavailable",
                     approved = it.timeOffRequestApproveTime != null
                 )
             }
         } else {
             userList.take(2).forEach {
                 DayListEventItem(
-                    employeeName = it.employeeName,
+                    employeeName = it.employeeName ?: "unavailable",
                     approved = it.timeOffRequestApproveTime != null
                 )
             }
