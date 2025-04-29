@@ -164,7 +164,7 @@ class PunchRepositoryImpl(
 
         // Return the first error if there is one, otherwise return the first success result
         return resultList.firstOrNull { it.error != null } ?: resultList.firstOrNull() ?: TSResult(
-            error = "No punches processed"
+            error = "No clock times processed"
         )
     }
 

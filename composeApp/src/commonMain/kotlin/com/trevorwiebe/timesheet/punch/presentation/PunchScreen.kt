@@ -131,7 +131,7 @@ fun PunchScreen(
                                     loadingPunch = elementVisibilityState.punchLoading,
                                     onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
                                     onAddToPTO = {},
-                                    buttonText = if (dynamicState.isClockedIn()) "Punch Out" else "Punch In",
+                                    buttonText = if (dynamicState.isClockedIn()) "Clock Out" else "Clock In",
                                     showPunchButton = (startDate == null && endDate == null)
                                 )
                             }

@@ -148,7 +148,7 @@ private fun PunchBody(
         if (punches.isEmpty()) {
             Text(
                 modifier = Modifier.padding(bottom = 8.dp),
-                text = "No punches for this day",
+                text = "No clock times for this day",
                 fontSize = 14.sp,
                 color = secondary
             )

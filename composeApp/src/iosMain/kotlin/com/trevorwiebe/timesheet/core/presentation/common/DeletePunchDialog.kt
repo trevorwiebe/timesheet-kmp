@@ -47,7 +47,7 @@ actual fun DeletePunchDialog(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Are you sure you want to delete this time? This will remove the punch-in and punch-out time."
+                        text = "Are you sure you want to delete this time? This will remove the clock-in and clock-out time."
                     )
 
                     Row(
