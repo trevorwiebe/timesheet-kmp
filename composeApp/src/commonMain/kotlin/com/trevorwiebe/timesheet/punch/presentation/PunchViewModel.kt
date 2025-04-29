@@ -144,6 +144,11 @@ class PunchViewModel(
                     it.copy(showPayPeriodInfoSheet = event.showInfoSheet)
                 }
             }
+            is PunchEvents.OnSetTimePickerVisibility -> {
+                _elementVisibilityState.update {
+                    it.copy(showTimePicker = event.visible)
+                }
+            }
         }
     }
 

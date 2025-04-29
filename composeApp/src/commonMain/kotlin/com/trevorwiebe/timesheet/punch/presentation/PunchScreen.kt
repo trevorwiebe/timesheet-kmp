@@ -34,6 +34,7 @@ import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
 import com.trevorwiebe.timesheet.core.presentation.common.BackIcon
 import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
+import com.trevorwiebe.timesheet.core.presentation.common.NativeTimePicker
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PayPeriodInfo
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
@@ -236,6 +237,15 @@ fun PunchScreen(
         currentPayPeriod = staticState.currentPeriod,
         hoursMap = staticState.hoursMap
     )
+
+    NativeTimePicker(
+        showDialog = elementVisibilityState.showTimePicker,
+        onDismiss = {
+            viewModel.onEvent(PunchEvents.OnSetTimePickerVisibility(false))
+        },
+    ) { hour, minute ->
+
+    }
 
 }
 
