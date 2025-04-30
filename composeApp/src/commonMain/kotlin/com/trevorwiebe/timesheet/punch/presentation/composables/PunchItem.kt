@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -195,7 +196,7 @@ private fun PunchBody(
                             Spacer(modifier = Modifier.weight(1f))
                             if (editing) {
                                 RateSelector(
-                                    modifier = Modifier.width(100.dp),
+                                    modifier = Modifier.width(110.dp),
                                     rateList = rateList,
                                     selectedRate = uiPunch.getRate(rateList),
                                     onRateSelected = {
@@ -280,15 +281,17 @@ fun StyleTransitionTextField(
                 ) {
                     Text(
                         modifier = Modifier
-                            .width(90.dp)
+                            .width(110.dp)
                             .padding(top = 6.dp, bottom = 6.dp, start = 8.dp, end = 8.dp),
                         text = time,
+                        textAlign = TextAlign.Center
                     )
                 }
             } else {
                 Text(
-                    modifier = Modifier.width(90.dp).padding(0.dp),
+                    modifier = Modifier.width(110.dp).padding(0.dp),
                     text = time,
+                    textAlign = TextAlign.Center
                 )
             }
         }
