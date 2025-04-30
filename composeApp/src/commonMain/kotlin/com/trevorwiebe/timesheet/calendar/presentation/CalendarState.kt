@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.calendar.presentation
 
 import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.CalendarType
 import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.DayUi
+import com.trevorwiebe.timesheet.core.domain.model.TimeOffRequestModel
 import dev.gitlive.firebase.auth.FirebaseUser
 
 data class CalendarState(
@@ -10,4 +11,7 @@ data class CalendarState(
     val addingTimeOff: Boolean = false,
     val timeOffMode: Boolean = false,
     val user: FirebaseUser? = null,
-)
+    val timeOffModel: TimeOffRequestModel? = null,
+) {
+    val showTimeOffDialog = timeOffModel != null
+}

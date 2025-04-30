@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.di
 
 import com.trevorwiebe.timesheet.calendar.data.CalendarRepositoryImpl
 import com.trevorwiebe.timesheet.calendar.domain.CalendarRepository
+import com.trevorwiebe.timesheet.calendar.domain.usecases.DeleteTimeOffRequest
 import com.trevorwiebe.timesheet.calendar.domain.usecases.GetTimeOffRequests
 import com.trevorwiebe.timesheet.calendar.domain.usecases.PostTimeOffRequest
 import com.trevorwiebe.timesheet.calendar.presentation.CalendarViewModel
@@ -66,6 +67,7 @@ val sharedModule = module {
     single<AddUpHours> { AddUpHours() }
     single<PostTimeOffRequest> { PostTimeOffRequest(get()) }
     single<GetTimeOffRequests> { GetTimeOffRequests(get()) }
+    single<DeleteTimeOffRequest> { DeleteTimeOffRequest(get()) }
     viewModelOf(::SignInViewModel)
     viewModelOf(::ReportViewModel)
     viewModelOf(::MoreViewModel)

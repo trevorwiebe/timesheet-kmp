@@ -2,6 +2,7 @@ package com.trevorwiebe.timesheet.calendar.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.timesheet.calendar.domain.usecases.DeleteTimeOffRequest
 import com.trevorwiebe.timesheet.calendar.domain.usecases.GetCalendarStructure
 import com.trevorwiebe.timesheet.calendar.domain.usecases.GetTimeOffRequests
 import com.trevorwiebe.timesheet.calendar.domain.usecases.PostTimeOffRequest
@@ -12,10 +13,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 
 class CalendarViewModel(
     val postTimeOffRequest: PostTimeOffRequest,
     val getTimeOff: GetTimeOffRequests,
+    val deleteTimeOffRequest: DeleteTimeOffRequest,
     private val coreRepository: CoreRepository,
 ) : ViewModel() {
 
@@ -57,6 +60,17 @@ class CalendarViewModel(
                     }
                 }
             }
+            is CalendarEvent.OnTimeOffSelected -> {
+                _state.update { it.copy(timeOffModel = event.timeOffRequest) }
+            }
+
+            is CalendarEvent.OnDeleteTimeOffRequest -> {
+                viewModelScope.launch {
+                    if (event.timeOffRequestModel?.id != null) {
+                        removeTimeOffRequest(event.timeOffRequestModel.id)
+                    }
+                }
+            }
         }
     }
 
@@ -86,6 +100,7 @@ class CalendarViewModel(
                 .filter { it.selectedForTimeOff }
                 .map { dayUi ->
                     TimeOffRequestModel(
+                        id = null,
                         employeeId = user?.uid,
                         employeeName = user?.displayName,
                         requestOffTime = dayUi.date,
@@ -105,23 +120,14 @@ class CalendarViewModel(
                 if (it.error == null) {
                     val timeOffList = it.data as List<TimeOffRequestModel>
 
+                    // Group requests by date
+                    val requestsByDate: Map<LocalDate, List<TimeOffRequestModel>> =
+                        timeOffList.groupBy { it.requestOffTime }
+
                     val newDayUiList = _state.value.calendarStructure.map { dayUi ->
-                        val request = timeOffList.find { timeOffRequestModel ->
-                            timeOffRequestModel.requestOffTime == dayUi.date
-                        }
-                        if (request != null) {
-                            val currentList = dayUi.employeesOff.toMutableList()
-                            val existingRequestIndex = currentList
-                                .indexOfFirst { it.employeeId == request.employeeId }
-                            if (existingRequestIndex != -1) {
-                                currentList[existingRequestIndex] = request
-                            } else {
-                                currentList.add(request)
-                            }
-                            dayUi.copy(employeesOff = currentList)
-                        } else {
-                            dayUi
-                        }
+                        val requestsForDay = requestsByDate[dayUi.date].orEmpty()
+
+                        dayUi.copy(employeesOff = requestsForDay)
                     }
 
                     _state.update { it.copy(calendarStructure = newDayUiList) }
@@ -136,5 +142,11 @@ class CalendarViewModel(
     private fun unselectAllDates() {
         val dayUiList = _state.value.calendarStructure.map { it.copy(selectedForTimeOff = false) }
         _state.update { it.copy(calendarStructure = dayUiList) }
+    }
+
+    private fun removeTimeOffRequest(timeOffId: String) {
+        viewModelScope.launch {
+            val response = deleteTimeOffRequest(timeOffId)
+        }
     }
 }
