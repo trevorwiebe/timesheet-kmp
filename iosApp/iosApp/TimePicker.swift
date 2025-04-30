@@ -18,26 +18,31 @@ class IOSNativeViewFactory: NativeViewFactory {
         onDismiss: @escaping () -> Void,
         onTimeSelected: @escaping (Punch) -> Void
     ) -> UIViewController {
-        let host = UIHostingController(rootView:
-            TimePicker(
-                punch: punch,
-                onDismiss: {
-                    onDismiss()
-                },
-                onTimeSelected: onTimeSelected
-            )
-        )
-        host.modalPresentationStyle = .overFullScreen
-        host.view.backgroundColor = .clear
+        var host: UIHostingController<TimePicker>? = nil
 
-        // Present modally from root
+        let view = TimePicker(
+            punch: punch,
+            onDismiss: {
+                host?.dismiss(animated: true)
+                onDismiss()
+            },
+            onTimeSelected: { punch in
+                onTimeSelected(punch)
+            }
+        )
+
+        let controller = UIHostingController(rootView: view)
+        host = controller
+        controller.modalPresentationStyle = .overFullScreen
+        controller.modalTransitionStyle = .crossDissolve
+        controller.view.backgroundColor = .clear
+
         if let rootVC = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController {
             DispatchQueue.main.async {
-                rootVC.present(host, animated: false, completion: nil)
+                rootVC.present(controller, animated: true, completion: nil)
             }
         }
 
-        // Return an invisible dummy controller to satisfy UIKitViewController if needed
         return UIViewController()
     }
 }
