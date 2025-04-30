@@ -1,5 +1,7 @@
 package com.trevorwiebe.timesheet.calendar.presentation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,12 +19,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.trevorwiebe.timesheet.calendar.presentation.composables.DayBlock
 import com.trevorwiebe.timesheet.calendar.presentation.composables.DayList
@@ -39,6 +44,7 @@ import timesheet.composeapp.generated.resources.baseline_calendar_view_day_24
 import timesheet.composeapp.generated.resources.baseline_calendar_view_month_24
 import timesheet.composeapp.generated.resources.check
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalendarScreen(
     viewModel: CalendarViewModel = koinViewModel(),
@@ -159,24 +165,50 @@ fun CalendarScreen(
                 LazyColumn(
                     state = lazyColumnState
                 ) {
-                    items(state.calendarStructure) { dayUi ->
-                        DayList(
-                            dayUi = dayUi,
-                            onClick = {
-                                if (state.timeOffMode) {
-                                    viewModel.onEvent(CalendarEvent.OnSetSelectedTimeOff(dayUi.date))
-                                }
-                            },
-                            onLongClick = {
-                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(true))
-                            },
-                            onEmployeeSelected = {
-                                if (it.employeeId == state.user?.uid) {
-                                    viewModel.onEvent(CalendarEvent.OnTimeOffSelected(it))
-                                }
+                    state.calendarStructure
+                        .groupBy { it.date.year to it.date.month }
+                        .forEach { (yearMonth, daysInMonth) ->
+
+                            stickyHeader {
+                                // Replace with your own composable or styling
+                                Text(
+                                    text = "${yearMonth.second.name} ${yearMonth.first}",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color.White)
+                                        .padding(
+                                            start = 16.dp,
+                                            top = 8.dp,
+                                            bottom = 8.dp,
+                                            end = 16.dp
+                                        ),
+                                    fontWeight = FontWeight.Bold
+                                )
                             }
-                        )
-                    }
+
+                            items(daysInMonth) { dayUi ->
+                                DayList(
+                                    dayUi = dayUi,
+                                    onClick = {
+                                        if (state.timeOffMode) {
+                                            viewModel.onEvent(
+                                                CalendarEvent.OnSetSelectedTimeOff(
+                                                    dayUi.date
+                                                )
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(true))
+                                    },
+                                    onEmployeeSelected = {
+                                        if (it.employeeId == state.user?.uid) {
+                                            viewModel.onEvent(CalendarEvent.OnTimeOffSelected(it))
+                                        }
+                                    }
+                                )
+                            }
+                        }
                 }
             }
         }
