@@ -1,12 +1,11 @@
 package com.trevorwiebe.timesheet.core.presentation.common
 
 import androidx.compose.runtime.Composable
+import com.trevorwiebe.timesheet.core.domain.model.Punch
 
 @Composable
 expect fun NativeTimePicker(
-    initialHour: Int = 12,
-    initialMinute: Int = 0,
-    showDialog: Boolean,
+    punch: Punch?,
     onDismiss: () -> Unit,
-    onTimeSelected: (hour: Int, minute: Int) -> Unit,
+    onTimeSelected: (Punch) -> Unit,
 )

@@ -15,5 +15,5 @@ sealed class PunchEvents {
     data class OnSetSubmitPayPeriodDialog(val visible: Boolean) : PunchEvents()
     data object OnConfirmPayPeriod : PunchEvents()
     data class OnShowInfo(val showInfoSheet: Boolean) : PunchEvents()
-    data class OnSetTimePickerVisibility(val visible: Boolean) : PunchEvents()
+    data class OnSetTimePickerVisibility(val punch: Punch?) : PunchEvents()
 }

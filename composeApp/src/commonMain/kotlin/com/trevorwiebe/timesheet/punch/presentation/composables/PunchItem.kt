@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
@@ -40,10 +41,10 @@ import com.trevorwiebe.timesheet.core.domain.Util.toFriendlyDayOfWeek
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.core.presentation.common.DestructiveButton
-import com.trevorwiebe.timesheet.core.presentation.common.PunchPuckTime
 import com.trevorwiebe.timesheet.core.presentation.common.RateSelector
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
+import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.datetime.LocalDate
@@ -168,7 +169,7 @@ private fun PunchBody(
                         ) {
                             Text("In: ", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.weight(1f))
-                            EditableTextField(uiPunch.punchIn, editing, onTimeSelected)
+                            StyleTransitionTextField(uiPunch.punchIn, editing, onTimeSelected)
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -176,7 +177,7 @@ private fun PunchBody(
                         ) {
                             Text("Out: ", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.weight(1f))
-                            EditableTextField(uiPunch.punchOut, editing, onTimeSelected)
+                            StyleTransitionTextField(uiPunch.punchOut, editing, onTimeSelected)
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -256,10 +257,10 @@ private fun PunchBody(
 }
 
 @Composable
-fun EditableTextField(
+fun StyleTransitionTextField(
     punch: Punch?,
     isEditing: Boolean,
-    onTimeSelected: (Punch) -> Unit
+    onTimeSelected: (Punch) -> Unit,
 ) {
 
     Box(
@@ -267,16 +268,26 @@ fun EditableTextField(
         contentAlignment = Alignment.Center
     ) {
         AnimatedContent(targetState = isEditing, label = "EditableTextField") { editing ->
+
+            val time = remember(punch) { Util.toFriendlyTime(punch?.dateTime) }
+
             if (editing && punch != null) {
-                PunchPuckTime(
-                    modifier = Modifier.width(100.dp),
-                    initialTime = punch,
-                    onTimeSelected = onTimeSelected,
-                )
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(primary)
+                        .clickable { onTimeSelected(punch) }
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .width(90.dp)
+                            .padding(top = 6.dp, bottom = 6.dp, start = 8.dp, end = 8.dp),
+                        text = time,
+                    )
+                }
             } else {
-                val time = remember(punch) { Util.toFriendlyTime(punch?.dateTime) }
                 Text(
-                    modifier = Modifier.width(80.dp).padding(0.dp),
+                    modifier = Modifier.width(90.dp).padding(0.dp),
                     text = time,
                 )
             }

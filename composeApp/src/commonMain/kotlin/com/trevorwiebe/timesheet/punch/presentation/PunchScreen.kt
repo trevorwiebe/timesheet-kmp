@@ -159,7 +159,9 @@ fun PunchScreen(
                                         )
                                     )
                                 },
-                                onTimeSelected = { viewModel.onEvent(PunchEvents.OnUpdatePunch(it)) },
+                                onTimeSelected = { punch ->
+                                    viewModel.onEvent(PunchEvents.OnSetTimePickerVisibility(punch))
+                                },
                                 onUpdateRate = {
                                     viewModel.onEvent(
                                         PunchEvents.OnUpdateRate(
@@ -239,11 +241,13 @@ fun PunchScreen(
     )
 
     NativeTimePicker(
-        showDialog = elementVisibilityState.showTimePicker,
+        punch = dynamicState.punchToEdit,
         onDismiss = {
-            viewModel.onEvent(PunchEvents.OnSetTimePickerVisibility(false))
+            viewModel.onEvent(PunchEvents.OnSetTimePickerVisibility(null))
         },
-    ) { hour, minute ->
+    ) { punch ->
+
+        viewModel.onEvent(PunchEvents.OnUpdatePunch(punch))
 
     }
 

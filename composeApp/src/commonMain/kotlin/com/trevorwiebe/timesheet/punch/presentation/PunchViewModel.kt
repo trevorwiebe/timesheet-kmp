@@ -145,8 +145,8 @@ class PunchViewModel(
                 }
             }
             is PunchEvents.OnSetTimePickerVisibility -> {
-                _elementVisibilityState.update {
-                    it.copy(showTimePicker = event.visible)
+                _dynamicPunchState.update {
+                    it.copy(punchToEdit = event.punch)
                 }
             }
         }
