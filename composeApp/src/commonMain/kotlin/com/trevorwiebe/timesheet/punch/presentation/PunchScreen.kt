@@ -36,7 +36,6 @@ import com.trevorwiebe.timesheet.core.presentation.common.BackIcon
 import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
 import com.trevorwiebe.timesheet.core.presentation.common.NativeTimePicker
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
-import com.trevorwiebe.timesheet.punch.presentation.composables.PayPeriodInfo
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.tertiary
@@ -239,11 +238,30 @@ fun PunchScreen(
         message = "Are you sure you want to submit this pay period?"
     )
 
-    PayPeriodInfo(
-        show = elementVisibilityState.showPayPeriodInfoSheet,
+    val friendlyStartDate =
+        remember(staticState) { Util.toFriendlyDate(staticState.currentPeriod?.first) }
+    val friendlyEndDate =
+        remember(staticState) { Util.toFriendlyDate(staticState.currentPeriod?.second) }
+
+    val plainText = remember(staticState) {
+        buildString {
+            append("Current Period:\n")
+            append("$friendlyStartDate - $friendlyEndDate\n\n")
+            append("Total Hours Worked:\n")
+            staticState.hoursMap.forEach { (rate, hours) ->
+                append("$rate: $hours\n")
+            }
+        }
+    }
+
+    NativeDialog(
+        visible = elementVisibilityState.showPayPeriodInfoSheet,
         onDismiss = { viewModel.onEvent(PunchEvents.OnShowInfo(false)) },
-        currentPayPeriod = staticState.currentPeriod,
-        hoursMap = staticState.hoursMap
+        dismissText = "",
+        onConfirm = { viewModel.onEvent(PunchEvents.OnShowInfo(false)) },
+        confirmText = "Close",
+        title = "Pay Period Info",
+        message = plainText
     )
 
     NativeTimePicker(

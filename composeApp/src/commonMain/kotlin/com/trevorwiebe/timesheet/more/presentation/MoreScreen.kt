@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.presentation.TopBar
-import com.trevorwiebe.timesheet.more.presentation.dialogsAndSheets.ConfirmSignOut
+import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
 import com.trevorwiebe.timesheet.theme.secondary
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -52,11 +52,14 @@ fun MoreScreen(
             )
         }
 
-        ConfirmSignOut(
-            show = state.confirmSignOutSheet,
-            loadingSignOut = state.signOutLoading,
+        NativeDialog(
+            visible = state.confirmSignOutSheet,
+            title = "Sign Out",
+            message = "Are you sure you want to sign out?",
             onDismiss = { viewModel.onEvent(MoreEvents.OnShowConfirmSignOutSheet(false)) },
-            onConfirm = { viewModel.onEvent(MoreEvents.OnSignOut) }
+            dismissText = "Cancel",
+            onConfirm = { viewModel.onEvent(MoreEvents.OnSignOut) },
+            confirmText = "Sign Out"
         )
     }
 }

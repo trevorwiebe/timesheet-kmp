@@ -9,6 +9,6 @@ expect fun NativeDialog(
     dismissText: String,
     onDismiss: () -> Unit,
     visible: Boolean,
-    title: String?,
-    message: String?,
+    title: String? = null,
+    message: String? = null,
 )

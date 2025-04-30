@@ -1,7 +1,9 @@
 package com.trevorwiebe.timesheet.core.presentation.common
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -39,10 +41,11 @@ actual fun NativeDialog(
 
                     if (title != null) {
                         Text(
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                             text = title,
                             fontWeight = FontWeight.SemiBold
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
 
                     if (message != null) {
@@ -50,6 +53,7 @@ actual fun NativeDialog(
                             fontSize = 14.sp,
                             text = message
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
 
                     DialogButtonRow(
@@ -58,7 +62,6 @@ actual fun NativeDialog(
                         dismissButtonText = dismissText,
                         onDismissClick = onDismiss
                     )
-
                 }
             }
         }
