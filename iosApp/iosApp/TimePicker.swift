@@ -77,15 +77,16 @@ struct TimePicker: View{
                 Divider()
 
                 HStack {
-                    Button("Cancel") {
-                        onDismiss()
+                    Button(action: onDismiss) {
+                        Text("Cancel")
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity)
                     }
-                    .padding()
-                    .foregroundColor(.red)
 
-                    Spacer()
+                    Divider()
+                        .frame(height: 44)
 
-                    Button("Confirm") {
+                    Button(action: {
                         let calendar = Calendar.current
                         let hour = calendar.component(.hour, from: selectedDate)
                         let minute = calendar.component(.minute, from: selectedDate)
@@ -105,9 +106,15 @@ struct TimePicker: View{
                         )
                         onTimeSelected(updatedPunch)
                         onDismiss()
+                    }) {
+                        Text("Confirm")
+                            .foregroundColor(.blue)
+                            .bold()
+                            .frame(maxWidth: .infinity)
                     }
-                    .padding()
                 }
+                .frame(height: 44)
+                .background(Color.white)
             }
             .background(Color.white)
             .cornerRadius(12)
