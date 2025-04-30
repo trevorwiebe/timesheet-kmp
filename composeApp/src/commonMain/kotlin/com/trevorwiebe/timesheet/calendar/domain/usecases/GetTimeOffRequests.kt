@@ -2,7 +2,7 @@ package com.trevorwiebe.timesheet.calendar.domain.usecases
 
 import com.trevorwiebe.timesheet.calendar.domain.CalendarRepository
 import com.trevorwiebe.timesheet.core.domain.TSResult
-import com.trevorwiebe.timesheet.core.domain.dto.TimeOffRequestDto
+import com.trevorwiebe.timesheet.core.domain.model.TimeOffRequestModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -14,8 +14,7 @@ class GetTimeOffRequests(
     suspend operator fun invoke(): Flow<TSResult> {
         return calendarRepository.getTimeOffList().map { tsResult ->
             if (tsResult.error == null) {
-                val timeOffDtos = tsResult.data as List<TimeOffRequestDto>
-                val timeOffModels = timeOffDtos.map { it.toTimeOffRequestModel() }
+                val timeOffModels = tsResult.data as List<TimeOffRequestModel>
                 tsResult.copy(data = timeOffModels)
             } else {
                 tsResult

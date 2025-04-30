@@ -13,7 +13,7 @@ val onTertiary = Color(0xFFFFFFFF)
 val errorRedBackground = Color(0xFFEF9A9A)
 val errorRedText = Color(0xFFD32F2F)
 
-val successGreenBackground = Color(0xFFA5D6A7)
+val successGreenBackground = Color(0xFFC8E6C9)
 val successGreenText = Color(0xFF388E3C)
 
 val warningYellowBackground = Color(0xFFFB8C00)

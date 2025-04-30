@@ -28,7 +28,9 @@ import com.trevorwiebe.timesheet.calendar.presentation.composables.DayBlock
 import com.trevorwiebe.timesheet.calendar.presentation.composables.DayList
 import com.trevorwiebe.timesheet.calendar.presentation.composables.DayOfWeekText
 import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.CalendarType
+import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.presentation.TopBar
+import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
 import kotlinx.datetime.isoDayNumber
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -143,6 +145,8 @@ fun CalendarScreen(
                             onClick = {
                                 if (state.timeOffMode) {
                                     viewModel.onEvent(CalendarEvent.OnSetSelectedTimeOff(dayUi.date))
+                                } else {
+                                    viewModel.onEvent(CalendarEvent.OnSetCalendarType(CalendarType.LIST))
                                 }
                             },
                             onLongClick = {
@@ -165,11 +169,31 @@ fun CalendarScreen(
                             },
                             onLongClick = {
                                 viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(true))
+                            },
+                            onEmployeeSelected = {
+                                if (it.employeeId == state.user?.uid) {
+                                    viewModel.onEvent(CalendarEvent.OnTimeOffSelected(it))
+                                }
                             }
                         )
                     }
                 }
             }
         }
+
+        NativeDialog(
+            confirmText = "Delete",
+            onConfirm = {
+                viewModel.onEvent(CalendarEvent.OnDeleteTimeOffRequest(state.timeOffModel))
+                viewModel.onEvent(CalendarEvent.OnTimeOffSelected(null))
+            },
+            dismissText = "Cancel",
+            onDismiss = {
+                viewModel.onEvent(CalendarEvent.OnTimeOffSelected(null))
+            },
+            visible = state.showTimeOffDialog,
+            title = "Delete Time Off",
+            message = "Request date: ${Util.toFriendlyDate(state.timeOffModel?.requestOffTime)}",
+        )
     }
 }

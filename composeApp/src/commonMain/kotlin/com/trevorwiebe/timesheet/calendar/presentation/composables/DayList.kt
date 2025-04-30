@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.DayUi
 import com.trevorwiebe.timesheet.core.domain.Util
+import com.trevorwiebe.timesheet.core.domain.model.TimeOffRequestModel
 import com.trevorwiebe.timesheet.theme.calendarBackground
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.datetime.Clock
@@ -30,6 +31,7 @@ fun DayList(
     dayUi: DayUi,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    onEmployeeSelected: (TimeOffRequestModel) -> Unit,
 ) {
 
     val day = remember { Util.toFriendlyDayOfWeek(dayUi.date) }
@@ -80,23 +82,12 @@ fun DayList(
         }
 
         val userList = dayUi.employeesOff
-        if (userList.size <= 3) {
-            userList.forEach {
-                DayListEventItem(
-                    employeeName = it.employeeName ?: "unavailable",
-                    approved = it.timeOffRequestApproveTime != null
-                )
-            }
-        } else {
-            userList.take(2).forEach {
-                DayListEventItem(
-                    employeeName = it.employeeName ?: "unavailable",
-                    approved = it.timeOffRequestApproveTime != null
-                )
-            }
-            MoreEventsEllipsis()
+        userList.forEach {
+            DayListEventItem(
+                timeOffRequestModel = it,
+                approved = it.timeOffRequestApproveTime != null,
+                onClick = { onEmployeeSelected(it) }
+            )
         }
-
     }
-
 }

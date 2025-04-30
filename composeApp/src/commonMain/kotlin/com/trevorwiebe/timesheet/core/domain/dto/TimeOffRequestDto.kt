@@ -11,8 +11,9 @@ data class TimeOffRequestDto(
     val requestOffTime: LocalDate,
     val timeOffRequestApproveTime: LocalDate?,
 ) {
-    fun toTimeOffRequestModel(): TimeOffRequestModel {
+    fun toTimeOffRequestModel(id: String): TimeOffRequestModel {
         return TimeOffRequestModel(
+            id = id,
             employeeId = employeeId,
             employeeName = employeeName,
             requestOffTime = requestOffTime,

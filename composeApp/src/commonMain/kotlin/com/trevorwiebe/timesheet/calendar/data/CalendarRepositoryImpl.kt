@@ -41,9 +41,6 @@ class CalendarRepositoryImpl(
     }
 
     override suspend fun getTimeOffList(): Flow<TSResult> {
-        val organizationIdResult = coreRepository.getOrganizationId()
-        if (organizationIdResult.error != null) return flow { emit(organizationIdResult) }
-        val organizationId = organizationIdResult.data as String
 
         return try {
             // Use the collectionGroup query feature from GitLive SDK
@@ -53,7 +50,7 @@ class CalendarRepositoryImpl(
                 .map { snapshot ->
                     val requests = snapshot.documents.mapNotNull { document ->
                         try {
-                            document.data<TimeOffRequestDto>()
+                            document.data<TimeOffRequestDto>().toTimeOffRequestModel(document.id)
                         } catch (e: Exception) {
                             null
                         }
@@ -66,6 +63,27 @@ class CalendarRepositoryImpl(
         } catch (e: Exception) {
             flow { emit(TSResult(error = e.message ?: "Unknown error")) }
         }
+    }
+
+    override suspend fun deleteTimeOffRequest(id: String): TSResult {
+        val organizationIdResult = coreRepository.getOrganizationId()
+        if (organizationIdResult.error != null) return organizationIdResult
+        val organizationId = organizationIdResult.data as String
+
+        val userIdResult = coreRepository.getUserId()
+        if (userIdResult.error != null) return userIdResult
+        val userId = userIdResult.data as String
+
+        firebaseDatabase.firestore
+            .collection("organizations")
+            .document(organizationId)
+            .collection("users")
+            .document(userId)
+            .collection("timeOffRequests")
+            .document(id)
+            .delete()
+
+        return TSResult(data = "Success")
     }
 
 }

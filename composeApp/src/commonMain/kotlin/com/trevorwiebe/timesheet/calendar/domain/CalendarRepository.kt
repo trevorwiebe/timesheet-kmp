@@ -10,4 +10,6 @@ interface CalendarRepository {
 
     suspend fun getTimeOffList(): Flow<TSResult>
 
+    suspend fun deleteTimeOffRequest(id: String): TSResult
+
 }

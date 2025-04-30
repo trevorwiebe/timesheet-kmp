@@ -4,6 +4,7 @@ import com.trevorwiebe.timesheet.core.domain.dto.TimeOffRequestDto
 import kotlinx.datetime.LocalDate
 
 data class TimeOffRequestModel(
+    val id: String?,
     val employeeId: String?,
     val employeeName: String?,
     val requestOffTime: LocalDate,
