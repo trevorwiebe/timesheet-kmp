@@ -1,21 +1,12 @@
 package com.trevorwiebe.timesheet.core.presentation.common
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
@@ -79,10 +70,11 @@ actual fun NativeTimePicker(
                     containerColor = Color.White,
                 )
             ) {
-                Column {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
                     TimePicker(
                         modifier = Modifier
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                             .background(Color.White),
                         state = timeState,
                         colors = TimePickerDefaults.colors(
@@ -103,42 +95,21 @@ actual fun NativeTimePicker(
                         )
                     )
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(
-                            onClick = { onDismiss() },
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.Black,
-                                containerColor = Color.White
-                            )
-                        ) {
-                            Text("Cancel")
-                        }
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Button(
-                            onClick = {
-                                if (punch == null) {
-                                    onDismiss()
-                                    return@Button
-                                }
-                                // Call the onTimeSelected callback with the current time values
-                                val updatedPunch = updatePunch(timeState, punch)
-                                onTimeSelected(updatedPunch)
-                                onDismiss() // Close the dialog after selection
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = tertiary
-                            )
-                        ) {
-                            Text("Confirm")
-                        }
-                    }
+                    DialogButtonRow(
+                        confirmButtonText = "Confirm",
+                        onConfirmClick = {
+                            if (punch == null) {
+                                onDismiss()
+                                return@DialogButtonRow
+                            }
+                            // Call the onTimeSelected callback with the current time values
+                            val updatedPunch = updatePunch(timeState, punch)
+                            onTimeSelected(updatedPunch)
+                            onDismiss() // Close the dialog after selection
+                        },
+                        dismissButtonText = "Cancel",
+                        onDismissClick = onDismiss,
+                    )
                 }
             }
         }

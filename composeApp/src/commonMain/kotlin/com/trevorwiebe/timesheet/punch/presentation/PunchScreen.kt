@@ -33,12 +33,11 @@ import com.trevorwiebe.timesheet.core.presentation.ShiftBottomBar
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
 import com.trevorwiebe.timesheet.core.presentation.common.BackIcon
-import com.trevorwiebe.timesheet.core.presentation.common.DeletePunchDialog
+import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
 import com.trevorwiebe.timesheet.core.presentation.common.NativeTimePicker
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.composables.PayPeriodInfo
 import com.trevorwiebe.timesheet.punch.presentation.composables.PunchItem
-import com.trevorwiebe.timesheet.punch.presentation.composables.SubmitPayPeriodDialog
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.coroutines.delay
@@ -205,15 +204,18 @@ fun PunchScreen(
         }
     }
 
-    DeletePunchDialog(
-        modifier = Modifier,
+    NativeDialog(
         visible = elementVisibilityState.showConfirmDeletePunchesSheetUiPunch != null,
         onConfirm = {
             viewModel.onEvent(PunchEvents.OnDeletePunches)
         },
+        confirmText = "Delete",
         onDismiss = {
             viewModel.onEvent(PunchEvents.OnShowConfirmDeletePunchesSheet(null))
-        }
+        },
+        dismissText = "Cancel",
+        title = "Are you sure?",
+        message = "Are you sure you want to delete this time? This will remove the clock-in and clock-out time."
     )
 
     AddHoursDialog(
@@ -227,10 +229,14 @@ fun PunchScreen(
         rateList = staticState.rateList
     )
 
-    SubmitPayPeriodDialog(
+    NativeDialog(
         visible = elementVisibilityState.submitPayPeriodDialog,
+        onConfirm = { viewModel.onEvent(PunchEvents.OnConfirmPayPeriod) },
+        confirmText = "Confirm",
         onDismiss = { viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(false)) },
-        onConfirm = { viewModel.onEvent(PunchEvents.OnConfirmPayPeriod) }
+        dismissText = "Cancel",
+        title = "Submit Pay Period",
+        message = "Are you sure you want to submit this pay period?"
     )
 
     PayPeriodInfo(

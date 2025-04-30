@@ -6,9 +6,11 @@ import com.trevorwiebe.timesheet.core.domain.model.Rate
 import kotlinx.datetime.LocalDate
 
 @Composable
-expect fun AddHoursDialog(
+actual fun AddHoursDialog(
     currentDate: LocalDate?,
     onDismiss: () -> Unit,
     onConfirm: (Punch, Punch) -> Unit,
     rateList: List<Rate>,
-)
+) {
+
+}
