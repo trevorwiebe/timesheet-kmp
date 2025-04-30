@@ -88,7 +88,7 @@ fun BottomAppBar(navController: NavController) {
 
 sealed class BottomNavItem(val route: Route, val icon: DrawableResource, val label: String) {
     data object Punch :
-        BottomNavItem(Route.Punch, Res.drawable.baseline_punch_clock_24, "Clock In/Out")
+        BottomNavItem(Route.Punch, Res.drawable.baseline_punch_clock_24, "Clock I/O")
     data object Report :
         BottomNavItem(Route.Report, Res.drawable.baseline_article_24, "Pay Periods")
 
