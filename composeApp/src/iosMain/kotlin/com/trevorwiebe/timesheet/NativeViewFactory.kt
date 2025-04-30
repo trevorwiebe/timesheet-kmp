@@ -9,4 +9,14 @@ interface NativeViewFactory {
         onDismiss: () -> Unit,
         onTimeSelected: (Punch) -> Unit,
     ): UIViewController
+
+    fun createDialog(
+        confirmText: String,
+        onConfirm: () -> Unit,
+        dismissText: String,
+        onDismiss: () -> Unit,
+        title: String?,
+        message: String?,
+    ): UIViewController
+
 }

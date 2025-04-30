@@ -10,8 +10,50 @@ import SwiftUI
 import ComposeApp
 
 class IOSNativeViewFactory: NativeViewFactory {
-
+    
     static var shared = IOSNativeViewFactory()
+
+    
+    func createDialog(
+        confirmText: String,
+        onConfirm: @escaping () -> Void,
+        dismissText: String,
+        onDismiss: @escaping () -> Void,
+        title: String?,
+        message: String?
+    ) -> UIViewController {
+        var host: UIHostingController<GeneralDialog>? = nil
+
+        let view = GeneralDialog(
+            confirmText: confirmText,
+            onConfirm: {
+                host?.dismiss(animated: true)
+                onConfirm()
+            },
+            dismissText: dismissText,
+            onDismiss: {
+                host?.dismiss(animated: true)
+                onDismiss()
+            },
+            title: title,
+            message: message
+        )
+
+        let controller = UIHostingController(rootView: view)
+        host = controller
+        controller.modalPresentationStyle = .overFullScreen
+        controller.modalTransitionStyle = .crossDissolve
+        controller.view.backgroundColor = .clear
+
+        if let rootVC = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController {
+            DispatchQueue.main.async {
+                rootVC.present(controller, animated: true, completion: nil)
+            }
+        }
+
+        return UIViewController()
+    }
+    
     
     func createTimePickerView(
         punch: Punch,
