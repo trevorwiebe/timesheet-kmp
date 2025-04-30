@@ -18,12 +18,27 @@ class IOSNativeViewFactory: NativeViewFactory {
         onDismiss: @escaping () -> Void,
         onTimeSelected: @escaping (Punch) -> Void
     ) -> UIViewController {
-        let view = TimePicker(
-            punch: punch,
-            onDismiss: onDismiss,
-            onTimeSelected: onTimeSelected
+        let host = UIHostingController(rootView:
+            TimePicker(
+                punch: punch,
+                onDismiss: {
+                    onDismiss()
+                },
+                onTimeSelected: onTimeSelected
+            )
         )
-        return UIHostingController(rootView: view)
+        host.modalPresentationStyle = .overFullScreen
+        host.view.backgroundColor = .clear
+
+        // Present modally from root
+        if let rootVC = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController {
+            DispatchQueue.main.async {
+                rootVC.present(host, animated: false, completion: nil)
+            }
+        }
+
+        // Return an invisible dummy controller to satisfy UIKitViewController if needed
+        return UIViewController()
     }
 }
 
@@ -79,44 +94,58 @@ struct TimePicker: View{
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            TimePickerRepresentable(selectedDate: $selectedDate)
-                .frame(height: 200)
-
-            Divider()
-
-            HStack {
-                Button("Cancel") {
+        ZStack {
+            // Dimmed background
+            Color.black.opacity(0.4)
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
                     onDismiss()
                 }
-                .padding()
-                .foregroundColor(.red)
 
-                Spacer()
+            // Dialog card
+            VStack(spacing: 0) {
+                TimePickerRepresentable(selectedDate: $selectedDate)
+                    .frame(height: 200)
 
-                Button("Confirm") {
-                    let calendar = Calendar.current
-                    let hour = calendar.component(.hour, from: selectedDate)
-                    let minute = calendar.component(.minute, from: selectedDate)
-                    let updatedDateTime = Kotlinx_datetimeLocalDateTime(
-                        date: punch.dateTime.date,
-                        time: Kotlinx_datetimeLocalTime(
-                            hour: Int32(hour),
-                            minute: Int32(minute),
-                            second: 0,
-                            nanosecond: 0
+                Divider()
+
+                HStack {
+                    Button("Cancel") {
+                        onDismiss()
+                    }
+                    .padding()
+                    .foregroundColor(.red)
+
+                    Spacer()
+
+                    Button("Confirm") {
+                        let calendar = Calendar.current
+                        let hour = calendar.component(.hour, from: selectedDate)
+                        let minute = calendar.component(.minute, from: selectedDate)
+                        let updatedDateTime = Kotlinx_datetimeLocalDateTime(
+                            date: punch.dateTime.date,
+                            time: Kotlinx_datetimeLocalTime(
+                                hour: Int32(hour),
+                                minute: Int32(minute),
+                                second: 0,
+                                nanosecond: 0
+                            )
                         )
-                    )
-                    let updatedPunch = Punch(
-                        punchId: punch.punchId,
-                        dateTime: updatedDateTime,
-                        rateId: punch.rateId
-                    )
-                    onTimeSelected(updatedPunch)
-                    onDismiss()
+                        let updatedPunch = Punch(
+                            punchId: punch.punchId,
+                            dateTime: updatedDateTime,
+                            rateId: punch.rateId
+                        )
+                        onTimeSelected(updatedPunch)
+                        onDismiss()
+                    }
+                    .padding()
                 }
-                .padding()
             }
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(radius: 10)
+            .frame(width: 300)
         }
     }
 }
