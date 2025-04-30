@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -15,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.model.TimeOffRequestModel
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.successGreenBackground
@@ -29,6 +31,9 @@ fun DayListEventItem(
 
     val backgroundColor = if (approved) successGreenBackground else primary
     val textColor = if (approved) successGreenText else Color.Black
+
+    val approvedDate =
+        remember { "Approved on: ${Util.toFriendlyDate(timeOffRequestModel.timeOffRequestApproveTime)}" }
 
     Column(
         modifier = Modifier
@@ -50,7 +55,7 @@ fun DayListEventItem(
         )
         if (approved) {
             Text(
-                text = "Approved on: ${timeOffRequestModel.timeOffRequestApproveTime}",
+                text = approvedDate,
                 fontSize = 14.sp,
                 modifier = Modifier,
                 maxLines = 1,
