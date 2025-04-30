@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 import com.trevorwiebe.timesheet.theme.tertiary
 
 @Composable
-fun DialogButtonRow(
-    confirmButtonText: String,
+actual fun DialogButtonRow(
+    confirmButtonText: String?,
     onConfirmClick: () -> Unit,
-    dismissButtonText: String,
+    dismissButtonText: String?,
     onDismissClick: () -> Unit,
 ) {
 
@@ -27,26 +27,29 @@ fun DialogButtonRow(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Button(
-            onClick = onDismissClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = Color.Black
-            )
-        ) {
-            Text(dismissButtonText)
+        if (dismissButtonText != null) {
+            Button(
+                onClick = onDismissClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.Black
+                )
+            ) {
+                Text(dismissButtonText)
+            }
+            Spacer(modifier = Modifier.width(16.dp))
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Button(
-            onClick = onConfirmClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = tertiary,
-                contentColor = Color.White
-            )
-        ) {
-            Text(confirmButtonText)
+        if (confirmButtonText != null) {
+            Button(
+                onClick = onConfirmClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = tertiary,
+                    contentColor = Color.White
+                )
+            ) {
+                Text(confirmButtonText)
+            }
         }
     }
 }

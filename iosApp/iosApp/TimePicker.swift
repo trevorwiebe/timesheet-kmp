@@ -74,17 +74,12 @@ struct TimePicker: View{
                 TimePickerRepresentable(selectedDate: $selectedDate)
                     .frame(height: 200)
 
-                Divider()
-
                 HStack {
                     Button(action: onDismiss) {
                         Text("Cancel")
                             .foregroundColor(.red)
                             .frame(maxWidth: .infinity)
                     }
-
-                    Divider()
-                        .frame(height: 44)
 
                     Button(action: {
                         let calendar = Calendar.current
@@ -114,7 +109,7 @@ struct TimePicker: View{
                     }
                 }
                 .frame(height: 44)
-                .background(Color.white)
+                .padding(.vertical, 14)
             }
             .background(Color.white)
             .cornerRadius(12)

@@ -44,7 +44,6 @@ struct GeneralDialog: View {
                         .padding([.leading, .trailing], 16)
                 }
 
-                Divider()
 
                 HStack {
                     Button(action: onDismiss) {
@@ -53,8 +52,6 @@ struct GeneralDialog: View {
                             .frame(maxWidth: .infinity)
                     }
 
-                    Divider()
-                        .frame(height: 44)
 
                     Button(action: onConfirm) {
                         Text(confirmText)
@@ -64,7 +61,7 @@ struct GeneralDialog: View {
                     }
                 }
                 .frame(height: 44)
-                .background(Color.white)
+                .padding(.vertical, 14)
             }
             .background(Color.white)
             .cornerRadius(12)
