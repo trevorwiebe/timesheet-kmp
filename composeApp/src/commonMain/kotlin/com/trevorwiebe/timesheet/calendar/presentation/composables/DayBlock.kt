@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.DayUi
@@ -58,6 +59,13 @@ fun DayBlock(
     } else {
         dayUi.date.dayOfMonth.toString()
     }
+
+    val fontWeight = if (dayUi.date.dayOfMonth == 1) {
+        FontWeight.Bold
+    } else {
+        FontWeight.Normal
+    }
+
     Column(
         modifier = Modifier
             .padding(2.dp)
@@ -75,14 +83,16 @@ fun DayBlock(
             TodayBlockDateLabel(
                 date = dayOfMonthString,
                 backgroundColor = todayLabelBackground,
-                textColor = todayLabelTextColor
+                textColor = todayLabelTextColor,
+                fontWeight = fontWeight
             )
         } else {
             Text(
                 modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 0.dp),
                 text = dayOfMonthString,
                 fontSize = 14.sp,
-                color = otherDateTextColor
+                color = otherDateTextColor,
+                fontWeight = fontWeight
             )
         }
 

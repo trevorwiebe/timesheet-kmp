@@ -57,9 +57,9 @@ fun CalendarScreen(
 
     LaunchedEffect(Unit, state.calendarType) {
         if (state.calendarType == CalendarType.GRID) {
-            lazyGridState.scrollToItem(1000)
+            lazyGridState.scrollToItem(1005)
         } else {
-            lazyColumnState.scrollToItem(1000)
+            lazyColumnState.scrollToItem(1032)
         }
     }
 
