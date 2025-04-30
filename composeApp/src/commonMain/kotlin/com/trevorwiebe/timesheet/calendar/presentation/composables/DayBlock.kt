@@ -19,6 +19,7 @@ import com.trevorwiebe.timesheet.theme.calendarBackground
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -34,6 +35,29 @@ fun DayBlock(
     val todayLabelTextColor = if (dayUi.selectedForTimeOff) Color.Black else Color.White
     val otherDateTextColor = if (dayUi.selectedForTimeOff) Color.White else Color.Black
 
+    fun monthName(monthNumber: Int): String {
+        return when (monthNumber) {
+            1 -> "Jan"
+            2 -> "Feb"
+            3 -> "Mar"
+            4 -> "Apr"
+            5 -> "May"
+            6 -> "Jun"
+            7 -> "Jul"
+            8 -> "Aug"
+            9 -> "Sep"
+            10 -> "Oct"
+            11 -> "Nov"
+            12 -> "Dec"
+            else -> ""
+        }
+    }
+
+    val dayOfMonthString = if (dayUi.date.dayOfMonth == 1) {
+        "${monthName(dayUi.date.month.number)} ${dayUi.date.dayOfMonth}"
+    } else {
+        dayUi.date.dayOfMonth.toString()
+    }
     Column(
         modifier = Modifier
             .padding(2.dp)
@@ -49,14 +73,14 @@ fun DayBlock(
                 .toLocalDateTime(TimeZone.currentSystemDefault()).date
         ) {
             TodayBlockDateLabel(
-                date = dayUi.date.dayOfMonth.toString(),
+                date = dayOfMonthString,
                 backgroundColor = todayLabelBackground,
                 textColor = todayLabelTextColor
             )
         } else {
             Text(
                 modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 0.dp),
-                text = dayUi.date.dayOfMonth.toString(),
+                text = dayOfMonthString,
                 fontSize = 14.sp,
                 color = otherDateTextColor
             )
