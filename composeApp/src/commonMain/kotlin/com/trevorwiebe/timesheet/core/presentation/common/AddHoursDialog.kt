@@ -1,6 +1,9 @@
 package com.trevorwiebe.timesheet.core.presentation.common
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,19 +17,24 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.plusHours
 import com.trevorwiebe.timesheet.core.domain.model.Punch
 import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.theme.errorRedText
+import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.datetime.LocalDate
@@ -42,6 +50,10 @@ fun AddHoursDialog(
 
     if (currentDate != null) {
 
+        var punchToEdit by remember { mutableStateOf<Punch?>(null) }
+        var editingPunchIn by remember { mutableStateOf(false) }
+        var editingPunchOut by remember { mutableStateOf(false) }
+
         val currentDateTime = LocalDateTime(
             year = currentDate.year,
             monthNumber = currentDate.monthNumber,
@@ -51,19 +63,23 @@ fun AddHoursDialog(
             second = 0
         )
 
-        var punchIn = remember {
-            Punch(
-                punchId = "",
-                dateTime = currentDateTime,
-                rateId = rateList.firstOrNull()?.id ?: ""
+        var punchIn by remember {
+            mutableStateOf(
+                Punch(
+                    punchId = "",
+                    dateTime = currentDateTime,
+                    rateId = rateList.firstOrNull()?.id ?: ""
+                )
             )
         }
 
-        var punchOut = remember {
-            Punch(
-                punchId = "",
-                dateTime = currentDateTime.plusHours(1),
-                rateId = rateList.firstOrNull()?.id ?: ""
+        var punchOut by remember {
+            mutableStateOf(
+                Punch(
+                    punchId = "",
+                    dateTime = currentDateTime.plusHours(1),
+                    rateId = rateList.firstOrNull()?.id ?: ""
+                )
             )
         }
 
@@ -98,13 +114,32 @@ fun AddHoursDialog(
                         textAlign = TextAlign.Center
                     )
 
-                    PunchPuckTime(
-                        modifier = Modifier.width(150.dp),
-                        initialTime = punchIn,
-                        onTimeSelected = {
-                            punchIn = it
+                    Box(
+                        modifier = Modifier
+                            .width(150.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(primary)
+                            .clickable {
+                                editingPunchIn = true
+                                punchToEdit = punchIn
+                            }
+                    ) {
+
+                        val initialTimeString = Util.toFriendlyTime(punchIn.dateTime)
+                        val timeString by remember(initialTimeString) {
+                            mutableStateOf(
+                                initialTimeString
+                            )
                         }
-                    )
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 6.dp, bottom = 6.dp, start = 8.dp, end = 8.dp),
+                            text = timeString,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -118,13 +153,29 @@ fun AddHoursDialog(
                         textAlign = TextAlign.Center
                     )
 
-                    PunchPuckTime(
-                        modifier = Modifier.width(150.dp),
-                        initialTime = punchOut,
-                        onTimeSelected = {
-                            punchOut = it
-                        }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .width(150.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(primary)
+                            .clickable {
+                                editingPunchOut = true
+                                punchToEdit = punchOut
+                            }
+                    ) {
+
+                        val outTimeString = Util.toFriendlyTime(punchOut.dateTime)
+                        val timeString by remember(outTimeString) { mutableStateOf(outTimeString) }
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 6.dp, bottom = 6.dp, start = 8.dp, end = 8.dp),
+                            text = timeString,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -191,5 +242,19 @@ fun AddHoursDialog(
                 }
             }
         }
+
+        NativeTimePicker(
+            punch = punchToEdit,
+            onDismiss = { punchToEdit = null },
+        ) { updatedPunch ->
+            if (editingPunchIn) {
+                punchIn = updatedPunch
+                editingPunchIn = false
+            } else {
+                punchOut = updatedPunch
+                editingPunchOut = false
+            }
+        }
+
     }
 }
