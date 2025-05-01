@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
-import dev.gitlive.firebase.auth.FirebaseUser
+import com.trevorwiebe.timesheet.core.domain.model.DatabaseUserModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,10 +52,11 @@ class MoreViewModel(
 
     private fun getCurrentUser() {
         viewModelScope.launch {
-            val result = coreRepository.getFirebaseUser()
+            val result = coreRepository.getDatabaseUser()
+            println(result)
             if (result.error == null) {
                 try {
-                    val user = result.data as FirebaseUser
+                    val user = result.data as DatabaseUserModel
                     _state.update { it.copy(currentUser = user) }
                 } catch (e: Exception) {
                     _state.update { it.copy(currentUser = null) }

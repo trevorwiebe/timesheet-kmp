@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
 import com.trevorwiebe.timesheet.theme.secondary
@@ -43,12 +44,23 @@ fun MoreScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             ItemRow(
-                primaryText = state.currentUser?.displayName ?: "",
+                primaryText = state.currentUser?.name ?: "",
                 secondaryText = state.currentUser?.email ?: ""
             )
             ItemRow(
+                primaryText = "Hire Date",
+                secondaryText = Util.toFriendlyDate(state.currentUser?.hireDate)
+            )
+            ItemRow(
+                primaryText = "Current PTO Balance",
+                secondaryText = if (state.currentUser?.ptoBalance == 1)
+                    "${state.currentUser?.ptoBalance} day"
+                else "${state.currentUser?.ptoBalance} days"
+            )
+            ItemRow(
                 primaryText = "Sign Out",
-                onClick = { viewModel.onEvent(MoreEvents.OnShowConfirmSignOutSheet(true)) }
+                onClick = { viewModel.onEvent(MoreEvents.OnShowConfirmSignOutSheet(true)) },
+                clickable = true
             )
         }
 
@@ -68,10 +80,15 @@ fun MoreScreen(
 private fun ItemRow(
     primaryText: String,
     secondaryText: String? = null,
-    onClick: () -> Unit = {}
+    clickable: Boolean = false,
+    onClick: () -> Unit = { },
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() }
+        modifier = if (clickable) {
+            Modifier.fillMaxWidth().clickable { onClick() }
+        } else {
+            Modifier.fillMaxWidth()
+        }
     ) {
         Row(
             modifier = Modifier

@@ -4,8 +4,10 @@ import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.HttpInterface
 import com.trevorwiebe.timesheet.core.domain.TSResult
 import com.trevorwiebe.timesheet.core.domain.Util.getReadableErrorMessage
+import com.trevorwiebe.timesheet.core.domain.dto.DatabaseUserDto
 import com.trevorwiebe.timesheet.core.domain.dto.HolidayDto
 import com.trevorwiebe.timesheet.core.domain.dto.OrganizationDto
+import com.trevorwiebe.timesheet.core.domain.dto.toDatabaseUserModel
 import com.trevorwiebe.timesheet.core.domain.model.toHoliday
 import com.trevorwiebe.timesheet.core.domain.model.toOrganization
 import dev.gitlive.firebase.Firebase
@@ -36,6 +38,32 @@ class CoreRepositoryImpl(
             return TSResult(error = e.message)
         }
     }
+
+    override suspend fun getDatabaseUser(): TSResult {
+        try {
+
+            val organizationIdResult = getOrganizationId()
+            if (organizationIdResult.error != null) return organizationIdResult
+            val organizationId = organizationIdResult.data as String
+
+            val userIdResult = getUserId()
+            if (userIdResult.error != null) return userIdResult
+            val userId = userIdResult.data as String
+
+            val user = firebaseDatabase.firestore
+                .collection("organizations")
+                .document(organizationId)
+                .collection("users")
+                .document(userId)
+
+            val databaseModel = user.get().data<DatabaseUserDto>().toDatabaseUserModel(user.id)
+            return TSResult(data = databaseModel)
+
+        } catch (e: Exception) {
+            return TSResult(error = e.message)
+        }
+    }
+
 
     override suspend fun getOrganization(): TSResult {
         val organizationIdResult = getOrganizationId()
