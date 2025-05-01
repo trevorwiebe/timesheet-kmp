@@ -2,7 +2,6 @@ package com.trevorwiebe.timesheet.calendar.presentation.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,12 +21,11 @@ fun TodayBlockDateLabel(
 ) {
     Text(
         modifier = Modifier
-            .width(26.dp)
-            .padding(1.dp)
             .background(
                 backgroundColor,
                 RoundedCornerShape(6.dp)
-            ),
+            )
+            .padding(start = 4.dp, end = 4.dp),
         text = date,
         textAlign = TextAlign.Center,
         fontSize = 14.sp,
