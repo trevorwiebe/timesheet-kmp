@@ -25,7 +25,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.getTimeSheetStatus
@@ -63,6 +62,12 @@ fun PunchScreen(
     val listVisible = remember { mutableStateOf(false) }
     val shiftBottomBarVisible = remember { mutableStateOf(true) }
     val listState = rememberLazyListState()
+
+    val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val currentPayPeriodStartAndEnd = staticState.currentPeriod
+    val isCurrentPeriod = currentPayPeriodStartAndEnd != null &&
+            currentDate >= currentPayPeriodStartAndEnd.first &&
+            currentDate <= currentPayPeriodStartAndEnd.second
 
     val contentUnavailable = staticState.timeSheetDateList.isEmpty()
     LaunchedEffect(contentUnavailable) {
@@ -123,16 +128,15 @@ fun PunchScreen(
                         item {
                             Spacer(modifier = Modifier.height(if (timeSheetId == null) 20.dp else 100.dp))
                         }
-                        if (dynamicState.timeSheet == null) {
-                            item {
-                                AddPunch(
-                                    loadingPunch = elementVisibilityState.punchLoading,
-                                    onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
-                                    onAddToPTO = {},
-                                    buttonText = if (dynamicState.isClockedIn()) "Clock Out" else "Clock In",
-                                    showPunchButton = (startDate == null && endDate == null)
-                                )
-                            }
+                        item {
+                            AddPunch(
+                                loadingPunch = elementVisibilityState.punchLoading,
+                                onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
+                                onAddToPTO = {},
+                                buttonText = if (dynamicState.isClockedIn()) "Clock Out" else "Clock In",
+                                showPunchButton = isCurrentPeriod,
+                                showPTOButton = dynamicState.timeSheet?.submitted != true
+                            )
                         }
                         items(staticState.timeSheetDateList) { todayDate ->
                             val punchList: List<UiPunch> =
@@ -179,12 +183,7 @@ fun PunchScreen(
                     }
 
                     if (timeSheetId != null && shiftBottomBarVisible.value) {
-                        val currentDate =
-                            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-                        val currentPayPeriodStartAndEnd = staticState.currentPeriod
-                        val isCurrentPeriod = currentPayPeriodStartAndEnd != null &&
-                                currentDate >= currentPayPeriodStartAndEnd.first &&
-                                currentDate <= currentPayPeriodStartAndEnd.second
+
                         ShiftBottomBar(
                             onConfirmPayPeriod = {
                                 viewModel.onEvent(PunchEvents.OnSetSubmitPayPeriodDialog(true))
@@ -279,21 +278,24 @@ fun PunchScreen(
 
 @Composable
 private fun AddPunch(
+    showPTOButton: Boolean,
     showPunchButton: Boolean,
     loadingPunch: Boolean,
     buttonText: String,
     onPunch: () -> Unit,
-    onAddToPTO: () -> Unit
+    onAddToPTO: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(16.dp)
     ) {
-        TimeSheetButton(
-            modifier = Modifier.width(150.dp).height(50.dp).alpha(0.0f),
-            text = "Add PTO",
-            onClick = onAddToPTO,
-            loading = false
-        )
+        if (showPTOButton) {
+            TimeSheetButton(
+                modifier = Modifier.width(150.dp).height(50.dp),
+                text = "Add PTO",
+                onClick = onAddToPTO,
+                loading = false
+            )
+        }
         Spacer(modifier = Modifier.weight(1f))
         if (showPunchButton) {
             TimeSheetButton(
