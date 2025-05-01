@@ -225,7 +225,7 @@ fun PunchScreen(
         onDismiss = {
             viewModel.onEvent(PunchEvents.OnShowAddHoursDialog(null))
         },
-        rateList = staticState.rateList
+        rateList = staticState.rateList.filter { it.userFacing }
     )
 
     NativeDialog(

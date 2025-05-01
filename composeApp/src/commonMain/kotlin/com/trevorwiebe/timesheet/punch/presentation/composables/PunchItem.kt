@@ -197,7 +197,7 @@ private fun PunchBody(
                             if (editing) {
                                 RateSelector(
                                     modifier = Modifier.width(110.dp),
-                                    rateList = rateList,
+                                    rateList = rateList.filter { it.userFacing },
                                     selectedRate = uiPunch.getRate(rateList),
                                     onRateSelected = {
                                         val newUiPunch = uiPunch.copy(

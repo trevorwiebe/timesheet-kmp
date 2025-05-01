@@ -45,6 +45,8 @@ class AddUpHours {
             // Convert total minutes to hours and round to nearest integer
             val totalRateHours = (rateTotalMinutes / 60.0)
 
+            if (totalRateHours == 0.0 && !rate.userFacing) return@forEach
+
             val ratePair = Pair("${rate.description} Hours", roundToTwoDecimals(totalRateHours))
 
             totalHours.add(ratePair)
