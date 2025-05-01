@@ -9,4 +9,5 @@ data class ElementVisibilityState(
     val showAddHourDialogTime: LocalDate? = null,
     val submitPayPeriodDialog: Boolean = false,
     val showPayPeriodInfoSheet: Boolean = false,
+    val showPTODialog: Boolean = false,
 )

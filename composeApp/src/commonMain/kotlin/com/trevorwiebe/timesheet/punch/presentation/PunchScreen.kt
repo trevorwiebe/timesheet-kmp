@@ -31,6 +31,7 @@ import com.trevorwiebe.timesheet.core.domain.Util.getTimeSheetStatus
 import com.trevorwiebe.timesheet.core.presentation.ShiftBottomBar
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
+import com.trevorwiebe.timesheet.core.presentation.common.AddPTODialog
 import com.trevorwiebe.timesheet.core.presentation.common.BackIcon
 import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
 import com.trevorwiebe.timesheet.core.presentation.common.NativeTimePicker
@@ -132,7 +133,7 @@ fun PunchScreen(
                             AddPunch(
                                 loadingPunch = elementVisibilityState.punchLoading,
                                 onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
-                                onAddToPTO = {},
+                                onAddToPTO = { viewModel.onEvent(PunchEvents.OnSetPTODialog(true)) },
                                 buttonText = if (dynamicState.isClockedIn()) "Clock Out" else "Clock In",
                                 showPunchButton = isCurrentPeriod,
                                 showPTOButton = dynamicState.timeSheet?.submitted != true
@@ -269,10 +270,18 @@ fun PunchScreen(
             viewModel.onEvent(PunchEvents.OnSetTimePickerVisibility(null))
         },
     ) { punch ->
-
         viewModel.onEvent(PunchEvents.OnUpdatePunch(punch))
-
     }
+
+    AddPTODialog(
+        showDialog = elementVisibilityState.showPTODialog,
+        onConfirm = { date, hours ->
+
+        },
+        onDismiss = {
+            viewModel.onEvent(PunchEvents.OnSetPTODialog(false))
+        }
+    )
 
 }
 

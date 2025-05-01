@@ -149,6 +149,14 @@ class PunchViewModel(
                     it.copy(punchToEdit = event.punch)
                 }
             }
+            is PunchEvents.OnSetPTODialog -> {
+                _elementVisibilityState.update { it.copy(showPTODialog = event.show) }
+            }
+
+            is PunchEvents.OnAddPTO -> {
+                val date = event.date
+                val hours = event.hours
+            }
         }
     }
 
