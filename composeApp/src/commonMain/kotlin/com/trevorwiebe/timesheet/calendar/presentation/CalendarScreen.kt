@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -26,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,11 +37,13 @@ import com.trevorwiebe.timesheet.calendar.presentation.composables.DayBlock
 import com.trevorwiebe.timesheet.calendar.presentation.composables.DayList
 import com.trevorwiebe.timesheet.calendar.presentation.composables.DayOfWeekText
 import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.CalendarType
+import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.DayUi
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
 import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.successGreenText
+import kotlinx.datetime.Month
 import kotlinx.datetime.isoDayNumber
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -60,11 +64,48 @@ fun CalendarScreen(
     val lazyColumnState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
 
+    val defaultGridPosition = 1032
+    val defaultListPosition = 1005
+
+    val movableListPosition = remember { mutableIntStateOf(1000) }
+
     LaunchedEffect(Unit, state.calendarType) {
         if (state.calendarType == CalendarType.GRID) {
-            lazyGridState.scrollToItem(1005)
+            lazyGridState.scrollToItem(defaultListPosition)
         } else {
-            lazyColumnState.scrollToItem(1032)
+            lazyColumnState.scrollToItem(defaultGridPosition)
+        }
+    }
+
+    fun getIndexInListWithHeaders(
+        targetIndex: Int,
+        groupedDays: Map<Pair<Int, Month>, List<DayUi>>,
+    ): Int {
+        var currentIndex = 0
+        var flatIndex = 0
+
+        groupedDays.forEach { (_, daysInMonth) ->
+            // Add one for the sticky header
+            currentIndex++
+            for (day in daysInMonth) {
+                if (flatIndex == targetIndex) return currentIndex
+                currentIndex++
+                flatIndex++
+            }
+        }
+        return defaultListPosition // fallback
+    }
+
+    val groupedDays = remember(state.calendarStructure) {
+        state.calendarStructure.groupBy { it.date.year to it.date.month }
+    }
+    val targetListIndex = remember(movableListPosition.value, groupedDays) {
+        getIndexInListWithHeaders(movableListPosition.value, groupedDays)
+    }
+
+    LaunchedEffect(targetListIndex, state.calendarType) {
+        if (state.calendarType == CalendarType.LIST) {
+            lazyColumnState.scrollToItem(targetListIndex - 1)
         }
     }
 
@@ -166,13 +207,16 @@ fun CalendarScreen(
                             )
                         }
                     }
-                    items(state.calendarStructure) { dayUi ->
+                    itemsIndexed(
+                        items = state.calendarStructure
+                    ) { index, dayUi ->
                         DayBlock(
                             dayUi = dayUi,
                             onClick = {
                                 if (state.timeOffMode) {
                                     viewModel.onEvent(CalendarEvent.OnSetSelectedTimeOff(dayUi.date))
                                 } else {
+                                    movableListPosition.value = index
                                     viewModel.onEvent(CalendarEvent.OnSetCalendarType(CalendarType.LIST))
                                 }
                             },
