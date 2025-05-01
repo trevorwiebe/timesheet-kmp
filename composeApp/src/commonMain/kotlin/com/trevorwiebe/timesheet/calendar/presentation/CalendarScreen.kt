@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,13 +38,16 @@ import com.trevorwiebe.timesheet.calendar.presentation.uiHelper.CalendarType
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
+import com.trevorwiebe.timesheet.theme.errorRedText
+import com.trevorwiebe.timesheet.theme.successGreenText
 import kotlinx.datetime.isoDayNumber
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import timesheet.composeapp.generated.resources.Res
 import timesheet.composeapp.generated.resources.baseline_calendar_view_day_24
 import timesheet.composeapp.generated.resources.baseline_calendar_view_month_24
-import timesheet.composeapp.generated.resources.check
+import timesheet.composeapp.generated.resources.cancel_circle
+import timesheet.composeapp.generated.resources.check_circle
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -71,14 +76,30 @@ fun CalendarScreen(
                     if (state.timeOffMode) {
                         IconButton(
                             onClick = {
-                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(false))
+                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(false, false))
                             }
                         ) {
                             Icon(
-                                painter = painterResource(Res.drawable.check),
-                                contentDescription = "check"
+                                modifier = Modifier.size(48.dp),
+                                painter = painterResource(Res.drawable.cancel_circle),
+                                contentDescription = "cancel",
+                                tint = errorRedText
                             )
                         }
+                        Spacer(modifier = Modifier.width(20.dp))
+                        IconButton(
+                            onClick = {
+                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(false, true))
+                            }
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(48.dp),
+                                painter = painterResource(Res.drawable.check_circle),
+                                contentDescription = "check",
+                                tint = successGreenText
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
                     } else {
                         if (state.calendarType == CalendarType.GRID) {
                             IconButton(
@@ -156,7 +177,8 @@ fun CalendarScreen(
                                 }
                             },
                             onLongClick = {
-                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(true))
+                                viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(true, false))
+                                viewModel.onEvent(CalendarEvent.OnSetSelectedTimeOff(dayUi.date))
                             }
                         )
                     }
@@ -199,7 +221,13 @@ fun CalendarScreen(
                                         }
                                     },
                                     onLongClick = {
-                                        viewModel.onEvent(CalendarEvent.OnSetAddTimeOffMode(true))
+                                        viewModel.onEvent(
+                                            CalendarEvent.OnSetAddTimeOffMode(
+                                                true,
+                                                false
+                                            )
+                                        )
+                                        viewModel.onEvent(CalendarEvent.OnSetSelectedTimeOff(dayUi.date))
                                     },
                                     onEmployeeSelected = {
                                         if (it.employeeId == state.user?.uid) {

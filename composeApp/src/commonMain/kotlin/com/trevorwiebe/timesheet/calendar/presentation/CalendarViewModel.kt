@@ -6,6 +6,7 @@ import com.trevorwiebe.timesheet.calendar.domain.usecases.DeleteTimeOffRequest
 import com.trevorwiebe.timesheet.calendar.domain.usecases.GetCalendarStructure
 import com.trevorwiebe.timesheet.calendar.domain.usecases.GetTimeOffRequests
 import com.trevorwiebe.timesheet.calendar.domain.usecases.PostTimeOffRequest
+import com.trevorwiebe.timesheet.calendar.domain.vibrate
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
 import com.trevorwiebe.timesheet.core.domain.model.TimeOffRequestModel
 import dev.gitlive.firebase.auth.FirebaseUser
@@ -42,8 +43,14 @@ class CalendarViewModel(
                 if (!event.mode) {
                     // finished selecting time off dates
 
-                    // submit time off request
-                    submitTimeOffRequest()
+                    if (event.saving) {
+                        // submit time off request
+                        submitTimeOffRequest()
+                    } else {
+                        unselectAllDates()
+                    }
+                } else {
+                    vibrate()
                 }
             }
 
