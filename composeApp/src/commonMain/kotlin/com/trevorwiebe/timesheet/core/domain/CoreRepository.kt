@@ -2,7 +2,9 @@ package com.trevorwiebe.timesheet.core.domain
 
 interface CoreRepository {
 
-    suspend fun getSignedInUser(): TSResult
+    suspend fun getFirebaseUser(): TSResult
+
+    suspend fun getDatabaseUser(): TSResult
 
     suspend fun getOrganization(): TSResult
 

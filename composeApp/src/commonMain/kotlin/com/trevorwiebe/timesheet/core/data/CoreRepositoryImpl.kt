@@ -23,7 +23,7 @@ class CoreRepositoryImpl(
     private val httpInterface: HttpInterface,
 ) : CoreRepository {
 
-    override suspend fun getSignedInUser(): TSResult {
+    override suspend fun getFirebaseUser(): TSResult {
         try {
             val firebaseAuth = firebaseDatabase.auth
             val firebaseUser = firebaseAuth.currentUser
@@ -55,7 +55,7 @@ class CoreRepositoryImpl(
 
     @OptIn(ExperimentalEncodingApi::class)
     override suspend fun getOrganizationId(): TSResult {
-        val tsResult = getSignedInUser()
+        val tsResult = getFirebaseUser()
         if (tsResult.error != null) return tsResult
         val firebaseUser = tsResult.data as FirebaseUser
         val idTokenResult = firebaseUser.getIdTokenResult(false)
@@ -85,7 +85,7 @@ class CoreRepositoryImpl(
     }
 
     override suspend fun getUserId(): TSResult {
-        val tsResult = getSignedInUser()
+        val tsResult = getFirebaseUser()
         if (tsResult.error != null) return tsResult
         val firebaseUser = tsResult.data as FirebaseUser
 

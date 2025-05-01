@@ -52,7 +52,7 @@ class MoreViewModel(
 
     private fun getCurrentUser() {
         viewModelScope.launch {
-            val result = coreRepository.getSignedInUser()
+            val result = coreRepository.getFirebaseUser()
             if (result.error == null) {
                 try {
                     val user = result.data as FirebaseUser

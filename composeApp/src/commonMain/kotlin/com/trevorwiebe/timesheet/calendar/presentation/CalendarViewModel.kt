@@ -83,7 +83,7 @@ class CalendarViewModel(
 
     private fun getSignedInUser() {
         viewModelScope.launch {
-            val response = coreRepository.getSignedInUser()
+            val response = coreRepository.getFirebaseUser()
             val user = response.data as FirebaseUser
             _state.update {
                 it.copy(user = user)

@@ -14,7 +14,7 @@ class AuthImpl(
 ): Authenticator {
 
     override suspend fun getSignedInUser(): TSResult {
-        return coreRepository.getSignedInUser()
+        return coreRepository.getFirebaseUser()
     }
 
     override suspend fun signIn(email: String, password: String): TSResult {
