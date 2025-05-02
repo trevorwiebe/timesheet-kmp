@@ -103,7 +103,7 @@ struct TimePicker: View{
                         onTimeSelected(updatedPunch)
                         onDismiss()
                     }) {
-                        Text("Confirm")
+                        Text("OK")
                             .foregroundColor(.blue)
                             .bold()
                             .frame(maxWidth: .infinity)

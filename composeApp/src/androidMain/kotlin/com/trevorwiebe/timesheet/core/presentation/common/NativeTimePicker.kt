@@ -96,7 +96,7 @@ actual fun NativeTimePicker(
                     )
 
                     DialogButtonRow(
-                        confirmButtonText = "Confirm",
+                        confirmButtonText = "OK",
                         onConfirmClick = {
                             if (punch == null) {
                                 onDismiss()
