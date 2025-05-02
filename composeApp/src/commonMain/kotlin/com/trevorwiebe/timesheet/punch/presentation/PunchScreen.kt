@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.getTimeSheetStatus
+import com.trevorwiebe.timesheet.core.domain.model.PunchType
 import com.trevorwiebe.timesheet.core.presentation.ShiftBottomBar
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
@@ -132,7 +133,11 @@ fun PunchScreen(
                         item {
                             AddPunch(
                                 loadingPunch = elementVisibilityState.punchLoading,
-                                onPunch = { viewModel.onEvent(PunchEvents.OnPunch) },
+                                onPunch = {
+                                    val punchType = if (dynamicState.isClockedIn())
+                                        PunchType.OUT else PunchType.IN
+                                    viewModel.onEvent(PunchEvents.OnPunch(punchType))
+                                },
                                 onAddToPTO = { viewModel.onEvent(PunchEvents.OnSetPTODialog(true)) },
                                 buttonText = if (dynamicState.isClockedIn()) "Clock Out" else "Clock In",
                                 showPunchButton = isCurrentPeriod,

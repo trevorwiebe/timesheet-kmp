@@ -8,6 +8,7 @@ import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
 import com.trevorwiebe.timesheet.core.domain.model.Holiday
 import com.trevorwiebe.timesheet.core.domain.model.Organization
 import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.PunchType
 import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
 import com.trevorwiebe.timesheet.core.domain.usecases.GetCurrentPayPeriodStartAndEnd
@@ -98,8 +99,8 @@ class PunchViewModel(
     fun onEvent(event: PunchEvents) {
         when (event) {
             is PunchEvents.OnPunch -> {
-                _staticPunchState.value.rateList.firstOrNull()?.id?.let {
-                    sendPunch(it)
+                _staticPunchState.value.rateList.firstOrNull { it.userFacing }?.id?.let {
+                    sendPunch(it, event.punchType)
                 }
             }
             is PunchEvents.OnShowConfirmDeletePunchesSheet -> {
@@ -223,13 +224,14 @@ class PunchViewModel(
         FirestoreListenerRegistry.registerJob(job)
     }
 
-    private fun sendPunch(rateId: String) {
+    private fun sendPunch(rateId: String, punchType: PunchType) {
         _elementVisibilityState.update { it.copy(punchLoading = true) }
         viewModelScope.launch {
             val punch = Punch(
                 punchId = "",
                 dateTime = localDateTime(),
-                rateId = rateId
+                rateId = rateId,
+                type = punchType
             )
             punchRepository.addPunch(punch)
             _elementVisibilityState.update { it.copy(punchLoading = false) }

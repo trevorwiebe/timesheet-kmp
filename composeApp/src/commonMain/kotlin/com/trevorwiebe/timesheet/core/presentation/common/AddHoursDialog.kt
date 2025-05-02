@@ -28,6 +28,7 @@ import androidx.compose.ui.window.Dialog
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.plusHours
 import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.PunchType
 import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.primary
@@ -63,7 +64,8 @@ fun AddHoursDialog(
                 Punch(
                     punchId = "",
                     dateTime = currentDateTime,
-                    rateId = rateList.firstOrNull()?.id ?: ""
+                    rateId = rateList.firstOrNull()?.id ?: "",
+                    type = PunchType.IN
                 )
             )
         }
@@ -73,7 +75,8 @@ fun AddHoursDialog(
                 Punch(
                     punchId = "",
                     dateTime = currentDateTime.plusHours(1),
-                    rateId = rateList.firstOrNull()?.id ?: ""
+                    rateId = rateList.firstOrNull()?.id ?: "",
+                    type = PunchType.OUT
                 )
             )
         }
