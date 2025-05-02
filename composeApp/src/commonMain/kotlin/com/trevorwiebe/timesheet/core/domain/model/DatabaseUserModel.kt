@@ -11,4 +11,6 @@ data class DatabaseUserModel(
     val name: String,
     val organizationId: String,
     val ptoBalance: Int,
-)
+) {
+    val ptoBalanceDays = ptoBalance.toDouble() / 8.0
+}

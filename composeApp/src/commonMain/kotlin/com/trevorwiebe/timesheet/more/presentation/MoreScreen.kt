@@ -53,9 +53,9 @@ fun MoreScreen(
             )
             ItemRow(
                 primaryText = "Current PTO Balance",
-                secondaryText = if (state.currentUser?.ptoBalance == 1)
-                    "${state.currentUser?.ptoBalance} day"
-                else "${state.currentUser?.ptoBalance} days"
+                secondaryText = if (state.currentUser?.ptoBalanceDays == 1.0)
+                    "${state.currentUser?.ptoBalanceDays} day"
+                else "${state.currentUser?.ptoBalanceDays} days"
             )
             ItemRow(
                 primaryText = "Sign Out",
