@@ -146,7 +146,8 @@ fun SignInScreen(
                 onClick = {
                     viewModel.onEvent(SignInEvents.OnSignInClick)
                 },
-                loading = state.loadingSignIn
+                loading = state.loadingSignIn,
+                enabled = true
             )
 
             Spacer(modifier = Modifier.height(16.dp))

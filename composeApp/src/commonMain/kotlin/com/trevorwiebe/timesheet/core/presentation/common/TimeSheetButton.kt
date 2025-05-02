@@ -8,5 +8,6 @@ expect fun TimeSheetButton(
     onClick: () -> Unit,
     text: String,
     modifier: Modifier,
-    loading: Boolean
+    loading: Boolean,
+    enabled: Boolean,
 )

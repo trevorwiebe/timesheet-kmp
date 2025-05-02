@@ -242,6 +242,17 @@ class PunchViewModel(
         datesList: List<LocalDate>,
         punchList: List<Punch>
     ) {
+        val mostRecentPunch = punchList.maxByOrNull { it.dateTime }
+        if (mostRecentPunch != null && mostRecentPunch.dateTime > localDateTime()) {
+            val message = if (mostRecentPunch.type == PunchType.IN) {
+                "You have a clock in time that is ahead of the current time"
+            } else {
+                "You have a clock out time that is ahead of the current time"
+            }
+            _dynamicPunchState.update { it.copy(clockMessage = message) }
+        } else {
+            _dynamicPunchState.update { it.copy(clockMessage = null) }
+        }
         val punchMap = processPunchesForUi(datesList, punchList)
         val totalHours = addUpHours(punchMap, _staticPunchState.value.rateList)
         _dynamicPunchState.update { it.copy(punches = punchMap) }

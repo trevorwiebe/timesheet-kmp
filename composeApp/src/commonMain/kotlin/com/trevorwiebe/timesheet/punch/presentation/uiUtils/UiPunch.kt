@@ -5,7 +5,8 @@ import com.trevorwiebe.timesheet.core.domain.model.Rate
 
 data class UiPunch(
     val punchIn: Punch,
-    val punchOut: Punch?
+    val punchOut: Punch?,
+    val error: String?,
 ) {
     fun getRateName(rateList: List<Rate>): String {
         return rateList.find { it.id == punchIn.rateId }?.description ?: ""

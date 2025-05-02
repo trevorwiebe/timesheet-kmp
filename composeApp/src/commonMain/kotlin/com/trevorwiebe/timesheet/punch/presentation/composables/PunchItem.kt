@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,10 +47,15 @@ import com.trevorwiebe.timesheet.core.presentation.common.DestructiveButton
 import com.trevorwiebe.timesheet.core.presentation.common.RateSelector
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
+import com.trevorwiebe.timesheet.theme.errorRedBackground
+import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.secondary
 import com.trevorwiebe.timesheet.theme.tertiary
 import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.painterResource
+import timesheet.composeapp.generated.resources.Res
+import timesheet.composeapp.generated.resources.error_circle
 
 @Composable
 fun PunchItem(
@@ -156,87 +163,129 @@ private fun PunchBody(
             )
         } else {
             punches.forEach { uiPunch ->
+
+                val isError = uiPunch.error != null
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = CenterVertically
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = CenterVertically,
-                        ) {
-                            Text("In: ", fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.weight(1f))
-                            StyleTransitionTextField(uiPunch.punchIn, editing, onTimeSelected)
+
+                        if (isError) {
+                            Icon(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(Res.drawable.error_circle),
+                                contentDescription = "cancel",
+                                tint = errorRedText
+                            )
                         }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = CenterVertically,
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Column(
+                            modifier = Modifier.weight(1f)
                         ) {
-                            Text("Out: ", fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.weight(1f))
-                            StyleTransitionTextField(uiPunch.punchOut, editing, onTimeSelected)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = CenterVertically,
+                            ) {
+                                Text("In: ", fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.weight(1f))
+                                StyleTransitionTextField(
+                                    uiPunch.punchIn,
+                                    editing,
+                                    onTimeSelected,
+                                    isError
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = CenterVertically,
+                            ) {
+                                Text("Out: ", fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.weight(1f))
+                                StyleTransitionTextField(
+                                    uiPunch.punchOut,
+                                    editing,
+                                    onTimeSelected,
+                                    isError
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = CenterVertically,
+                            ) {
+                                Text(
+                                    text = "Rate:",
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                if (editing) {
+                                    RateSelector(
+                                        modifier = Modifier.width(110.dp),
+                                        rateList = rateList.filter { it.userFacing },
+                                        selectedRate = uiPunch.getRate(rateList),
+                                        onRateSelected = {
+                                            val newUiPunch = uiPunch.copy(
+                                                punchIn = uiPunch.punchIn.copy(rateId = it.id),
+                                                punchOut = uiPunch.punchOut?.copy(rateId = it.id)
+                                            )
+                                            onUpdateRate(newUiPunch)
+                                        }
+                                    )
+                                } else {
+                                    Text(
+                                        modifier = Modifier
+                                            .background(Color.White)
+                                            .padding(
+                                                start = 8.dp,
+                                                end = 8.dp,
+                                                top = 5.dp,
+                                                bottom = 5.dp
+                                            ),
+                                        text = uiPunch.getRate(rateList)?.description
+                                            ?: "unavailable"
+                                    )
+                                }
+                            }
+                            AnimatedVisibility(
+                                visible = editing,
+                                enter = fadeIn() + expandVertically(),
+                                exit = fadeOut() + shrinkVertically(),
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.End
+                                ) {
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    DestructiveButton(
+                                        modifier = Modifier.width(150.dp).height(50.dp),
+                                        text = "Delete Time",
+                                        onClick = { onShowConfirmDelete(uiPunch) }
+                                    )
+                                }
+                            }
                         }
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Row(
+                    AnimatedVisibility(visible = editing && isError) {
+                        Column(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = CenterVertically,
                         ) {
                             Text(
-                                text = "Rate:",
-                                fontWeight = FontWeight.Bold
+                                fontSize = 14.sp,
+                                text = uiPunch.error ?: "",
+                                color = errorRedText
                             )
-                            Spacer(modifier = Modifier.weight(1f))
-                            if (editing) {
-                                RateSelector(
-                                    modifier = Modifier.width(110.dp),
-                                    rateList = rateList.filter { it.userFacing },
-                                    selectedRate = uiPunch.getRate(rateList),
-                                    onRateSelected = {
-                                        val newUiPunch = uiPunch.copy(
-                                            punchIn = uiPunch.punchIn.copy(rateId = it.id),
-                                            punchOut = uiPunch.punchOut?.copy(rateId = it.id)
-                                        )
-                                        onUpdateRate(newUiPunch)
-                                    }
-                                )
-                            } else {
-                                Text(
-                                    modifier = Modifier
-                                        .background(Color.White)
-                                        .padding(
-                                            start = 8.dp,
-                                            end = 8.dp,
-                                            top = 5.dp,
-                                            bottom = 5.dp
-                                        ),
-                                    text = uiPunch.getRate(rateList)?.description ?: "unavailable"
-                                )
-                            }
-                        }
-                        AnimatedVisibility(
-                            visible = editing,
-                            enter = fadeIn() + expandVertically(),
-                            exit = fadeOut() + shrinkVertically(),
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.End
-                            ) {
-                                Spacer(modifier = Modifier.height(6.dp))
-                                DestructiveButton(
-                                    modifier = Modifier.width(150.dp).height(50.dp),
-                                    text = "Delete Time",
-                                    onClick = { onShowConfirmDelete(uiPunch) }
-                                )
-                            }
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }
@@ -262,6 +311,7 @@ fun StyleTransitionTextField(
     punch: Punch?,
     isEditing: Boolean,
     onTimeSelected: (Punch) -> Unit,
+    error: Boolean,
 ) {
 
     Box(
@@ -270,13 +320,14 @@ fun StyleTransitionTextField(
     ) {
         AnimatedContent(targetState = isEditing, label = "EditableTextField") { editing ->
 
+            val errorBackground = if (error) errorRedBackground else primary
             val time = remember(punch) { Util.toFriendlyTime(punch?.dateTime) }
 
             if (editing && punch != null) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(primary)
+                        .background(errorBackground)
                         .clickable { onTimeSelected(punch) }
                 ) {
                     Text(
@@ -316,7 +367,8 @@ fun ConfirmChangesRow(
                 modifier = Modifier.width(150.dp).height(50.dp),
                 onClick = onShowAddHours,
                 text = "Add Hours",
-                loading = false
+                loading = false,
+                enabled = true
             )
         }
     }

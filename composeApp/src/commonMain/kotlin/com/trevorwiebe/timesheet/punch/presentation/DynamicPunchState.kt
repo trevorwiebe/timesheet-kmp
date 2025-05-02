@@ -9,6 +9,7 @@ data class DynamicPunchState(
     val punches: Map<LocalDate, List<UiPunch>> = emptyMap(),
     val timeSheet: TimeSheet? = null,
     val punchToEdit: Punch? = null,
+    val clockMessage: String? = null,
 ) {
     fun isClockedIn(): Boolean {
         val mutablePunchList = mutableListOf<UiPunch>()

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,7 +27,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.getTimeSheetStatus
 import com.trevorwiebe.timesheet.core.domain.model.PunchType
@@ -141,7 +145,8 @@ fun PunchScreen(
                                 onAddToPTO = { viewModel.onEvent(PunchEvents.OnSetPTODialog(true)) },
                                 buttonText = if (dynamicState.isClockedIn()) "Clock Out" else "Clock In",
                                 showPunchButton = isCurrentPeriod,
-                                showPTOButton = dynamicState.timeSheet?.submitted != true
+                                showPTOButton = dynamicState.timeSheet?.submitted != true,
+                                clockMessage = dynamicState.clockMessage
                             )
                         }
                         items(staticState.timeSheetDateList) { todayDate ->
@@ -294,30 +299,43 @@ fun PunchScreen(
 private fun AddPunch(
     showPTOButton: Boolean,
     showPunchButton: Boolean,
+    clockMessage: String?,
     loadingPunch: Boolean,
     buttonText: String,
     onPunch: () -> Unit,
     onAddToPTO: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp)
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
     ) {
         if (showPTOButton) {
             TimeSheetButton(
                 modifier = Modifier.width(150.dp).height(50.dp),
                 text = "Add PTO",
                 onClick = onAddToPTO,
-                loading = false
+                loading = false,
+                enabled = true
             )
         }
         Spacer(modifier = Modifier.weight(1f))
         if (showPunchButton) {
-            TimeSheetButton(
-                modifier = Modifier.width(150.dp).height(50.dp),
-                text = buttonText,
-                onClick = onPunch,
-                loading = loadingPunch
-            )
+            Column {
+                TimeSheetButton(
+                    modifier = Modifier.width(150.dp).height(50.dp),
+                    text = buttonText,
+                    onClick = onPunch,
+                    loading = loadingPunch,
+                    enabled = clockMessage.isNullOrEmpty()
+                )
+                if (!clockMessage.isNullOrEmpty()) {
+                    Text(
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp,
+                        modifier = Modifier.width(150.dp),
+                        text = clockMessage
+                    )
+                }
+            }
         }
     }
 }

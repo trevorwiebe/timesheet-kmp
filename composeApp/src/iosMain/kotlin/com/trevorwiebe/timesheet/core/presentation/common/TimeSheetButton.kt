@@ -2,30 +2,37 @@ package com.trevorwiebe.timesheet.core.presentation.common
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trevorwiebe.timesheet.theme.primary
 import com.trevorwiebe.timesheet.theme.tertiary
+import com.trevorwiebe.timesheet.theme.tertiaryDisabled
 
 @Composable
 actual fun TimeSheetButton(
     onClick: () -> Unit,
     text: String,
     modifier: Modifier,
-    loading: Boolean
+    loading: Boolean,
+    enabled: Boolean,
 ) {
-    TextButton(
+
+    Button(
         onClick = onClick,
         modifier = modifier.padding(0.dp),
-        colors = ButtonDefaults.textButtonColors(
+        enabled = enabled,
+        colors = ButtonDefaults.buttonColors(
             contentColor = tertiary,
-            backgroundColor = primary
+            disabledContentColor = tertiaryDisabled,
+            backgroundColor = primary,
+            disabledBackgroundColor = Color.White
         ),
         shape = CircleShape,
     ) {

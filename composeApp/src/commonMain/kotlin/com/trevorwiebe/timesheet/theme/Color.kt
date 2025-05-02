@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 val primary = Color(0xFFe8e8e8)
 val secondary = Color(0xFF91837e)
 val tertiary = Color(0xFF731A00)
+val tertiaryDisabled = Color(0xFF731A00).copy(alpha = 0.5f)
 
 val calendarBackground = Color(0xFFfaf6f5)
 

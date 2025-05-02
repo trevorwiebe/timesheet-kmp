@@ -14,20 +14,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.trevorwiebe.timesheet.theme.onTertiary
 import com.trevorwiebe.timesheet.theme.tertiary
+import com.trevorwiebe.timesheet.theme.tertiaryDisabled
 
 @Composable
 actual fun TimeSheetButton(
     onClick: () -> Unit,
     text: String,
     modifier: Modifier,
-    loading: Boolean
+    loading: Boolean,
+    enabled: Boolean,
 ) {
+
     Button(
         colors = ButtonDefaults.buttonColors(
             containerColor = tertiary,
+            disabledContainerColor = tertiaryDisabled
         ),
         modifier = modifier,
         shape = CircleShape,
+        enabled = enabled,
         onClick = onClick,
         content = {
             Box(

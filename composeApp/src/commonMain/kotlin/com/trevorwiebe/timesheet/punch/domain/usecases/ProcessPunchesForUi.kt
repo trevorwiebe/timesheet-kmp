@@ -1,6 +1,7 @@
 package com.trevorwiebe.timesheet.punch.domain.usecases
 
 import com.trevorwiebe.timesheet.core.domain.model.Punch
+import com.trevorwiebe.timesheet.core.domain.model.PunchType
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -14,13 +15,13 @@ class ProcessPunchesForUi {
 
         val punchMap: MutableMap<LocalDate, List<UiPunch>> = mutableMapOf()
 
+        punchList.sortedBy { it.dateTime }
+
         val punchIn = punchList
-            .sortedBy { it.dateTime }
-            .filterIndexed { index, _ -> index % 2 == 0 }
+            .filter { it.type == PunchType.IN }
 
         val punchOut = punchList
-            .sortedBy { it.dateTime }
-            .filterIndexed { index, _ -> index % 2 != 0 }
+            .filter { it.type == PunchType.OUT }
 
         dateList.forEachIndexed { index, today ->
 
@@ -51,7 +52,13 @@ class ProcessPunchesForUi {
 
             todayPunchesIn.forEachIndexed { todayIndex, todayPunchIn ->
                 val todayPunchOut = todayPunchesOut.getOrNull(todayIndex)
-                val uiPunch = UiPunch(todayPunchIn, todayPunchOut)
+                val errorMessage =
+                    if (todayPunchOut != null && todayPunchIn.dateTime > todayPunchOut.dateTime) {
+                        "Clock out time must be after clock in time"
+                    } else {
+                        null
+                    }
+                val uiPunch = UiPunch(todayPunchIn, todayPunchOut, errorMessage)
                 mutablePunchList.add(uiPunch)
             }
 
