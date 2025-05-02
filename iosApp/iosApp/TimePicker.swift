@@ -97,7 +97,8 @@ struct TimePicker: View{
                         let updatedPunch = Punch(
                             punchId: punch.punchId,
                             dateTime: updatedDateTime,
-                            rateId: punch.rateId
+                            rateId: punch.rateId,
+                            type: punch.type
                         )
                         onTimeSelected(updatedPunch)
                         onDismiss()
