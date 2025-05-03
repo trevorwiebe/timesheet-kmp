@@ -47,6 +47,7 @@ import com.trevorwiebe.timesheet.core.presentation.common.DestructiveButton
 import com.trevorwiebe.timesheet.core.presentation.common.RateSelector
 import com.trevorwiebe.timesheet.core.presentation.common.TimeSheetButton
 import com.trevorwiebe.timesheet.punch.presentation.uiUtils.UiPunch
+import com.trevorwiebe.timesheet.theme.calendarBackground
 import com.trevorwiebe.timesheet.theme.errorRedBackground
 import com.trevorwiebe.timesheet.theme.errorRedText
 import com.trevorwiebe.timesheet.theme.primary
@@ -68,6 +69,7 @@ fun PunchItem(
     onShowAddHours: () -> Unit,
     onUpdateRate: (UiPunch) -> Unit,
     onTimeSelected: (Punch) -> Unit,
+    onAddPTO: () -> Unit,
     rateList: List<Rate>,
 ) {
     var editing by remember { mutableStateOf(false) }
@@ -103,6 +105,7 @@ fun PunchItem(
             )
             ConfirmChangesRow(
                 onShowAddHours = onShowAddHours,
+                onAddPTO = onAddPTO,
                 isEditing = editing
             )
         }
@@ -164,6 +167,7 @@ private fun PunchBody(
         } else {
             punches.forEach { uiPunch ->
 
+                val punchesAreEditable = uiPunch.punchIn.rateId != "zvOKdlJU7h1RxylAjjLo"
                 val isError = uiPunch.error != null
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -198,6 +202,7 @@ private fun PunchBody(
                                 StyleTransitionTextField(
                                     uiPunch.punchIn,
                                     editing,
+                                    punchesAreEditable,
                                     onTimeSelected,
                                     isError
                                 )
@@ -211,6 +216,7 @@ private fun PunchBody(
                                 StyleTransitionTextField(
                                     uiPunch.punchOut,
                                     editing,
+                                    punchesAreEditable,
                                     onTimeSelected,
                                     isError
                                 )
@@ -234,6 +240,7 @@ private fun PunchBody(
                                         modifier = Modifier.width(110.dp),
                                         rateList = rateList.filter { it.userFacing },
                                         selectedRate = uiPunch.getRate(rateList),
+                                        isEditable = punchesAreEditable,
                                         onRateSelected = {
                                             val newUiPunch = uiPunch.copy(
                                                 punchIn = uiPunch.punchIn.copy(rateId = it.id),
@@ -246,6 +253,7 @@ private fun PunchBody(
                                     Text(
                                         modifier = Modifier
                                             .background(Color.White)
+                                            .width(110.dp)
                                             .padding(
                                                 start = 8.dp,
                                                 end = 8.dp,
@@ -253,7 +261,8 @@ private fun PunchBody(
                                                 bottom = 5.dp
                                             ),
                                         text = uiPunch.getRate(rateList)?.description
-                                            ?: "unavailable"
+                                            ?: "unavailable",
+                                        textAlign = TextAlign.Center
                                     )
                                 }
                             }
@@ -310,6 +319,7 @@ private fun PunchBody(
 fun StyleTransitionTextField(
     punch: Punch?,
     isEditing: Boolean,
+    isEditable: Boolean,
     onTimeSelected: (Punch) -> Unit,
     error: Boolean,
 ) {
@@ -323,7 +333,21 @@ fun StyleTransitionTextField(
             val errorBackground = if (error) errorRedBackground else primary
             val time = remember(punch) { Util.toFriendlyTime(punch?.dateTime) }
 
-            if (editing && punch != null) {
+            if (!isEditable && editing && punch != null) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(calendarBackground)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .width(110.dp)
+                            .padding(top = 6.dp, bottom = 6.dp, start = 8.dp, end = 8.dp),
+                        text = time,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else if (editing && punch != null) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
@@ -352,7 +376,8 @@ fun StyleTransitionTextField(
 @Composable
 fun ConfirmChangesRow(
     onShowAddHours: () -> Unit,
-    isEditing: Boolean
+    onAddPTO: () -> Unit,
+    isEditing: Boolean,
 ) {
     AnimatedVisibility(
         visible = isEditing,
@@ -367,6 +392,14 @@ fun ConfirmChangesRow(
                 modifier = Modifier.width(150.dp).height(50.dp),
                 onClick = onShowAddHours,
                 text = "Add Hours",
+                loading = false,
+                enabled = true
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            TimeSheetButton(
+                modifier = Modifier.width(150.dp).height(50.dp),
+                onClick = onAddPTO,
+                text = "Add PTO",
                 loading = false,
                 enabled = true
             )

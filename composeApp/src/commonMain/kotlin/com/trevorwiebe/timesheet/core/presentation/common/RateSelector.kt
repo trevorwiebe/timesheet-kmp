@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.trevorwiebe.timesheet.core.domain.model.Rate
+import com.trevorwiebe.timesheet.theme.calendarBackground
 import com.trevorwiebe.timesheet.theme.primary
 
 @Composable
@@ -35,21 +36,31 @@ fun RateSelector(
     modifier: Modifier = Modifier,
     rateList: List<Rate>,
     selectedRate: Rate?,
-    onRateSelected: (Rate) -> Unit
+    isEditable: Boolean,
+    onRateSelected: (Rate) -> Unit,
 ) {
 
     var showRateSelector by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
 
-    Text(
-        modifier = modifier
+    val mod = if (isEditable) {
+        modifier
             .clip(RoundedCornerShape(8.dp))
             .background(primary)
             .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
             .clickable {
                 showRateSelector = true
-            },
+            }
+    } else {
+        modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(calendarBackground)
+            .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
+    }
+
+    Text(
+        modifier = mod,
         text = selectedRate?.description ?: "unavailable",
         textAlign = TextAlign.Center,
     )

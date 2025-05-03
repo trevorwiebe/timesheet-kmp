@@ -25,6 +25,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
@@ -150,13 +151,24 @@ class PunchViewModel(
                     it.copy(punchToEdit = event.punch)
                 }
             }
-            is PunchEvents.OnSetPTODialog -> {
-                _elementVisibilityState.update { it.copy(showPTODialog = event.show) }
-            }
-
             is PunchEvents.OnAddPTO -> {
                 val date = event.date
-                val hours = event.hours
+
+                val punchIn = Punch(
+                    punchId = "",
+                    dateTime = date.atTime(8, 0),
+                    rateId = "zvOKdlJU7h1RxylAjjLo",
+                    type = PunchType.IN
+                )
+
+                val punchOut = Punch(
+                    punchId = "",
+                    dateTime = date.atTime(16, 0),
+                    rateId = "zvOKdlJU7h1RxylAjjLo",
+                    type = PunchType.OUT
+                )
+
+                initiateAddingHours(punchIn, punchOut)
             }
         }
     }

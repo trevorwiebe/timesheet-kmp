@@ -36,7 +36,6 @@ import com.trevorwiebe.timesheet.core.domain.model.PunchType
 import com.trevorwiebe.timesheet.core.presentation.ShiftBottomBar
 import com.trevorwiebe.timesheet.core.presentation.TopBar
 import com.trevorwiebe.timesheet.core.presentation.common.AddHoursDialog
-import com.trevorwiebe.timesheet.core.presentation.common.AddPTODialog
 import com.trevorwiebe.timesheet.core.presentation.common.BackIcon
 import com.trevorwiebe.timesheet.core.presentation.common.NativeDialog
 import com.trevorwiebe.timesheet.core.presentation.common.NativeTimePicker
@@ -142,10 +141,8 @@ fun PunchScreen(
                                         PunchType.OUT else PunchType.IN
                                     viewModel.onEvent(PunchEvents.OnPunch(punchType))
                                 },
-                                onAddToPTO = { viewModel.onEvent(PunchEvents.OnSetPTODialog(true)) },
                                 buttonText = if (dynamicState.isClockedIn()) "Clock Out" else "Clock In",
                                 showPunchButton = isCurrentPeriod,
-                                showPTOButton = dynamicState.timeSheet?.submitted != true,
                                 clockMessage = dynamicState.clockMessage
                             )
                         }
@@ -188,6 +185,9 @@ fun PunchScreen(
                                     todayDate,
                                     punchList,
                                 ),
+                                onAddPTO = {
+                                    viewModel.onEvent(PunchEvents.OnAddPTO(todayDate))
+                                },
                                 holiday = holiday?.name
                             )
                         }
@@ -283,40 +283,19 @@ fun PunchScreen(
         viewModel.onEvent(PunchEvents.OnUpdatePunch(punch))
     }
 
-    AddPTODialog(
-        showDialog = elementVisibilityState.showPTODialog,
-        onConfirm = { date, hours ->
-
-        },
-        onDismiss = {
-            viewModel.onEvent(PunchEvents.OnSetPTODialog(false))
-        }
-    )
-
 }
 
 @Composable
 private fun AddPunch(
-    showPTOButton: Boolean,
     showPunchButton: Boolean,
     clockMessage: String?,
     loadingPunch: Boolean,
     buttonText: String,
     onPunch: () -> Unit,
-    onAddToPTO: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
     ) {
-        if (showPTOButton) {
-            TimeSheetButton(
-                modifier = Modifier.width(150.dp).height(50.dp),
-                text = "Add PTO",
-                onClick = onAddToPTO,
-                loading = false,
-                enabled = false
-            )
-        }
         Spacer(modifier = Modifier.weight(1f))
         if (showPunchButton) {
             Column {

@@ -17,6 +17,5 @@ sealed class PunchEvents {
     data object OnConfirmPayPeriod : PunchEvents()
     data class OnShowInfo(val showInfoSheet: Boolean) : PunchEvents()
     data class OnSetTimePickerVisibility(val punch: Punch?) : PunchEvents()
-    data class OnSetPTODialog(val show: Boolean) : PunchEvents()
-    data class OnAddPTO(val date: LocalDate, val hours: Int) : PunchEvents()
+    data class OnAddPTO(val date: LocalDate) : PunchEvents()
 }

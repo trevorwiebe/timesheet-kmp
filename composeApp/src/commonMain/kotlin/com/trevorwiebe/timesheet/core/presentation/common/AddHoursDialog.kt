@@ -195,7 +195,8 @@ fun AddHoursDialog(
                         selectedRate = selectedRate.value,
                         onRateSelected = {
                             selectedRate.value = it
-                        }
+                        },
+                        isEditable = true
                     )
 
                     Text(
