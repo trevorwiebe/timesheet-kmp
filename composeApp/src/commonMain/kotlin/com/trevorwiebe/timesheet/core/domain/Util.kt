@@ -1,5 +1,6 @@
 package com.trevorwiebe.timesheet.core.domain
 
+import com.trevorwiebe.timesheet.core.domain.model.Rate
 import com.trevorwiebe.timesheet.core.domain.model.TimeSheet
 import com.trevorwiebe.timesheet.report.presentation.uiUtils.TimeSheetStatus
 import dev.gitlive.firebase.FirebaseException
@@ -183,5 +184,9 @@ object Util {
     private fun defaultDate(): LocalDateTime {
         // date when android was released, because it's better than apple
         return LocalDateTime(2008, 9, 23, 0, 0, 0)
+    }
+
+    fun getRateIDFromName(name: String, rates: List<Rate>): String {
+        return rates.filter { it.description == name }.map { it.id }.first()
     }
 }

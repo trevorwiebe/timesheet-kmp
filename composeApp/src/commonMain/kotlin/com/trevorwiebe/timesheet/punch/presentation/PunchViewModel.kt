@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.timesheet.core.data.FirestoreListenerRegistry
 import com.trevorwiebe.timesheet.core.domain.CoreRepository
+import com.trevorwiebe.timesheet.core.domain.Util
 import com.trevorwiebe.timesheet.core.domain.Util.localDateTime
 import com.trevorwiebe.timesheet.core.domain.model.Holiday
 import com.trevorwiebe.timesheet.core.domain.model.Organization
@@ -153,18 +154,20 @@ class PunchViewModel(
             }
             is PunchEvents.OnAddPTO -> {
                 val date = event.date
+                val rateList = _staticPunchState.value.rateList
+                val ptoId = Util.getRateIDFromName("PTO", rateList)
 
                 val punchIn = Punch(
                     punchId = "",
                     dateTime = date.atTime(8, 0),
-                    rateId = "zvOKdlJU7h1RxylAjjLo",
+                    rateId = ptoId,
                     type = PunchType.IN
                 )
 
                 val punchOut = Punch(
                     punchId = "",
                     dateTime = date.atTime(16, 0),
-                    rateId = "zvOKdlJU7h1RxylAjjLo",
+                    rateId = ptoId,
                     type = PunchType.OUT
                 )
 

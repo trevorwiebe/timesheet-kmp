@@ -154,6 +154,9 @@ private fun PunchBody(
     hoursWorked: List<Pair<String, Double>>
 ) {
 
+    val ptoId = Util.getRateIDFromName("PTO", rateList)
+    val holidayId = Util.getRateIDFromName("Holiday", rateList)
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -167,7 +170,8 @@ private fun PunchBody(
         } else {
             punches.forEach { uiPunch ->
 
-                val punchesAreEditable = uiPunch.punchIn.rateId != "zvOKdlJU7h1RxylAjjLo"
+                val punchesAreEditable = uiPunch.punchIn.rateId != ptoId &&
+                        uiPunch.punchIn.rateId != holidayId
                 val isError = uiPunch.error != null
 
                 Spacer(modifier = Modifier.height(8.dp))
