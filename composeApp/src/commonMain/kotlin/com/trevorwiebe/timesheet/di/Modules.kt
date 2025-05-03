@@ -40,7 +40,7 @@ expect fun httpClient(): HttpClient
 
 object Debug {
     // This will be set during initialization
-    var isDebug: Boolean = true
+    var isDebug: Boolean = false
 }
 
 expect val platformModule: Module
