@@ -15,12 +15,14 @@ class ProcessPunchesForUi {
 
         val punchMap: MutableMap<LocalDate, List<UiPunch>> = mutableMapOf()
 
-        punchList.sortedBy { it.dateTime }
+        val sortedPunchList = punchList.sortedWith(
+            compareBy<Punch> { it.rateId }.thenBy { it.dateTime }
+        )
 
-        val punchIn = punchList
+        val punchIn = sortedPunchList
             .filter { it.type == PunchType.IN }
 
-        val punchOut = punchList
+        val punchOut = sortedPunchList
             .filter { it.type == PunchType.OUT }
 
         dateList.forEachIndexed { index, today ->
