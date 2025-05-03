@@ -55,7 +55,7 @@ fun AddPTODialog(
                     TimesheetTextField(
                         modifier = Modifier.padding(vertical = 16.dp),
                         text = vacationHours.value,
-                        placeholder = "Vacation Hours",
+                        placeholder = "PTO Hours",
                         onTextChange = {
                             vacationHours.value = it
                         },

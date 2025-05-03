@@ -314,7 +314,7 @@ private fun AddPunch(
                 text = "Add PTO",
                 onClick = onAddToPTO,
                 loading = false,
-                enabled = true
+                enabled = false
             )
         }
         Spacer(modifier = Modifier.weight(1f))
